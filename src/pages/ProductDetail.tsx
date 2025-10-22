@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { storefrontApiRequest, type ShopifyProduct } from "@/lib/shopify";
-import { Loader2, ArrowLeft, ShoppingCart, Star, Clock, Users, Calendar, Car, MessageCircle, Check, X, MapPin, Utensils, Waves, Camera, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
+import { Loader2, ArrowLeft, ShoppingCart, Star, Clock, Users, Calendar, Car, MessageCircle, Check, X, MapPin, Utensils, Waves, Camera, ChevronLeft, ChevronRight, Image as ImageIcon, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { AIConsiergeWidget } from "@/components/AIConsiergeWidget";
 import { BookingDialog } from "@/components/BookingDialog";
+import { TourMap } from "@/components/TourMap";
+import { useMetaTags } from "@/hooks/useMetaTags";
 
 // Import additional images for demo
 import phiPhiMayaBay from "@/assets/phi-phi-maya-bay.jpg";
@@ -94,6 +96,14 @@ const ProductDetail = () => {
     }
   }, [handle]);
 
+  // Update meta tags for social sharing
+  useMetaTags({
+    title: product ? `${product.node.title} | PhuketDa` : 'PhuketDa - Туры на Пхукете',
+    description: product?.node.description?.substring(0, 160) || 'Забронируйте тур на Пхукете с персональным AI-помощником',
+    image: product?.node.images.edges[0]?.node.url || 'https://phuketda.app/og-image.jpg',
+    url: window.location.href,
+  });
+
   const handleAddToCart = () => {
     if (!product || !selectedVariant) return;
 
@@ -109,6 +119,36 @@ const ProductDetail = () => {
     addItem(cartItem);
     toast.success("Добавлено в корзину!", {
       description: `${product.node.title} - ${selectedVariant.title}`
+    });
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const title = product?.node.title || 'Тур на Пхукете';
+    const text = `Смотри какой тур я нашел! ${title}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text,
+          url,
+        });
+        toast.success("Ссылка отправлена!");
+      } catch (error) {
+        if (error instanceof Error && error.name !== 'AbortError') {
+          copyToClipboard(url);
+        }
+      }
+    } else {
+      copyToClipboard(url);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success("Ссылка скопирована!", {
+      description: "Теперь можете поделиться ей где угодно"
     });
   };
 
@@ -162,13 +202,25 @@ const ProductDetail = () => {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}
-        <Link 
-          to="/phuket" 
-          className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Назад к Пхукету
-        </Link>
+        <div className="flex items-center justify-between mb-6">
+          <Link 
+            to="/phuket" 
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Назад к Пхукету
+          </Link>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleShare}
+            className="gap-2"
+          >
+            <Share2 className="w-4 h-4" />
+            Поделиться
+          </Button>
+        </div>
 
         <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {/* Main Content */}
@@ -458,6 +510,11 @@ const ProductDetail = () => {
                     Не рекомендуется беременным женщинам и людям с проблемами спины
                   </p>
                 </div>
+              </div>
+
+              {/* Tour Map */}
+              <div className="border-t pt-6 mt-6">
+                <TourMap tourHandle={handle || ''} />
               </div>
             </div>
           </div>

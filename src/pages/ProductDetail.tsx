@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { storefrontApiRequest, type ShopifyProduct } from "@/lib/shopify";
-import { Loader2, ArrowLeft, ShoppingCart, Star, Clock, Users, Calendar, Car, MessageCircle } from "lucide-react";
+import { Loader2, ArrowLeft, ShoppingCart, Star, Clock, Users, Calendar, Car, MessageCircle, Check, X, MapPin, Utensils, Waves, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cartStore";
@@ -261,16 +261,168 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              {/* Description */}
-              {product.node.description && (
-                <div className="border-t pt-6">
-                  <h2 className="text-xl font-bold mb-4">Описание</h2>
-                  <div 
-                    className="prose prose-sm max-w-none text-muted-foreground"
-                    dangerouslySetInnerHTML={{ __html: product.node.description }}
-                  />
+              {/* Program */}
+              <div className="border-t pt-6">
+                <h2 className="text-xl font-bold mb-4">📋 Программа тура</h2>
+                
+                <div className="space-y-6">
+                  {/* Day 1 */}
+                  <div>
+                    <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+                      <span className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+                      День 1
+                    </h3>
+                    <div className="space-y-2 ml-10 text-sm text-muted-foreground">
+                      <p className="flex items-start gap-2">
+                        <Clock className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                        <span><strong>08:00</strong> - Выезд из отеля на Пхукете</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <MapPin className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                        <span><strong>10:00</strong> - Прибытие на остров Пхи-Пхи Дон • Заселение в отель 3* на берегу моря</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <Utensils className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                        <span>Обед в местном ресторане</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <Waves className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                        <span>Снорклинг в бухте Лох Далам • Свободное время на пляже</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <Camera className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                        <span>Ужин и прогулка по вечерней набережной</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Day 2 */}
+                  <div>
+                    <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+                      <span className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
+                      День 2
+                    </h3>
+                    <div className="space-y-2 ml-10 text-sm text-muted-foreground">
+                      <p className="flex items-start gap-2">
+                        <Utensils className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                        <span><strong>08:00</strong> - Завтрак в отеле</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <Waves className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                        <span><strong>09:00</strong> - Экскурсия на спидботе к бухте Майя Бэй</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <Waves className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                        <span>Снорклинг в бухте Пиле • Посещение пещеры викингов</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <Utensils className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                        <span>Обед на острове</span>
+                      </p>
+                      <p className="flex items-start gap-2">
+                        <Car className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
+                        <span><strong>15:00</strong> - Возвращение на Пхукет • <strong>17:00</strong> - Трансфер в отель</span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              )}
+              </div>
+
+              {/* What's Included */}
+              <div className="border-t pt-6 mt-6">
+                <h2 className="text-xl font-bold mb-4">✅ Что включено</h2>
+                <div className="grid md:grid-cols-2 gap-3 mb-6">
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-success" />
+                    </div>
+                    <span className="text-sm">Трансфер от отеля и обратно</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-success" />
+                    </div>
+                    <span className="text-sm">Проживание в отеле 3* (1 ночь)</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-success" />
+                    </div>
+                    <span className="text-sm">2 завтрака, 2 обеда, 1 ужин</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-success" />
+                    </div>
+                    <span className="text-sm">Все экскурсии на спидботе</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-success" />
+                    </div>
+                    <span className="text-sm">Снаряжение для снорклинга</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-success" />
+                    </div>
+                    <span className="text-sm">Русскоговорящий гид</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-success" />
+                    </div>
+                    <span className="text-sm">Страховка</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-success" />
+                    </div>
+                    <span className="text-sm">Питьевая вода</span>
+                  </div>
+                </div>
+
+                <h3 className="text-lg font-bold mb-4 mt-6">❌ Не включено</h3>
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <X className="w-3 h-3 text-destructive" />
+                    </div>
+                    <span className="text-sm text-muted-foreground">Дополнительные напитки в ресторанах</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <X className="w-3 h-3 text-destructive" />
+                    </div>
+                    <span className="text-sm text-muted-foreground">Личные расходы</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <X className="w-3 h-3 text-destructive" />
+                    </div>
+                    <span className="text-sm text-muted-foreground">Национальный парк (400 бат/взрослый, 200 бат/ребенок)</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Important Info */}
+              <div className="border-t pt-6 mt-6">
+                <h2 className="text-xl font-bold mb-4">ℹ️ Важная информация</h2>
+                <div className="glass-card p-4 space-y-2 text-sm text-muted-foreground">
+                  <p className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    Рекомендуется взять с собой: купальник, солнцезащитный крем, головной убор, полотенце
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    Время выезда может незначительно меняться в зависимости от локации отеля
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <span className="text-primary">•</span>
+                    Не рекомендуется беременным женщинам и людям с проблемами спины
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 

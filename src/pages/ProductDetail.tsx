@@ -310,9 +310,21 @@ const ProductDetail = () => {
             {/* Product Info */}
             <div className="glass-card p-6">
               <h1 className="text-3xl font-bold mb-3">{product.node.title}</h1>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-muted-foreground mb-6 flex items-start gap-2">
+                <MapPin className="w-5 h-5 mt-0.5 flex-shrink-0" />
                 {product.node.description?.substring(0, 200) || 'Экскурсия с ночевкой на островах'}
               </p>
+
+              {/* Share Button - Prominent */}
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={handleShare}
+                className="w-full mb-6 gap-2"
+              >
+                <Share2 className="w-5 h-5" />
+                Поделиться туром
+              </Button>
 
               {/* Tour Details with Icons */}
               <div className="grid grid-cols-2 gap-4 mb-6">
@@ -530,39 +542,55 @@ const ProductDetail = () => {
               {/* Tour Quick Info */}
               <div className="space-y-3 mb-6 text-sm">
                 <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-warning fill-warning" />
+                  <span className="font-semibold">4.8</span>
+                  <span className="text-muted-foreground ml-auto">2 дня / 1 ночь</span>
+                </div>
+                <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Продолжительность:</span>
-                  <span className="font-semibold ml-auto">2 дня / 1 ночь</span>
+                  <span className="text-muted-foreground">2 дня / 1 ночь</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Группа:</span>
-                  <span className="font-semibold ml-auto">до 30 человек</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Расписание:</span>
-                  <span className="font-semibold ml-auto">Ежедневно</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Car className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Трансфер:</span>
-                  <span className="font-semibold ml-auto">Включен</span>
+                  <span className="text-muted-foreground">до 30 человек</span>
                 </div>
               </div>
 
-              {/* Price */}
-              <div className="mb-6 text-center">
-                <p className="text-4xl font-bold text-primary mb-1">
-                  от ${parseFloat(product.node.priceRange.minVariantPrice.amount).toFixed(0)}
-                </p>
-                <p className="text-sm text-muted-foreground">за взрослого</p>
+              {/* Price and Buttons Section */}
+              <div className="border-t pt-6">
+                {/* Price */}
+                <div className="mb-6">
+                  <p className="text-4xl font-bold text-primary mb-1">
+                    от ${parseFloat(product.node.priceRange.minVariantPrice.amount).toFixed(0)} ₽
+                  </p>
+                  <p className="text-sm text-muted-foreground">за взрослого</p>
+                </div>
+
+                {/* Action Buttons - Phukeo Style */}
+                <div className="space-y-3">
+                  <Button
+                    size="lg"
+                    className="w-full bg-[#0088cc] hover:bg-[#0088cc]/90 text-white"
+                    onClick={() => window.open('https://t.me/phuketda_bot', '_blank')}
+                  >
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    Написать в Телеграм
+                  </Button>
+
+                  <Button
+                    size="lg"
+                    className="w-full bg-[#4CAF50] hover:bg-[#4CAF50]/90 text-white"
+                    onClick={() => setBookingDialogOpen(true)}
+                  >
+                    Забронировать
+                  </Button>
+                </div>
               </div>
 
               {/* Variant Selection */}
               {product.node.options.length > 0 && product.node.variants.edges.length > 1 && (
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold mb-2">
+                <div className="border-t pt-6 mt-6">
+                  <label className="block text-sm font-semibold mb-3">
                     {product.node.options[0].name}
                   </label>
                   <div className="flex flex-col gap-2">
@@ -582,39 +610,6 @@ const ProductDetail = () => {
                   </div>
                 </div>
               )}
-
-              {/* Action Buttons */}
-              <div className="space-y-3">
-                <Button
-                  size="lg"
-                  className="w-full"
-                  onClick={() => setBookingDialogOpen(true)}
-                >
-                  <Calendar className="w-5 h-5 mr-2" />
-                  Забронировать тур
-                </Button>
-
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full"
-                  onClick={handleAddToCart}
-                  disabled={!selectedVariant?.availableForSale}
-                >
-                  <ShoppingCart className="w-5 h-5 mr-2" />
-                  Добавить в корзину
-                </Button>
-
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => window.open('https://t.me/phuketda_bot', '_blank')}
-                >
-                  <MessageCircle className="w-5 h-5 mr-2" />
-                  Написать в Telegram
-                </Button>
-              </div>
             </div>
 
             {/* AI Concierge */}

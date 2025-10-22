@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { AIConsiergeWidget } from "@/components/AIConsiergeWidget";
+import { BookingDialog } from "@/components/BookingDialog";
 
 // Import additional images for demo
 import phiPhiMayaBay from "@/assets/phi-phi-maya-bay.jpg";
@@ -68,6 +69,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
   const addItem = useCartStore(state => state.addItem);
 
   useEffect(() => {
@@ -529,11 +531,21 @@ const ProductDetail = () => {
                 <Button
                   size="lg"
                   className="w-full"
+                  onClick={() => setBookingDialogOpen(true)}
+                >
+                  <Calendar className="w-5 h-5 mr-2" />
+                  Забронировать тур
+                </Button>
+
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full"
                   onClick={handleAddToCart}
                   disabled={!selectedVariant?.availableForSale}
                 >
                   <ShoppingCart className="w-5 h-5 mr-2" />
-                  Забронировать тур
+                  Добавить в корзину
                 </Button>
 
                 <Button
@@ -555,6 +567,16 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Booking Dialog */}
+      <BookingDialog
+        open={bookingDialogOpen}
+        onOpenChange={setBookingDialogOpen}
+        tourTitle={product.node.title}
+        tourDescription="Экскурсия с ночевкой на островах Пхи-Пхи"
+        adultPrice={4500}
+        childPrice={3950}
+      />
     </div>
   );
 };

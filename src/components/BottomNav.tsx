@@ -4,8 +4,8 @@ import { useCartStore } from "@/stores/cartStore";
 
 const navItems = [
   { icon: Home, label: "Главная", path: "/" },
-  { icon: Compass, label: "Туры", path: "/tours" },
-  { icon: MessageCircle, label: "Insider", path: "/insider" },
+  { icon: Compass, label: "Пхукет", path: "/phuket" },
+  { icon: MessageCircle, label: "AI Консьерж", path: "/ai-concierge" },
   { icon: ShoppingCart, label: "Корзина", path: "/cart" },
   { icon: User, label: "Профиль", path: "/profile" },
 ];

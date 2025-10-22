@@ -5,6 +5,7 @@ import { Loader2, ArrowLeft, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
+import { AIConsiergeWidget } from "@/components/AIConsiergeWidget";
 
 const PRODUCT_QUERY = `
   query GetProduct($handle: String!) {
@@ -127,14 +128,16 @@ const ProductDetail = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}
         <Link 
-          to="/tours" 
+          to="/phuket" 
           className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Назад к турам
+          Назад к Пхукету
         </Link>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          {/* Main Content */}
+          <div className="lg:col-span-2 grid lg:grid-cols-2 gap-8">
           {/* Image */}
           <div className="relative rounded-2xl overflow-hidden">
             {product.node.images.edges[0]?.node && (
@@ -199,6 +202,12 @@ const ProductDetail = () => {
               className="prose prose-sm max-w-none"
               dangerouslySetInnerHTML={{ __html: product.node.description }}
             />
+          </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <AIConsiergeWidget />
           </div>
         </div>
       </div>

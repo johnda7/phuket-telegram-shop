@@ -1,0 +1,25 @@
+=== SHOPIFY CREDENTIALS ===
+
+ADMIN LOGIN:
+URL: https://admin.shopify.com/store/phuket-telegram-shop-117ck
+Email: anotherstoriz@gmail.com
+Password: Qazwsx1.
+
+STOREFRONT API TOKEN (Read-Only):
+89e6c827e100c3d0b35e5957424b3cc7
+
+ADMIN API TOKEN (Full Access):
+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
+
+STORE DOMAIN:
+phuket-telegram-shop-117ck.myshopify.com
+
+API VERSION:
+2025-07
+
+=== QUICK COPY-PASTE ===
+
+Storefront Token: 89e6c827e100c3d0b35e5957424b3cc7
+Admin Token: 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
+Email: anotherstoriz@gmail.com
+Password: Qazwsx1.

@@ -1,5 +1,13 @@
 # Welcome to your Lovable project
 
+## 🤖 For AI Agents
+
+**👉 START HERE:** [AGENTS.md](./AGENTS.md) - Главная инструкция для AI агентов
+
+Всё про Shopify, API, структуру проекта и как создавать контент.
+
+---
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/4cc054fa-627c-4d2f-9d09-a0d432caf382

@@ -1,11 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Compass, MessageCircle, ShoppingCart, User } from "lucide-react";
+import { Home, Briefcase, Info, ShoppingCart, User } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 
 const navItems = [
   { icon: Home, label: "Главная", path: "/" },
-  { icon: Compass, label: "Пхукет", path: "/phuket" },
-  { icon: MessageCircle, label: "AI Консьерж", path: "/ai-concierge" },
+  { icon: Briefcase, label: "Услуги", path: "/phuket?category=tour" },
+  { icon: Info, label: "Инфо", path: "/phuket" },
   { icon: ShoppingCart, label: "Корзина", path: "/cart" },
   { icon: User, label: "Профиль", path: "/profile" },
 ];

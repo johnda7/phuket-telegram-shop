@@ -35,7 +35,15 @@ const Phuket = () => {
         setLoading(true);
         const data = await fetchProducts(50);
         setProducts(data);
-        setFilteredProducts(data);
+        
+        // Check URL params for initial category
+        const params = new URLSearchParams(window.location.search);
+        const urlCategory = params.get('category') as Category | null;
+        if (urlCategory && categories.find(c => c.id === urlCategory)) {
+          setActiveCategory(urlCategory);
+        } else {
+          setFilteredProducts(data);
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load content');
       } finally {

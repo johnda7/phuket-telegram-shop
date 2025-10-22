@@ -7,6 +7,7 @@ import { TelegramProvider } from "./contexts/TelegramContext";
 import { AppLayout } from "./components/AppLayout";
 import Index from "./pages/Index";
 import Phuket from "./pages/Phuket";
+import Beaches from "./pages/Beaches";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import ProductDetail from "./pages/ProductDetail";
@@ -28,6 +29,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/phuket" element={<Phuket />} />
+              <Route path="/beaches" element={<Beaches />} />
               <Route path="/ai-concierge" element={<Index />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/profile" element={<Profile />} />

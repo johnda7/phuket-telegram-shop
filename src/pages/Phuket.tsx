@@ -100,6 +100,27 @@ const Phuket = () => {
           </p>
         </div>
 
+        {/* Featured Banner - Beaches */}
+        <a 
+          href="/beaches"
+          className="block mb-8 group"
+        >
+          <div className="glass-card overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
+            <div className="relative h-48 bg-gradient-to-r from-primary/20 to-success/20 flex items-center justify-center">
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200')] bg-cover bg-center opacity-20 group-hover:opacity-30 transition-opacity" />
+              <div className="relative z-10 text-center">
+                <h2 className="text-3xl font-bold mb-2">🏖️ Пляжи Пхукета</h2>
+                <p className="text-lg text-muted-foreground mb-4">
+                  Откройте для себя лучшие пляжи острова
+                </p>
+                <Button size="lg" className="bg-[#4CAF50] hover:bg-[#4CAF50]/90">
+                  Смотреть все пляжи →
+                </Button>
+              </div>
+            </div>
+          </div>
+        </a>
+
         {/* Category Filter */}
         <div className="mb-8 overflow-x-auto">
           <div className="flex gap-2 pb-2">

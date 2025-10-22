@@ -10,38 +10,38 @@ const services = [
     icon: Home,
     title: 'Недвижимость',
     description: 'Аренда и продажа',
-    link: '/real-estate',
-    available: false
+    link: 'https://t.me/PhuketDAexpert',
+    external: true
   },
   {
     id: 'currency',
     icon: RefreshCw,
     title: 'Обмен валюты',
     description: 'Березa - выгодный курс',
-    link: '/currency',
-    available: false
+    link: 'https://t.me/bereza_manager',
+    external: true
   },
   {
     id: 'car-rental',
     icon: Car,
     title: 'Аренда авто',
     description: '100+ автомобилей',
-    link: '/car-rental',
-    available: false
+    link: 'https://t.me/RentaCarPhu',
+    external: true
   },
   {
     id: 'tours',
     icon: MapPin,
     title: 'Экскурсии',
     description: 'Пхукет Go',
-    link: '/phuket?category=tour',
-    available: true
+    link: 'https://t.me/PhuketGa',
+    external: true
   },
 ];
 
 const Index = () => {
   const handleTelegramClick = () => {
-    window.open('https://t.me/PHUKIT', '_blank');
+    window.open('https://t.me/+meHzcVXS2mIzZmU1', '_blank');
   };
 
   return (
@@ -75,26 +75,32 @@ const Index = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {services.map((service) => {
             const IconComponent = service.icon;
-            return (
-              <Link 
+            const cardContent = (
+              <Card className="hover:shadow-lg transition-all text-center h-full">
+                <CardContent className="pt-6 pb-4 px-3">
+                  <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center mx-auto mb-3">
+                    <IconComponent className="w-7 h-7 text-primary-foreground" />
+                  </div>
+                  <h3 className="font-semibold text-sm mb-1">{service.title}</h3>
+                  <p className="text-xs text-muted-foreground leading-tight">
+                    {service.description}
+                  </p>
+                </CardContent>
+              </Card>
+            );
+            
+            return service.external ? (
+              <a 
                 key={service.id}
-                to={service.link}
-                className={!service.available ? 'pointer-events-none' : ''}
+                href={service.link}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <Card className={`hover:shadow-lg transition-all text-center h-full ${!service.available ? 'opacity-60' : ''}`}>
-                  <CardContent className="pt-6 pb-4 px-3">
-                    <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center mx-auto mb-3">
-                      <IconComponent className="w-7 h-7 text-primary-foreground" />
-                    </div>
-                    <h3 className="font-semibold text-sm mb-1">{service.title}</h3>
-                    <p className="text-xs text-muted-foreground leading-tight">
-                      {service.description}
-                    </p>
-                    {!service.available && (
-                      <p className="text-xs text-muted-foreground mt-2 italic">Скоро</p>
-                    )}
-                  </CardContent>
-                </Card>
+                {cardContent}
+              </a>
+            ) : (
+              <Link key={service.id} to={service.link}>
+                {cardContent}
               </Link>
             );
           })}
@@ -120,48 +126,6 @@ const Index = () => {
 
         {/* Quick Links */}
         <div className="space-y-3 mb-6">
-          <Link to="/phuket?category=tour">
-            <Card className="hover:shadow-md transition-all">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  <span className="font-medium">🗺️ Экскурсии</span>
-                </div>
-                <span className="text-muted-foreground">→</span>
-              </CardContent>
-            </Card>
-          </Link>
-
-          <Card className="hover:shadow-md transition-all opacity-60">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Home className="w-5 h-5 text-primary" />
-                <span className="font-medium">🏠 Недвижимость</span>
-              </div>
-              <span className="text-muted-foreground text-xs">Скоро</span>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-md transition-all opacity-60">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <RefreshCw className="w-5 h-5 text-primary" />
-                <span className="font-medium">💱 Обмен валюты</span>
-              </div>
-              <span className="text-muted-foreground text-xs">Скоро</span>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-md transition-all opacity-60">
-            <CardContent className="p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Car className="w-5 h-5 text-primary" />
-                <span className="font-medium">🚗 Аренда авто</span>
-              </div>
-              <span className="text-muted-foreground text-xs">Скоро</span>
-            </CardContent>
-          </Card>
-
           <Link to="/phuket">
             <Card className="hover:shadow-md transition-all">
               <CardContent className="p-4 flex items-center justify-between">

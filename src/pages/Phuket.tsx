@@ -15,9 +15,9 @@ interface CategoryConfig {
 
 const categories: CategoryConfig[] = [
   { id: 'all', label: 'Всё', emoji: '🗺️', tags: [] },
-  { id: 'tour', label: 'Туры', emoji: '🎟️', tags: ['tour'] },
-  { id: 'beach', label: 'Пляжи', emoji: '🏖️', tags: ['beach'] },
-  { id: 'temple', label: 'Храмы', emoji: '🛕', tags: ['temple'] },
+  { id: 'tour', label: 'Туры', emoji: '🎟️', tags: ['islands', 'popular', '1-day', '2-days'] },
+  { id: 'beach', label: 'Пляжі', emoji: '🏖️', tags: ['beach', 'пляж'] },
+  { id: 'temple', label: 'Храмы', emoji: '🛕', tags: ['temple', 'культурные', 'temples'] },
   { id: 'restaurant', label: 'Рестораны', emoji: '🍜', tags: ['restaurant'] },
   { id: 'district', label: 'Районы', emoji: '🏘️', tags: ['district'] },
 ];
@@ -150,13 +150,16 @@ const Phuket = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product) => {
-              const isTour = product.node.tags.includes('tour');
+              const isTour = product.node.productType === 'Экскурсии' || 
+                             product.node.tags.some(tag => ['islands', 'popular', '1-day', '2-days'].includes(tag));
+              const isBeach = product.node.tags.some(tag => ['beach', 'пляж'].includes(tag));
+              
               return (
                 <ProductCard
                   key={product.node.id}
                   product={product.node}
                   showPrice={isTour}
-                  showRating={!isTour}
+                  showRating={isBeach}
                   linkPrefix={isTour ? "/product" : "/place"}
                 />
               );

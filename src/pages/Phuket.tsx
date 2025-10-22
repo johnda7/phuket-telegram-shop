@@ -11,15 +11,16 @@ interface CategoryConfig {
   label: string;
   emoji: string;
   tags: string[];
+  color: string;
 }
 
 const categories: CategoryConfig[] = [
-  { id: 'all', label: 'Всё', emoji: '🗺️', tags: [] },
-  { id: 'tour', label: 'Туры', emoji: '🎟️', tags: ['tour'] },
-  { id: 'beach', label: 'Пляжи', emoji: '🏖️', tags: ['beach'] },
-  { id: 'temple', label: 'Храмы', emoji: '🛕', tags: ['temple'] },
-  { id: 'restaurant', label: 'Рестораны', emoji: '🍜', tags: ['restaurant'] },
-  { id: 'district', label: 'Районы', emoji: '🏘️', tags: ['district'] },
+  { id: 'all', label: 'Всё', emoji: '🗺️', tags: [], color: 'from-blue-500 to-cyan-500' },
+  { id: 'tour', label: 'Туры', emoji: '🎟️', tags: ['islands', 'popular', '1-day', '2-days'], color: 'from-emerald-500 to-teal-500' },
+  { id: 'beach', label: 'Пляжі', emoji: '🏖️', tags: ['beach', 'пляж'], color: 'from-orange-500 to-amber-500' },
+  { id: 'temple', label: 'Храмы', emoji: '🛕', tags: ['temple', 'культурные', 'temples'], color: 'from-violet-500 to-purple-500' },
+  { id: 'restaurant', label: 'Рестораны', emoji: '🍜', tags: ['restaurant'], color: 'from-red-500 to-pink-500' },
+  { id: 'district', label: 'Районы', emoji: '🏘️', tags: ['district'], color: 'from-purple-500 to-indigo-500' },
 ];
 
 const Phuket = () => {
@@ -100,20 +101,68 @@ const Phuket = () => {
           </p>
         </div>
 
-        {/* Category Filter */}
-        <div className="mb-8 overflow-x-auto">
-          <div className="flex gap-2 pb-2">
-            {categories.map((category) => (
-              <Button
-                key={category.id}
-                variant={activeCategory === category.id ? "default" : "outline"}
-                onClick={() => setActiveCategory(category.id)}
-                className="whitespace-nowrap"
-              >
-                <span className="mr-2">{category.emoji}</span>
-                {category.label}
-              </Button>
-            ))}
+        {/* Featured Banner - Beaches */}
+        <a 
+          href="/beaches"
+          className="block mb-8 group"
+        >
+          <div className="glass-card overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
+            <div className="relative h-48 bg-gradient-to-r from-primary/20 to-success/20 flex items-center justify-center">
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200')] bg-cover bg-center opacity-20 group-hover:opacity-30 transition-opacity" />
+              <div className="relative z-10 text-center">
+                <h2 className="text-3xl font-bold mb-2">🏖️ Пляжи Пхукета</h2>
+                <p className="text-lg text-muted-foreground mb-4">
+                  Откройте для себя лучшие пляжи острова
+                </p>
+                <Button size="lg" className="bg-[#4CAF50] hover:bg-[#4CAF50]/90">
+                  Смотреть все пляжи →
+                </Button>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        {/* iOS 26 Style Category Filter */}
+        <div className="mb-8 -mx-4 px-4 overflow-x-auto">
+          <div className="flex gap-3 pb-3">
+            {categories.map((category) => {
+              const isActive = activeCategory === category.id;
+              return (
+                <button
+                  key={category.id}
+                  onClick={() => setActiveCategory(category.id)}
+                  className={`
+                    relative flex-shrink-0 px-6 py-3 rounded-full font-semibold text-sm
+                    transition-all duration-300 ease-out
+                    ${isActive 
+                      ? 'text-white shadow-xl scale-110' 
+                      : 'text-foreground bg-secondary/50 hover:bg-secondary/80 hover:scale-105'
+                    }
+                  `}
+                  style={isActive ? {
+                    background: `linear-gradient(135deg, var(--tw-gradient-stops))`,
+                    '--tw-gradient-from': `rgb(${category.color === 'from-blue-500 to-cyan-500' ? '59 130 246' : 
+                                                  category.color === 'from-emerald-500 to-teal-500' ? '16 185 129' :
+                                                  category.color === 'from-orange-500 to-amber-500' ? '249 115 22' :
+                                                  category.color === 'from-violet-500 to-purple-500' ? '139 92 246' :
+                                                  category.color === 'from-red-500 to-pink-500' ? '239 68 68' :
+                                                  '168 85 247'})`,
+                    '--tw-gradient-to': `rgb(${category.color === 'from-blue-500 to-cyan-500' ? '6 182 212' : 
+                                                category.color === 'from-emerald-500 to-teal-500' ? '20 184 166' :
+                                                category.color === 'from-orange-500 to-amber-500' ? '245 158 11' :
+                                                category.color === 'from-violet-500 to-purple-500' ? '168 85 247' :
+                                                category.color === 'from-red-500 to-pink-500' ? '236 72 153' :
+                                                '99 102 241'})`,
+                  } as React.CSSProperties : undefined}
+                >
+                  <span className="mr-2 text-lg">{category.emoji}</span>
+                  {category.label}
+                  {isActive && (
+                    <div className="absolute inset-0 rounded-full bg-white/20 animate-pulse" />
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -129,13 +178,16 @@ const Phuket = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product) => {
-              const isTour = product.node.tags.includes('tour');
+              const isTour = product.node.productType === 'Экскурсии' || 
+                             product.node.tags.some(tag => ['islands', 'popular', '1-day', '2-days'].includes(tag));
+              const isBeach = product.node.tags.some(tag => ['beach', 'пляж'].includes(tag));
+              
               return (
                 <ProductCard
                   key={product.node.id}
                   product={product.node}
                   showPrice={isTour}
-                  showRating={!isTour}
+                  showRating={isBeach}
                   linkPrefix={isTour ? "/product" : "/place"}
                 />
               );

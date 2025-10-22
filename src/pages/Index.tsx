@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
-import { Home, RefreshCw, Car, MapPin, Info, MessageCircle } from "lucide-react";
+import { Home, RefreshCw, Car, MapPin, Info, MessageCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import heroImage from "@/assets/phi-phi-hero.jpg";
+import { useEffect, useState } from "react";
+import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
+import { ProductCard } from "@/components/ProductCard";
 
 const services = [
   {
@@ -40,6 +44,52 @@ const services = [
 ];
 
 const Index = () => {
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ShopifyProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedTag, setSelectedTag] = useState<string>('all');
+  
+  // Категории тегов с цветами
+  const tagCategories = [
+    { id: 'all', label: 'Все туры', emoji: '🗺️', color: 'from-blue-500 to-cyan-500' },
+    { id: 'islands', label: 'Острова', emoji: '🏝️', color: 'from-emerald-500 to-teal-500' },
+    { id: '2-days', label: '2 дня', emoji: '⏰', color: 'from-orange-500 to-amber-500' },
+    { id: 'popular', label: 'Популярные', emoji: '🔥', color: 'from-red-500 to-pink-500' },
+    { id: 'adventure', label: 'Приключения', emoji: '🎒', color: 'from-purple-500 to-indigo-500' },
+    { id: 'cultural', label: 'Культура', emoji: '🏛️', color: 'from-violet-500 to-purple-500' },
+    { id: 'nature', label: 'Природа', emoji: '🌿', color: 'from-green-500 to-emerald-500' },
+  ];
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchProducts(50);
+        // Фильтруем только туры (productType: Экскурсии)
+        const tours = data.filter(p => p.node.productType === 'Экскурсии');
+        setProducts(tours);
+        setFilteredProducts(tours);
+      } catch (err) {
+        console.error('Failed to load products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  useEffect(() => {
+    if (selectedTag === 'all') {
+      setFilteredProducts(products);
+    } else {
+      const filtered = products.filter(p => 
+        p.node.tags.some(tag => tag.toLowerCase() === selectedTag.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    }
+  }, [selectedTag, products]);
+
   const handleTelegramClick = () => {
     window.open('https://t.me/+meHzcVXS2mIzZmU1', '_blank');
   };
@@ -137,6 +187,87 @@ const Index = () => {
               </CardContent>
             </Card>
           </Link>
+        </div>
+
+        {/* Tours Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold">🎟️ Экскурсии</h2>
+            <Link to="/phuket">
+              <Button variant="ghost" size="sm" className="text-primary">
+                Смотреть всё →
+              </Button>
+            </Link>
+          </div>
+          
+          {/* iOS 26 Style Tag Filter */}
+          <div className="mb-6 -mx-4 px-4 overflow-x-auto">
+            <div className="flex gap-3 pb-3">
+              {tagCategories.map((tag) => {
+                const isSelected = selectedTag === tag.id;
+                return (
+                  <button
+                    key={tag.id}
+                    onClick={() => setSelectedTag(tag.id)}
+                    className={`
+                      relative flex-shrink-0 px-5 py-2.5 rounded-full font-medium text-sm
+                      transition-all duration-300 ease-out
+                      ${isSelected 
+                        ? 'text-white shadow-lg scale-105' 
+                        : 'text-foreground bg-secondary/50 hover:bg-secondary/80 hover:scale-105'
+                      }
+                    `}
+                    style={isSelected ? {
+                      background: `linear-gradient(135deg, var(--tw-gradient-stops))`,
+                      '--tw-gradient-from': `rgb(${tag.color === 'from-blue-500 to-cyan-500' ? '59 130 246' : 
+                                                    tag.color === 'from-emerald-500 to-teal-500' ? '16 185 129' :
+                                                    tag.color === 'from-orange-500 to-amber-500' ? '249 115 22' :
+                                                    tag.color === 'from-red-500 to-pink-500' ? '239 68 68' :
+                                                    tag.color === 'from-purple-500 to-indigo-500' ? '168 85 247' :
+                                                    tag.color === 'from-violet-500 to-purple-500' ? '139 92 246' :
+                                                    '34 197 94'})`,
+                      '--tw-gradient-to': `rgb(${tag.color === 'from-blue-500 to-cyan-500' ? '6 182 212' : 
+                                                  tag.color === 'from-emerald-500 to-teal-500' ? '20 184 166' :
+                                                  tag.color === 'from-orange-500 to-amber-500' ? '245 158 11' :
+                                                  tag.color === 'from-red-500 to-pink-500' ? '236 72 153' :
+                                                  tag.color === 'from-purple-500 to-indigo-500' ? '99 102 241' :
+                                                  tag.color === 'from-violet-500 to-purple-500' ? '168 85 247' :
+                                                  '16 185 129'})`,
+                    } as React.CSSProperties : undefined}
+                  >
+                    <span className="mr-1.5">{tag.emoji}</span>
+                    {tag.label}
+                    {isSelected && (
+                      <div className="absolute inset-0 rounded-full bg-white/20 animate-pulse" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Tours Grid */}
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Туры не найдены</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.node.id}
+                  product={product.node}
+                  showPrice={true}
+                  showRating={false}
+                  linkPrefix="/product"
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* AI Concierge CTA */}

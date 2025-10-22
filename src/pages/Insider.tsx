@@ -1,62 +1,82 @@
-import { Link } from "react-router-dom";
-import { MapPin, Info } from "lucide-react";
+import { useEffect, useState } from "react";
+import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
+import { Loader2, Info } from "lucide-react";
+import { ProductCard } from "@/components/ProductCard";
 
 const Insider = () => {
-  const categories = [
-    { name: "Достопримечательности", emoji: "🏛️", slug: "attractions" },
-    { name: "Храмы", emoji: "⛩️", slug: "temples" },
-    { name: "Пляжи", emoji: "🏖️", slug: "beaches" },
-    { name: "Рестораны", emoji: "🍽️", slug: "restaurants" },
-    { name: "SPA", emoji: "💆", slug: "spa" },
-    { name: "Районы", emoji: "🗺️", slug: "regions" },
-  ];
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchProducts(50);
+        // Фильтруем только товары с тегом "info"
+        const insiderContent = data.filter(p => p.node.tags.includes('info'));
+        setProducts(insiderContent);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load content');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-destructive">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-12">
-          <Link to="/" className="text-sm text-muted-foreground hover:text-primary mb-4 inline-block">
-            ← Назад
-          </Link>
-          <h1 className="text-4xl font-bold mb-4">📚 Phuket Insider</h1>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">📚 Phuket Insider</h1>
           <p className="text-muted-foreground">
-            Информационный гид по Пхукету: места, советы, лайфхаки
+            Информационный гид по Пхукету
           </p>
         </div>
 
-        {/* Categories Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {categories.map((category) => (
-            <div
-              key={category.slug}
-              className="rounded-2xl p-8 cursor-pointer transition-all hover:scale-105"
-              style={{
-                background: 'var(--glass-bg)',
-                backdropFilter: 'blur(20px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                boxShadow: 'var(--glass-shadow), inset 0 1px 0 var(--glass-border)',
-                border: '1px solid var(--glass-border)'
-              }}
-            >
-              <div className="text-5xl mb-4">{category.emoji}</div>
-              <h3 className="text-2xl font-bold mb-2">{category.name}</h3>
-              <p className="text-sm text-muted-foreground">
-                Скоро добавим контент из Phuket Insider
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* Coming Soon Notice */}
-        <div className="mt-16 text-center">
-          <Info className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-2">В разработке</h2>
-          <p className="text-muted-foreground max-w-md mx-auto">
-            Мы переносим весь контент с Phuket Insider в Shopify. 
-            Скоро здесь будут сотни мест с описаниями, фото и рейтингами!
-          </p>
-        </div>
+        {/* Content Grid */}
+        {products.length === 0 ? (
+          <div className="text-center py-20">
+            <Info className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h2 className="text-2xl font-semibold mb-2">Скоро здесь появится контент</h2>
+            <p className="text-muted-foreground">
+              Добавьте товары с тегом "info" в Shopify
+            </p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {products.map((product) => (
+              <ProductCard
+                key={product.node.id}
+                product={product.node}
+                showPrice={false}
+                showRating={true}
+                linkPrefix="/place"
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

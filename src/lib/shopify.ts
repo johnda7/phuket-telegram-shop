@@ -102,6 +102,54 @@ const STOREFRONT_QUERY = `
   }
 `;
 
+const PRODUCT_BY_HANDLE_QUERY = `
+  query GetProductByHandle($handle: String!) {
+    product(handle: $handle) {
+      id
+      title
+      description
+      handle
+      productType
+      tags
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
+      }
+      images(first: 10) {
+        edges {
+          node {
+            url
+            altText
+          }
+        }
+      }
+      variants(first: 10) {
+        edges {
+          node {
+            id
+            title
+            price {
+              amount
+              currencyCode
+            }
+            availableForSale
+            selectedOptions {
+              name
+              value
+            }
+          }
+        }
+      }
+      options {
+        name
+        values
+      }
+    }
+  }
+`;
+
 export async function storefrontApiRequest(query: string, variables: any = {}) {
   const response = await fetch(SHOPIFY_STOREFRONT_URL, {
     method: 'POST',
@@ -135,6 +183,14 @@ export async function storefrontApiRequest(query: string, variables: any = {}) {
 export async function fetchProducts(limit: number = 20): Promise<ShopifyProduct[]> {
   const data = await storefrontApiRequest(STOREFRONT_QUERY, { first: limit });
   return data.data.products.edges;
+}
+
+export async function fetchProductByHandle(handle: string): Promise<ShopifyProduct> {
+  const data = await storefrontApiRequest(PRODUCT_BY_HANDLE_QUERY, { handle });
+  if (!data.data.product) {
+    throw new Error('Product not found');
+  }
+  return { node: data.data.product };
 }
 
 export { SHOPIFY_STORE_PERMANENT_DOMAIN };

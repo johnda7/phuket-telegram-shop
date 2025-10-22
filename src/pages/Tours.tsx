@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
 import { Loader2, ShoppingBag } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ProductCard } from "@/components/ProductCard";
 import { Button } from "@/components/ui/button";
 
 const Tours = () => {
@@ -50,15 +50,12 @@ const Tours = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-12">
-          <Link to="/" className="text-sm text-muted-foreground hover:text-primary mb-4 inline-block">
-            ← Назад
-          </Link>
-          <h1 className="text-4xl font-bold mb-4">🎟️ Туры по Пхукету</h1>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">🎟️ Туры по Пхукету</h1>
           <p className="text-muted-foreground">
-            Экскурсии с ценами и онлайн бронированием через Telegram
+            Экскурсии с ценами и онлайн бронированием
           </p>
         </div>
 
@@ -68,64 +65,18 @@ const Tours = () => {
             <ShoppingBag className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <h2 className="text-2xl font-semibold mb-2">Пока нет туров</h2>
             <p className="text-muted-foreground">
-              Скажите мне какой тур создать (название, описание, цена)
+              Добавьте товары с тегом "tour" в Shopify
             </p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => (
-              <Link 
-                key={product.node.id} 
-                to={`/product/${product.node.handle}`}
-                className="group"
-              >
-                <div 
-                  className="rounded-2xl overflow-hidden transition-all hover:scale-105"
-                  style={{
-                    background: 'var(--glass-bg)',
-                    backdropFilter: 'blur(20px) saturate(180%)',
-                    WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                    boxShadow: 'var(--glass-shadow), inset 0 1px 0 var(--glass-border)',
-                    border: '1px solid var(--glass-border)'
-                  }}
-                >
-                  {/* Image */}
-                  <div className="aspect-video bg-secondary/20 overflow-hidden">
-                    {product.node.images.edges[0]?.node && (
-                      <img
-                        src={product.node.images.edges[0].node.url}
-                        alt={product.node.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                      {product.node.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                      {product.node.description}
-                    </p>
-                    
-                    {/* Price */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <span className="text-2xl font-bold text-primary">
-                          ${parseFloat(product.node.priceRange.minVariantPrice.amount).toFixed(0)}
-                        </span>
-                        <span className="text-sm text-muted-foreground ml-1">
-                          / чел
-                        </span>
-                      </div>
-                      <Button size="sm" className="bg-primary hover:bg-primary-glow">
-                        Подробнее →
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </Link>
+              <ProductCard
+                key={product.node.id}
+                product={product.node}
+                showPrice={true}
+                linkPrefix="/product"
+              />
             ))}
           </div>
         )}

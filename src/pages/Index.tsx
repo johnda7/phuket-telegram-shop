@@ -49,15 +49,15 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTag, setSelectedTag] = useState<string>('all');
   
-  // Категории тегов
+  // Категории тегов с цветами
   const tagCategories = [
-    { id: 'all', label: 'Все туры', emoji: '🗺️' },
-    { id: 'islands', label: 'Острова', emoji: '🏝️' },
-    { id: '2-days', label: '2 дня', emoji: '⏰' },
-    { id: 'popular', label: 'Популярные', emoji: '🔥' },
-    { id: 'adventure', label: 'Приключения', emoji: '🎒' },
-    { id: 'cultural', label: 'Культура', emoji: '🏛️' },
-    { id: 'nature', label: 'Природа', emoji: '🌿' },
+    { id: 'all', label: 'Все туры', emoji: '🗺️', color: 'from-blue-500 to-cyan-500' },
+    { id: 'islands', label: 'Острова', emoji: '🏝️', color: 'from-emerald-500 to-teal-500' },
+    { id: '2-days', label: '2 дня', emoji: '⏰', color: 'from-orange-500 to-amber-500' },
+    { id: 'popular', label: 'Популярные', emoji: '🔥', color: 'from-red-500 to-pink-500' },
+    { id: 'adventure', label: 'Приключения', emoji: '🎒', color: 'from-purple-500 to-indigo-500' },
+    { id: 'cultural', label: 'Культура', emoji: '🏛️', color: 'from-violet-500 to-purple-500' },
+    { id: 'nature', label: 'Природа', emoji: '🌿', color: 'from-green-500 to-emerald-500' },
   ];
 
   useEffect(() => {
@@ -191,23 +191,58 @@ const Index = () => {
 
         {/* Tours Section */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">🎟️ Экскурсии и туры</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold">🎟️ Экскурсии</h2>
+            <Link to="/phuket">
+              <Button variant="ghost" size="sm" className="text-primary">
+                Смотреть всё →
+              </Button>
+            </Link>
+          </div>
           
-          {/* Tag Filter */}
-          <div className="mb-6 overflow-x-auto">
-            <div className="flex gap-2 pb-2">
-              {tagCategories.map((tag) => (
-                <Button
-                  key={tag.id}
-                  variant={selectedTag === tag.id ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedTag(tag.id)}
-                  className="whitespace-nowrap"
-                >
-                  <span className="mr-1">{tag.emoji}</span>
-                  {tag.label}
-                </Button>
-              ))}
+          {/* iOS 26 Style Tag Filter */}
+          <div className="mb-6 -mx-4 px-4 overflow-x-auto">
+            <div className="flex gap-3 pb-3">
+              {tagCategories.map((tag) => {
+                const isSelected = selectedTag === tag.id;
+                return (
+                  <button
+                    key={tag.id}
+                    onClick={() => setSelectedTag(tag.id)}
+                    className={`
+                      relative flex-shrink-0 px-5 py-2.5 rounded-full font-medium text-sm
+                      transition-all duration-300 ease-out
+                      ${isSelected 
+                        ? 'text-white shadow-lg scale-105' 
+                        : 'text-foreground bg-secondary/50 hover:bg-secondary/80 hover:scale-105'
+                      }
+                    `}
+                    style={isSelected ? {
+                      background: `linear-gradient(135deg, var(--tw-gradient-stops))`,
+                      '--tw-gradient-from': `rgb(${tag.color === 'from-blue-500 to-cyan-500' ? '59 130 246' : 
+                                                    tag.color === 'from-emerald-500 to-teal-500' ? '16 185 129' :
+                                                    tag.color === 'from-orange-500 to-amber-500' ? '249 115 22' :
+                                                    tag.color === 'from-red-500 to-pink-500' ? '239 68 68' :
+                                                    tag.color === 'from-purple-500 to-indigo-500' ? '168 85 247' :
+                                                    tag.color === 'from-violet-500 to-purple-500' ? '139 92 246' :
+                                                    '34 197 94'})`,
+                      '--tw-gradient-to': `rgb(${tag.color === 'from-blue-500 to-cyan-500' ? '6 182 212' : 
+                                                  tag.color === 'from-emerald-500 to-teal-500' ? '20 184 166' :
+                                                  tag.color === 'from-orange-500 to-amber-500' ? '245 158 11' :
+                                                  tag.color === 'from-red-500 to-pink-500' ? '236 72 153' :
+                                                  tag.color === 'from-purple-500 to-indigo-500' ? '99 102 241' :
+                                                  tag.color === 'from-violet-500 to-purple-500' ? '168 85 247' :
+                                                  '16 185 129'})`,
+                    } as React.CSSProperties : undefined}
+                  >
+                    <span className="mr-1.5">{tag.emoji}</span>
+                    {tag.label}
+                    {isSelected && (
+                      <div className="absolute inset-0 rounded-full bg-white/20 animate-pulse" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
 

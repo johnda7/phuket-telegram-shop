@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
-import { Home, RefreshCw, Car, MapPin, Info, MessageCircle } from "lucide-react";
+import { Home, RefreshCw, Car, MapPin, Info, MessageCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import heroImage from "@/assets/phi-phi-hero.jpg";
+import { useEffect, useState } from "react";
+import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
+import { ProductCard } from "@/components/ProductCard";
 
 const services = [
   {
@@ -40,6 +44,52 @@ const services = [
 ];
 
 const Index = () => {
+  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<ShopifyProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedTag, setSelectedTag] = useState<string>('all');
+  
+  // Категории тегов
+  const tagCategories = [
+    { id: 'all', label: 'Все туры', emoji: '🗺️' },
+    { id: 'islands', label: 'Острова', emoji: '🏝️' },
+    { id: '2-days', label: '2 дня', emoji: '⏰' },
+    { id: 'popular', label: 'Популярные', emoji: '🔥' },
+    { id: 'adventure', label: 'Приключения', emoji: '🎒' },
+    { id: 'cultural', label: 'Культура', emoji: '🏛️' },
+    { id: 'nature', label: 'Природа', emoji: '🌿' },
+  ];
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchProducts(50);
+        // Фильтруем только туры (productType: Экскурсии)
+        const tours = data.filter(p => p.node.productType === 'Экскурсии');
+        setProducts(tours);
+        setFilteredProducts(tours);
+      } catch (err) {
+        console.error('Failed to load products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  useEffect(() => {
+    if (selectedTag === 'all') {
+      setFilteredProducts(products);
+    } else {
+      const filtered = products.filter(p => 
+        p.node.tags.some(tag => tag.toLowerCase() === selectedTag.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    }
+  }, [selectedTag, products]);
+
   const handleTelegramClick = () => {
     window.open('https://t.me/+meHzcVXS2mIzZmU1', '_blank');
   };
@@ -137,6 +187,52 @@ const Index = () => {
               </CardContent>
             </Card>
           </Link>
+        </div>
+
+        {/* Tours Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">🎟️ Экскурсии и туры</h2>
+          
+          {/* Tag Filter */}
+          <div className="mb-6 overflow-x-auto">
+            <div className="flex gap-2 pb-2">
+              {tagCategories.map((tag) => (
+                <Button
+                  key={tag.id}
+                  variant={selectedTag === tag.id ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedTag(tag.id)}
+                  className="whitespace-nowrap"
+                >
+                  <span className="mr-1">{tag.emoji}</span>
+                  {tag.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Tours Grid */}
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Туры не найдены</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.node.id}
+                  product={product.node}
+                  showPrice={true}
+                  showRating={false}
+                  linkPrefix="/product"
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* AI Concierge CTA */}

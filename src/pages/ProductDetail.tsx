@@ -8,6 +8,12 @@ import { useCartStore } from "@/stores/cartStore";
 import { toast } from "sonner";
 import { AIConsiergeWidget } from "@/components/AIConsiergeWidget";
 
+// Import additional images for demo
+import phiPhiMayaBay from "@/assets/phi-phi-maya-bay.jpg";
+import phiPhiSnorkeling from "@/assets/phi-phi-snorkeling.jpg";
+import phiPhiSunset from "@/assets/phi-phi-sunset.jpg";
+import phiPhiHotel from "@/assets/phi-phi-hotel.jpg";
+
 const PRODUCT_QUERY = `
   query GetProduct($handle: String!) {
     product(handle: $handle) {
@@ -126,16 +132,28 @@ const ProductDetail = () => {
   }
 
   const images = product.node.images.edges;
+  
+  // Add demo images if this is the Phi Phi tour
+  const enhancedImages = handle === 'phi-phi-2-days-1-night' 
+    ? [
+        ...images,
+        { node: { url: phiPhiMayaBay, altText: 'Maya Bay aerial view' }},
+        { node: { url: phiPhiSnorkeling, altText: 'Snorkeling at Phi Phi' }},
+        { node: { url: phiPhiSunset, altText: 'Sunset at Phi Phi viewpoint' }},
+        { node: { url: phiPhiHotel, altText: 'Beachfront hotel room' }}
+      ]
+    : images;
+  
   const tags = product.node.tags || [];
   const isHit = tags.includes('хит') || tags.includes('ХИТ') || tags.includes('популярное');
   const category = product.node.productType;
 
   const nextImage = () => {
-    setSelectedImageIndex((prev) => (prev + 1) % images.length);
+    setSelectedImageIndex((prev) => (prev + 1) % enhancedImages.length);
   };
 
   const prevImage = () => {
-    setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    setSelectedImageIndex((prev) => (prev - 1 + enhancedImages.length) % enhancedImages.length);
   };
 
   return (
@@ -177,16 +195,16 @@ const ProductDetail = () => {
 
               {/* Main Carousel Image */}
               <div className="relative aspect-video rounded-xl overflow-hidden bg-secondary/20 group">
-                {images[selectedImageIndex]?.node && (
+                {enhancedImages[selectedImageIndex]?.node && (
                   <img
-                    src={images[selectedImageIndex].node.url}
+                    src={enhancedImages[selectedImageIndex].node.url}
                     alt={`${product.node.title} ${selectedImageIndex + 1}`}
                     className="w-full h-full object-cover"
                   />
                 )}
 
                 {/* Navigation Arrows */}
-                {images.length > 1 && (
+                {enhancedImages.length > 1 && (
                   <>
                     <button
                       onClick={prevImage}
@@ -207,9 +225,9 @@ const ProductDetail = () => {
               </div>
 
               {/* Dot Indicators */}
-              {images.length > 1 && (
+              {enhancedImages.length > 1 && (
                 <div className="flex justify-center gap-2 mt-4">
-                  {images.map((_, index) => (
+                  {enhancedImages.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImageIndex(index)}
@@ -231,7 +249,7 @@ const ProductDetail = () => {
                 onClick={() => setSelectedImageIndex(0)}
               >
                 <ImageIcon className="w-4 h-4 mr-2" />
-                Посмотреть все {images.length} фото
+                Посмотреть все {enhancedImages.length} фото
               </Button>
             </div>
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { storefrontApiRequest, type ShopifyProduct } from "@/lib/shopify";
-import { Loader2, ArrowLeft, ShoppingCart, Star, Clock, Users, Calendar, Car, MessageCircle, Check, X, MapPin, Utensils, Waves, Camera } from "lucide-react";
+import { Loader2, ArrowLeft, ShoppingCart, Star, Clock, Users, Calendar, Car, MessageCircle, Check, X, MapPin, Utensils, Waves, Camera, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCartStore } from "@/stores/cartStore";
@@ -130,6 +130,14 @@ const ProductDetail = () => {
   const isHit = tags.includes('хит') || tags.includes('ХИТ') || tags.includes('популярное');
   const category = product.node.productType;
 
+  const nextImage = () => {
+    setSelectedImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setSelectedImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
@@ -145,7 +153,7 @@ const ProductDetail = () => {
         <div className="grid lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Image Gallery */}
+            {/* Image Gallery - Full Width Carousel */}
             <div className="glass-card p-4 mb-6 relative">
               {/* Badges */}
               <div className="absolute top-7 left-7 z-10 flex gap-2">
@@ -167,56 +175,64 @@ const ProductDetail = () => {
                 <span className="text-sm font-semibold">4.8</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                {/* Main Image */}
-                <div className="col-span-2 lg:col-span-1 aspect-[4/3] rounded-xl overflow-hidden bg-secondary/20 relative group">
-                  {images[selectedImageIndex]?.node && (
-                    <img
-                      src={images[selectedImageIndex].node.url}
-                      alt={product.node.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  )}
-                </div>
+              {/* Main Carousel Image */}
+              <div className="relative aspect-video rounded-xl overflow-hidden bg-secondary/20 group">
+                {images[selectedImageIndex]?.node && (
+                  <img
+                    src={images[selectedImageIndex].node.url}
+                    alt={`${product.node.title} ${selectedImageIndex + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                )}
 
-                {/* Thumbnail Gallery */}
-                <div className="col-span-2 lg:col-span-1 grid grid-cols-2 gap-3">
-                  {images.slice(1, 4).map((image, index) => (
+                {/* Navigation Arrows */}
+                {images.length > 1 && (
+                  <>
                     <button
-                      key={index}
-                      onClick={() => setSelectedImageIndex(index + 1)}
-                      className="aspect-[4/3] rounded-xl overflow-hidden bg-secondary/20 relative hover:ring-2 hover:ring-primary transition-all"
+                      onClick={prevImage}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/90 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background shadow-lg"
+                      aria-label="Previous image"
                     >
-                      <img
-                        src={image.node.url}
-                        alt={`${product.node.title} ${index + 2}`}
-                        className="w-full h-full object-cover"
-                      />
+                      <ChevronLeft className="w-6 h-6" />
                     </button>
-                  ))}
-                  
-                  {images.length > 4 && (
                     <button
-                      onClick={() => setSelectedImageIndex(0)}
-                      className="aspect-[4/3] rounded-xl overflow-hidden bg-secondary/20 relative hover:ring-2 hover:ring-primary transition-all"
+                      onClick={nextImage}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/90 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background shadow-lg"
+                      aria-label="Next image"
                     >
-                      <div className="w-full h-full bg-muted/80 backdrop-blur-sm flex items-center justify-center">
-                        <span className="text-2xl font-bold text-foreground">
-                          +{images.length - 4}
-                        </span>
-                      </div>
+                      <ChevronRight className="w-6 h-6" />
                     </button>
-                  )}
-                </div>
+                  </>
+                )}
               </div>
 
-              {/* All Photos Link */}
-              <button 
+              {/* Dot Indicators */}
+              {images.length > 1 && (
+                <div className="flex justify-center gap-2 mt-4">
+                  {images.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImageIndex(index)}
+                      className={`h-2 rounded-full transition-all ${
+                        index === selectedImageIndex 
+                          ? 'w-8 bg-foreground' 
+                          : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                      }`}
+                      aria-label={`Go to image ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* View All Photos Button */}
+              <Button
+                variant="outline"
+                className="w-full mt-4"
                 onClick={() => setSelectedImageIndex(0)}
-                className="mt-4 text-sm text-muted-foreground hover:text-primary transition-colors flex items-center"
               >
-                🖼️ Все {images.length} фото
-              </button>
+                <ImageIcon className="w-4 h-4 mr-2" />
+                Посмотреть все {images.length} фото
+              </Button>
             </div>
 
             {/* Product Info */}

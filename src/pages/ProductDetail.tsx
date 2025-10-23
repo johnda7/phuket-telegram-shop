@@ -32,7 +32,7 @@ const PRODUCT_QUERY = `
           currencyCode
         }
       }
-      images(first: 5) {
+      images(first: 50) {
         edges {
           node {
             url

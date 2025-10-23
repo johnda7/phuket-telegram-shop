@@ -1,17 +1,35 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { fetchProducts, fetchProductByHandle, type ShopifyProduct } from "@/lib/shopify";
-import { getPlaceByHandle, getRelatedPlaces, type Place } from "@/data/places";
 import { Loader2, MapPin, Star, ChevronLeft, ChevronRight, ExternalLink, MessageCircle, ChevronRight as ChevronRightIcon, Clock, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductCard } from "@/components/ProductCard";
 import { useMetaTags } from "@/hooks/useMetaTags";
 
+interface ParsedPlace {
+  id: string;
+  handle: string;
+  title: string;
+  description: string;
+  category: string;
+  district?: string;
+  images: string[];
+  tags: string[];
+  rating: number;
+  reviewsCount: number;
+  priceLevel: number;
+  duration?: string;
+  bestTime?: string;
+  amenities?: string[];
+  tips?: string[];
+  mapUrl?: string;
+  relatedTours: string[];
+}
+
 const PlaceDetail = () => {
   const { handle } = useParams<{ handle: string }>();
-  const [place, setPlace] = useState<Place | null>(null);
-  const [relatedPlaces, setRelatedPlaces] = useState<Place[]>([]);
+  const [place, setPlace] = useState<ParsedPlace | null>(null);
   const [relatedTours, setRelatedTours] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,53 +42,75 @@ const PlaceDetail = () => {
       try {
         setLoading(true);
         
-        // Сначала пробуем загрузить из локальной базы
-        let placeData = getPlaceByHandle(handle);
+        // Загружаем место из Shopify
+        const shopifyProduct = await fetchProductByHandle(handle);
         
-        // Если не найдено локально, пробуем загрузить из Shopify
-        if (!placeData) {
-          try {
-            const shopifyProduct = await fetchProductByHandle(handle);
-            if (shopifyProduct?.node) {
-              const product = shopifyProduct.node;
-              // Конвертируем Shopify продукт в Place
-              placeData = {
-                id: product.id,
-                handle: product.handle,
-                title: product.title,
-                description: product.description,
-                category: product.tags.includes('category:beaches') ? 'beaches' as const : 
-                         product.tags.includes('category:temples') ? 'temples' as const : 
-                         'attractions' as const,
-                images: product.images.edges.map(img => img.node.url),
-                tags: product.tags,
-                rating: 4.5,
-                reviewsCount: 100,
-                priceLevel: 2 as const,
-              };
-            }
-          } catch (err) {
-            console.error('Error loading from Shopify:', err);
-          }
-        }
-        
-        if (!placeData) {
+        if (!shopifyProduct?.node) {
           setError('Место не найдено');
           setLoading(false);
           return;
         }
+
+        const product = shopifyProduct.node;
+        
+        // Парсим метафилды
+        const getMetafield = (key: string) => {
+          return product.metafields?.find(m => m.key === key)?.value;
+        };
+
+        const parseJSON = (value: string | undefined) => {
+          try {
+            return value ? JSON.parse(value) : undefined;
+          } catch {
+            return undefined;
+          }
+        };
+
+        // Парсим категорию из тегов
+        const categoryTag = product.tags.find(t => t.startsWith('category:'));
+        const category = categoryTag?.replace('category:', '') || '';
+        
+        // Парсим район
+        const districtTag = product.tags.find(t => t.startsWith('district:'));
+        const district = districtTag?.replace('district:', '');
+        
+        // Парсим price level
+        const priceLevelTag = product.tags.find(t => t.startsWith('price-level:'));
+        const priceLevel = priceLevelTag ? parseInt(priceLevelTag.replace('price-level:', '')) : 2;
+        
+        // Связанные туры
+        const relatedTourHandles = product.tags
+          .filter(t => t.startsWith('related-tour:'))
+          .map(t => t.replace('related-tour:', ''));
+
+        // Конвертируем в ParsedPlace
+        const placeData: ParsedPlace = {
+          id: product.id,
+          handle: product.handle,
+          title: product.title,
+          description: product.description,
+          category,
+          district,
+          images: product.images.edges.map(img => img.node.url),
+          tags: product.tags,
+          rating: parseFloat(getMetafield('rating') || '4.5'),
+          reviewsCount: parseInt(getMetafield('reviews_count') || '100'),
+          priceLevel,
+          duration: getMetafield('duration'),
+          bestTime: getMetafield('best_time'),
+          amenities: parseJSON(getMetafield('amenities')),
+          tips: parseJSON(getMetafield('tips')),
+          mapUrl: getMetafield('map_url'),
+          relatedTours: relatedTourHandles,
+        };
         
         setPlace(placeData);
         
-        // Загружаем связанные места
-        const related = getRelatedPlaces(handle, 3);
-        setRelatedPlaces(related);
-        
-        // Загружаем связанные туры из Shopify
-        if (placeData.relatedTours && placeData.relatedTours.length > 0) {
+        // Загружаем связанные туры
+        if (relatedTourHandles.length > 0) {
           const allProducts = await fetchProducts(50);
           const tours = allProducts.filter(p => 
-            placeData.relatedTours!.includes(p.node.handle)
+            relatedTourHandles.includes(p.node.handle)
           );
           setRelatedTours(tours.slice(0, 2));
         }
@@ -116,9 +156,9 @@ const PlaceDetail = () => {
 
   const images = place.images;
   const district = place.district || 'Пхукет';
-  const rating = place.rating || 4.5;
-  const reviewsCount = place.reviewsCount || 100;
-  const priceLevel = place.priceLevel || 2;
+  const rating = place.rating;
+  const reviewsCount = place.reviewsCount;
+  const priceLevel = place.priceLevel;
   
   const nextImage = () => {
     setSelectedImageIndex((prev) => (prev + 1) % images.length);
@@ -131,8 +171,6 @@ const PlaceDetail = () => {
   const openMaps = () => {
     if (place.mapUrl) {
       window.open(place.mapUrl, '_blank');
-    } else if (place.coordinates) {
-      window.open(`https://www.google.com/maps?q=${place.coordinates.lat},${place.coordinates.lng}`, '_blank');
     }
   };
 
@@ -217,15 +255,17 @@ const PlaceDetail = () => {
             </div>
 
             {/* Google Maps Link */}
-            <Button
-              onClick={openMaps}
-              variant="outline"
-              className="mb-6 gap-2"
-            >
-              <MapPin className="w-4 h-4" />
-              Гео: Открыть на карте
-              <ExternalLink className="w-4 h-4" />
-            </Button>
+            {place.mapUrl && (
+              <Button
+                onClick={openMaps}
+                variant="outline"
+                className="mb-6 gap-2"
+              >
+                <MapPin className="w-4 h-4" />
+                Гео: Открыть на карте
+                <ExternalLink className="w-4 h-4" />
+              </Button>
+            )}
 
             {/* Image Gallery */}
             {images.length > 0 && (
@@ -348,42 +388,6 @@ const PlaceDetail = () => {
                 ОТКРЫТЬ ТЕЛЕГРАМ БОТ
               </Button>
             </div>
-
-            {/* Related Places */}
-            {relatedPlaces.length > 0 && (
-              <div className="glass-card p-6">
-                <h3 className="text-lg font-bold mb-4">
-                  Лучшие места на пляже {district}
-                </h3>
-                <div className="space-y-4">
-                  {relatedPlaces.map((relPlace) => (
-                    <Link
-                      key={relPlace.id}
-                      to={`/place/${relPlace.handle}`}
-                      className="flex gap-3 group"
-                    >
-                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                        {relPlace.images[0] && (
-                          <img
-                            src={relPlace.images[0]}
-                            alt={relPlace.title}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                          />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold line-clamp-1 group-hover:text-primary transition-colors">
-                          {relPlace.title}
-                        </h4>
-                        <p className="text-xs text-muted-foreground line-clamp-2">
-                          {relPlace.description.substring(0, 80)}...
-                        </p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

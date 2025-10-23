@@ -47,6 +47,12 @@ export interface ShopifyProduct {
       name: string;
       values: string[];
     }>;
+    metafields?: Array<{
+      namespace: string;
+      key: string;
+      value: string;
+      type: string;
+    }>;
   };
 }
 
@@ -145,6 +151,21 @@ const PRODUCT_BY_HANDLE_QUERY = `
       options {
         name
         values
+      }
+      metafields(identifiers: [
+        {namespace: "place_info", key: "coordinates"},
+        {namespace: "place_info", key: "rating"},
+        {namespace: "place_info", key: "reviews_count"},
+        {namespace: "place_info", key: "duration"},
+        {namespace: "place_info", key: "best_time"},
+        {namespace: "place_info", key: "amenities"},
+        {namespace: "place_info", key: "tips"},
+        {namespace: "place_info", key: "map_url"}
+      ]) {
+        namespace
+        key
+        value
+        type
       }
     }
   }

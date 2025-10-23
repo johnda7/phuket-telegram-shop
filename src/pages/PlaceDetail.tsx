@@ -45,14 +45,20 @@ const PlaceDetail = () => {
         // Загружаем ВСЕ продукты из Shopify (т.к. handle с кириллицей не работает в query)
         const allProducts = await fetchProducts(100);
         
+        console.log('Looking for handle:', handle);
+        console.log('Available handles:', allProducts.map(p => p.node.handle));
+        
         // Ищем нужный продукт по handle
         const foundProduct = allProducts.find(p => p.node.handle === handle);
         
         if (!foundProduct) {
-          setError('Место не найдено');
+          console.error('Product not found for handle:', handle);
+          setError(`Место не найдено: ${handle}`);
           setLoading(false);
           return;
         }
+        
+        console.log('Found product:', foundProduct.node.title);
 
         const product = foundProduct.node;
         

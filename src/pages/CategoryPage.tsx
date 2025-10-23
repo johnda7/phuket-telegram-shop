@@ -395,6 +395,447 @@ const categoryData: Record<string, { title: string; description: string; places:
         handle: "loy-krathong"
       }
     ]
+  },
+  
+  // Массажи и СПА
+  spa: {
+    title: "Лучшие СПА",
+    description: "Премиальные СПА-центры Пхукета с мировым именем",
+    places: [
+      {
+        id: "1",
+        title: "Banyan Tree Spa Phuket",
+        description: "Легендарный СПА в тропическом саду с отдельными павильонами. Signature массажи, spa-ритуалы и аюрведа.",
+        image: "/placeholder.svg",
+        rating: 4.9,
+        distance: "Лагуна Банг Тао",
+        duration: "2-4 часа",
+        tags: ["Премиум", "Павильоны", "Аюрведа"],
+        handle: "banyan-tree-spa"
+      },
+      {
+        id: "2",
+        title: "Oasis Spa Phuket",
+        description: "Тропический оазис с балийским дизайном. Травяные ванны, тайский массаж и уходовые процедуры.",
+        image: "/placeholder.svg",
+        rating: 4.8,
+        distance: "Камала",
+        duration: "2-3 часа",
+        tags: ["Балийский стиль", "Травяные ванны", "Романтика"],
+        handle: "oasis-spa"
+      }
+    ]
+  },
+  
+  massage: {
+    title: "Массажные салоны",
+    description: "Традиционный тайский массаж по районам Пхукета",
+    places: [
+      {
+        id: "1",
+        title: "Let's Relax Spa (сеть)",
+        description: "Популярная сеть массажных салонов с хорошим соотношением цена-качество. Тайский, масляный, ароматический массаж.",
+        image: "/placeholder.svg",
+        rating: 4.6,
+        distance: "Патонг, Карон, Ката",
+        duration: "1-2 часа",
+        tags: ["Сеть", "Доступно", "Качественно"],
+        handle: "lets-relax"
+      },
+      {
+        id: "2",
+        title: "Oriental Massage Patong",
+        description: "Массажный салон в центре Патонга с опытными мастерами. Foot massage, Thai massage, oil massage.",
+        image: "/placeholder.svg",
+        rating: 4.5,
+        distance: "Патонг",
+        duration: "1-2 часа",
+        tags: ["Центр Патонга", "Опытные", "Недорого"],
+        handle: "oriental-massage"
+      }
+    ]
+  },
+  
+  sauna: {
+    title: "Бани и сауны",
+    description: "Традиционные бани, сауны и хаммамы",
+    places: [
+      {
+        id: "1",
+        title: "Banya Hot Springs Phuket",
+        description: "Русская баня на Пхукете с горячими источниками. Парилка, бассейн, массаж и ресторан русской кухни.",
+        image: "/placeholder.svg",
+        rating: 4.4,
+        distance: "Чалонг",
+        duration: "2-3 часа",
+        tags: ["Русская баня", "Источники", "Русская кухня"],
+        handle: "banya-hot-springs"
+      }
+    ]
+  },
+  
+  // Кафе и рестораны
+  "restaurants-districts": {
+    title: "Рестораны по районам",
+    description: "Лучшие рестораны в каждом районе Пхукета",
+    places: [
+      {
+        id: "1",
+        title: "Baan Rim Pa (Патонг)",
+        description: "Легендарный тайский ресторан на скале с видом на залив Патонг. Королевская тайская кухня и романтическая атмосфера.",
+        image: "/placeholder.svg",
+        rating: 4.7,
+        distance: "Патонг",
+        duration: "Ужин",
+        tags: ["Вид на море", "Тайская кухня", "Романтика"],
+        handle: "baan-rim-pa"
+      },
+      {
+        id: "2",
+        title: "Mor Mu Dong (Пхукет Таун)",
+        description: "Популярный местный ресторан в старом городе. Северо-тайская кухня, свиные ребрышки и аутентичная атмосфера.",
+        image: "/placeholder.svg",
+        rating: 4.6,
+        distance: "Пхукет Таун",
+        duration: "Обед/Ужин",
+        tags: ["Местное", "Недорого", "Аутентично"],
+        handle: "mor-mu-dong"
+      }
+    ]
+  },
+  
+  "restaurants-view": {
+    title: "Видовые рестораны",
+    description: "Рестораны с панорамным видом на море и острова",
+    places: [
+      {
+        id: "1",
+        title: "360° Bar at The Nai Harn",
+        description: "Бар на крыше с видом 360° на залив Най Харн. Коктейли на закате и средиземноморская кухня.",
+        image: "/placeholder.svg",
+        rating: 4.8,
+        distance: "Най Харн",
+        duration: "Закат",
+        tags: ["Вид 360°", "Коктейли", "Закат"],
+        handle: "360-bar-nai-harn"
+      },
+      {
+        id: "2",
+        title: "Black Ginger at The Slate",
+        description: "Ресторан на плоту посреди озера. Тайская кухня, романтическая атмосфера и трансфер на лодке.",
+        image: "/placeholder.svg",
+        rating: 4.7,
+        distance: "Най Янг",
+        duration: "Ужин",
+        tags: ["На воде", "Романтика", "Уникально"],
+        handle: "black-ginger"
+      }
+    ]
+  },
+  
+  "restaurants-instagram": {
+    title: "Инстаграмные кафе",
+    description: "Красивые места для фото и вкусной еды",
+    places: [
+      {
+        id: "1",
+        title: "The Coffee Tribe",
+        description: "Хипстерская кофейня с минималистичным дизайном. Specialty coffee, бранчи и растительное молоко.",
+        image: "/placeholder.svg",
+        rating: 4.6,
+        distance: "Чалонг",
+        duration: "Завтрак/Бранч",
+        tags: ["Кофе", "Инстаграм", "Бранч"],
+        handle: "coffee-tribe"
+      },
+      {
+        id: "2",
+        title: "Torry's Ice Cream",
+        description: "Яркое кафе-мороженое с тропическим декором. Домашнее мороженое, смузи-боулы и фото-зоны.",
+        image: "/placeholder.svg",
+        rating: 4.5,
+        distance: "Раваи",
+        duration: "Десерт",
+        tags: ["Мороженое", "Яркое", "Фото"],
+        handle: "torrys-ice-cream"
+      }
+    ]
+  },
+  
+  "restaurants-best": {
+    title: "Лучшие рестораны",
+    description: "Топовые заведения острова с мишленовским уровнем",
+    places: [
+      {
+        id: "1",
+        title: "PRU Restaurant",
+        description: "Ресторан farm-to-table с мишленовской звездой. Сезонное меню из продуктов собственной фермы.",
+        image: "/placeholder.svg",
+        rating: 4.9,
+        distance: "Тхаланг",
+        duration: "Ужин",
+        tags: ["Мишлен", "Farm-to-table", "Премиум"],
+        handle: "pru-restaurant"
+      }
+    ]
+  },
+  
+  "restaurants-romantic": {
+    title: "Романтичные рестораны",
+    description: "Идеальные места для романтических ужинов",
+    places: [
+      {
+        id: "1",
+        title: "La Gritta at Amari Phuket",
+        description: "Итальянский ресторан на пляже Патонг. Столики на песке, свечи, живая музыка и морепродукты.",
+        image: "/placeholder.svg",
+        rating: 4.7,
+        distance: "Патонг",
+        duration: "Ужин",
+        tags: ["На пляже", "Итальянская", "Свечи"],
+        handle: "la-gritta"
+      }
+    ]
+  },
+  
+  coffee: {
+    title: "Кофейни",
+    description: "Лучший specialty coffee на Пхукете",
+    places: [
+      {
+        id: "1",
+        title: "Cafe del Mar Phuket",
+        description: "Пляжный клуб с кафе на Камала Бич. Кофе, завтраки, обеды и sunset session с диджеем.",
+        image: "/placeholder.svg",
+        rating: 4.6,
+        distance: "Камала",
+        duration: "Весь день",
+        tags: ["Пляж", "Музыка", "Закат"],
+        handle: "cafe-del-mar"
+      },
+      {
+        id: "2",
+        title: "Gallery Cafe by Pinky",
+        description: "Уютная кофейня-галерея в старом городе. Авторский кофе, десерты и арт-выставки.",
+        image: "/placeholder.svg",
+        rating: 4.5,
+        distance: "Старый город",
+        duration: "Кофе",
+        tags: ["Арт", "Уютно", "Десерты"],
+        handle: "gallery-cafe"
+      }
+    ]
+  },
+  
+  "restaurants-kids": {
+    title: "С детской комнатой",
+    description: "Рестораны с игровыми зонами для детей",
+    places: [
+      {
+        id: "1",
+        title: "The Kids Club Cafe",
+        description: "Кафе с большой детской комнатой, игрушками и аниматорами. Детское меню и Wi-Fi для родителей.",
+        image: "/placeholder.svg",
+        rating: 4.4,
+        distance: "Чалонг",
+        duration: "2-3 часа",
+        tags: ["Детская комната", "Аниматоры", "Семейное"],
+        handle: "kids-club-cafe"
+      }
+    ]
+  },
+  
+  // Отдых и развлечения
+  fishing: {
+    title: "Рыбалка",
+    description: "Морская и озерная рыбалка на Пхукете",
+    places: [
+      {
+        id: "1",
+        title: "Deep Sea Fishing Phuket",
+        description: "Морская рыбалка на яхте. Ловля тунца, барракуды и марлина. Оборудование и егерь включены.",
+        image: "/placeholder.svg",
+        rating: 4.7,
+        distance: "Чалонг Пирс",
+        duration: "Полдня/Весь день",
+        tags: ["Морская", "Яхта", "Крупная рыба"],
+        handle: "deep-sea-fishing"
+      },
+      {
+        id: "2",
+        title: "Phuket Fishing Park",
+        description: "Платный пруд для рыбалки с гарантированным уловом. Карп, сом, барракуда. Аренда снастей на месте.",
+        image: "/placeholder.svg",
+        rating: 4.4,
+        distance: "Чалонг",
+        duration: "2-4 часа",
+        tags: ["Озеро", "Для начинающих", "Гарантия улова"],
+        handle: "fishing-park"
+      }
+    ]
+  },
+  
+  diving: {
+    title: "Дайвинг",
+    description: "Дайв-центры и места для снорклинга",
+    places: [
+      {
+        id: "1",
+        title: "Sea Bees Diving Phuket",
+        description: "Профессиональный дайв-центр с PADI-курсами. Дайвинг к островам Пхи-Пхи, Симиланам и Рача Яй.",
+        image: "/placeholder.svg",
+        rating: 4.8,
+        distance: "Чалонг",
+        duration: "Полдня/Весь день",
+        tags: ["PADI", "Острова", "Профи"],
+        handle: "sea-bees-diving"
+      },
+      {
+        id: "2",
+        title: "Coral Island Snorkeling",
+        description: "Снорклинг у острова Корал (Хей). Прозрачная вода, коралловые рифы и тропические рыбы.",
+        image: "/placeholder.svg",
+        rating: 4.6,
+        distance: "15 минут на лодке",
+        duration: "Полдня",
+        tags: ["Снорклинг", "Близко", "Кораллы"],
+        handle: "coral-snorkeling"
+      }
+    ]
+  },
+  
+  yacht: {
+    title: "Аренда яхт",
+    description: "Яхты и катера напрокат для морских прогулок",
+    places: [
+      {
+        id: "1",
+        title: "Phuket Yacht Charter",
+        description: "Аренда парусных и моторных яхт на день или несколько дней. С капитаном, питанием и снорклинг-оборудованием.",
+        image: "/placeholder.svg",
+        rating: 4.7,
+        distance: "Чалонг/Ао По",
+        duration: "От 4 часов",
+        tags: ["Яхта", "Капитан", "Острова"],
+        handle: "yacht-charter"
+      },
+      {
+        id: "2",
+        title: "Speedboat Rental Phuket",
+        description: "Аренда скоростного катера для поездок к островам. Пхи-Пхи, Джеймс Бонд, Рача Яй - на выбор.",
+        image: "/placeholder.svg",
+        rating: 4.6,
+        distance: "Чалонг Пирс",
+        duration: "Весь день",
+        tags: ["Быстро", "Острова", "Приватно"],
+        handle: "speedboat-rental"
+      }
+    ]
+  },
+  
+  zoos: {
+    title: "Зоопарки",
+    description: "Контактные зоопарки и фермы с животными",
+    places: [
+      {
+        id: "1",
+        title: "Phuket Zoo",
+        description: "Зоопарк с крокодилами, тиграми, слонами и экзотическими птицами. Шоу животных и кормление.",
+        image: "/placeholder.svg",
+        rating: 4.3,
+        distance: "Чалонг",
+        duration: "2-3 часа",
+        tags: ["Животные", "Шоу", "Для детей"],
+        handle: "phuket-zoo"
+      },
+      {
+        id: "2",
+        title: "Phuket Sheep Farm",
+        description: "Ферма с овцами, кроликами и альпаками. Кормление животных, детская площадка и кафе с видом.",
+        image: "/placeholder.svg",
+        rating: 4.5,
+        distance: "Катху",
+        duration: "1-2 часа",
+        tags: ["Ферма", "Овцы", "Фото"],
+        handle: "sheep-farm"
+      }
+    ]
+  },
+  
+  gaming: {
+    title: "Компьютерные клубы",
+    description: "Gaming-зоны с PlayStation, Xbox и PC",
+    places: [
+      {
+        id: "1",
+        title: "Cyber Gaming Lounge Patong",
+        description: "Современный киберклуб с мощными ПК, PlayStation 5 и Xbox. VR-зона и турниры.",
+        image: "/placeholder.svg",
+        rating: 4.4,
+        distance: "Патонг",
+        duration: "По часам",
+        tags: ["PC Gaming", "PS5", "VR"],
+        handle: "cyber-gaming"
+      }
+    ]
+  },
+  
+  biking: {
+    title: "Аренда байков",
+    description: "Прокат мотобайков и велосипедов",
+    places: [
+      {
+        id: "1",
+        title: "Patong Bike Rental",
+        description: "Прокат скутеров и мотобайков в Патонге. Honda PCX, Yamaha Aerox от 200 бат/день. Доставка к отелю.",
+        image: "/placeholder.svg",
+        rating: 4.5,
+        distance: "Патонг",
+        duration: "От 1 дня",
+        tags: ["Скутеры", "Недорого", "Доставка"],
+        handle: "patong-bike"
+      },
+      {
+        id: "2",
+        title: "Phuket E-Bike Tours",
+        description: "Прокат электровелосипедов и велотуры по острову. Групповые туры в старый город и на viewpoints.",
+        image: "/placeholder.svg",
+        rating: 4.6,
+        distance: "Пхукет Таун",
+        duration: "2-4 часа",
+        tags: ["Велосипеды", "Туры", "Эко"],
+        handle: "ebike-tours"
+      }
+    ]
+  },
+  
+  parties: {
+    title: "Ночная жизнь",
+    description: "Клубы, бары и вечеринки на Пхукете",
+    places: [
+      {
+        id: "1",
+        title: "Illuzion Nightclub Patong",
+        description: "Крупнейший ночной клуб Пхукета. 4 танцпола, лазерное шоу, известные диджеи и go-go dancers.",
+        image: "/placeholder.svg",
+        rating: 4.5,
+        distance: "Патонг",
+        duration: "Ночь",
+        tags: ["Клуб", "Танцы", "Шоу"],
+        handle: "illuzion"
+      },
+      {
+        id: "2",
+        title: "Catch Beach Club",
+        description: "Пляжный клуб на Банг Тао с бассейном. Дневные вечеринки, sunset session и ночная музыка.",
+        image: "/placeholder.svg",
+        rating: 4.7,
+        distance: "Банг Тао",
+        duration: "День/Вечер",
+        tags: ["Пляжный клуб", "Бассейн", "Закат"],
+        handle: "catch-beach-club"
+      }
+    ]
   }
 };
 

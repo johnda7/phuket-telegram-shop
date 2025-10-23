@@ -14,7 +14,21 @@ import {
   Moon,
   Footprints,
   ShoppingBag,
-  Calendar
+  Calendar,
+  Sparkles,
+  Home,
+  UtensilsCrossed,
+  Coffee,
+  Ship,
+  Fish,
+  Bike,
+  Zap,
+  Baby,
+  Heart,
+  Eye,
+  Camera,
+  PartyPopper,
+  Flame
 } from "lucide-react";
 
 interface Category {
@@ -28,6 +42,7 @@ interface Category {
 }
 
 const categories: Category[] = [
+  // Что посетить
   {
     id: "beaches",
     label: "Пляжи",
@@ -144,6 +159,165 @@ const categories: Category[] = [
     image: "/placeholder.svg",
     path: "/category/events",
     color: "from-orange-500 to-red-500"
+  },
+  
+  // Массажи и СПА
+  {
+    id: "spa",
+    label: "Лучшие СПА",
+    icon: Sparkles,
+    description: "Премиальные СПА-центры Пхукета",
+    image: "/placeholder.svg",
+    path: "/category/spa",
+    color: "from-pink-400 to-purple-400"
+  },
+  {
+    id: "massage",
+    label: "Массажные салоны",
+    icon: Heart,
+    description: "Тайский массаж по районам",
+    image: "/placeholder.svg",
+    path: "/category/massage",
+    color: "from-rose-400 to-pink-400"
+  },
+  {
+    id: "sauna",
+    label: "Бани и сауны",
+    icon: Flame,
+    description: "Традиционные бани и сауны",
+    image: "/placeholder.svg",
+    path: "/category/sauna",
+    color: "from-orange-400 to-red-400"
+  },
+  
+  // Кафе и рестораны
+  {
+    id: "restaurants-districts",
+    label: "Рестораны по районам",
+    icon: UtensilsCrossed,
+    description: "Лучшие рестораны в каждом районе",
+    image: "/placeholder.svg",
+    path: "/category/restaurants-districts",
+    color: "from-emerald-500 to-green-500"
+  },
+  {
+    id: "restaurants-view",
+    label: "Видовые рестораны",
+    icon: Eye,
+    description: "Рестораны с панорамным видом",
+    image: "/placeholder.svg",
+    path: "/category/restaurants-view",
+    color: "from-sky-500 to-blue-500"
+  },
+  {
+    id: "restaurants-instagram",
+    label: "Инстаграмные кафе",
+    icon: Camera,
+    description: "Красивые места для фото",
+    image: "/placeholder.svg",
+    path: "/category/restaurants-instagram",
+    color: "from-fuchsia-500 to-pink-500"
+  },
+  {
+    id: "restaurants-best",
+    label: "Лучшие рестораны",
+    icon: Sparkles,
+    description: "Топовые заведения острова",
+    image: "/placeholder.svg",
+    path: "/category/restaurants-best",
+    color: "from-yellow-400 to-orange-400"
+  },
+  {
+    id: "restaurants-romantic",
+    label: "Романтичные рестораны",
+    icon: Heart,
+    description: "Для романтических ужинов",
+    image: "/placeholder.svg",
+    path: "/category/restaurants-romantic",
+    color: "from-rose-500 to-red-500"
+  },
+  {
+    id: "coffee",
+    label: "Кофейни",
+    icon: Coffee,
+    description: "Лучший кофе на Пхукете",
+    image: "/placeholder.svg",
+    path: "/category/coffee",
+    color: "from-amber-600 to-brown-600"
+  },
+  {
+    id: "restaurants-kids",
+    label: "С детской комнатой",
+    icon: Baby,
+    description: "Рестораны с детскими зонами",
+    image: "/placeholder.svg",
+    path: "/category/restaurants-kids",
+    color: "from-cyan-400 to-blue-400"
+  },
+  
+  // Отдых и развлечения
+  {
+    id: "fishing",
+    label: "Рыбалка",
+    icon: Fish,
+    description: "Морская и озерная рыбалка",
+    image: "/placeholder.svg",
+    path: "/category/fishing",
+    color: "from-blue-600 to-cyan-600"
+  },
+  {
+    id: "diving",
+    label: "Дайвинг",
+    icon: Droplets,
+    description: "Дайв-центры и снорклинг",
+    image: "/placeholder.svg",
+    path: "/category/diving",
+    color: "from-teal-600 to-blue-600"
+  },
+  {
+    id: "yacht",
+    label: "Аренда яхт",
+    icon: Ship,
+    description: "Яхты и катера напрокат",
+    image: "/placeholder.svg",
+    path: "/category/yacht",
+    color: "from-indigo-500 to-purple-500"
+  },
+  {
+    id: "zoos",
+    label: "Зоопарки",
+    icon: TreePalm,
+    description: "Контактные зоопарки и фермы",
+    image: "/placeholder.svg",
+    path: "/category/zoos",
+    color: "from-green-600 to-emerald-600"
+  },
+  {
+    id: "gaming",
+    label: "Компьютерные клубы",
+    icon: Zap,
+    description: "Gaming-зоны и киберспорт",
+    image: "/placeholder.svg",
+    path: "/category/gaming",
+    color: "from-violet-600 to-purple-600"
+  },
+  {
+    id: "biking",
+    label: "Аренда байков",
+    icon: Bike,
+    description: "Прокат мотобайков и велосипедов",
+    image: "/placeholder.svg",
+    path: "/category/biking",
+    color: "from-orange-600 to-red-600"
+  },
+  {
+    id: "parties",
+    label: "Ночная жизнь",
+    icon: PartyPopper,
+    description: "Клубы, бары и вечеринки",
+    image: "/placeholder.svg",
+    path: "/category/parties",
+    color: "from-purple-600 to-pink-600"
   }
 ];
 

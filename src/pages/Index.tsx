@@ -193,7 +193,7 @@ const Index = () => {
               <CardContent className="p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Info className="w-5 h-5 text-primary" />
-                  <span className="font-medium text-sm">ℹ️ Инсайдер</span>
+                  <span className="font-medium text-sm">ℹ️ Полезная информация</span>
                 </div>
                 <span className="text-muted-foreground">→</span>
               </CardContent>

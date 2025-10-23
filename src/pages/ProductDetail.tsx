@@ -10,6 +10,7 @@ import { AIConsiergeWidget } from "@/components/AIConsiergeWidget";
 import { BookingDialog } from "@/components/BookingDialog";
 import { TourMap } from "@/components/TourMap";
 import { useMetaTags } from "@/hooks/useMetaTags";
+import { RelatedTours } from "@/components/RelatedTours";
 
 // Import additional images for demo
 import phiPhiMayaBay from "@/assets/phi-phi-maya-bay.jpg";
@@ -618,6 +619,15 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Related Tours Section */}
+      <div className="container mx-auto px-4 mb-12">
+        <RelatedTours 
+          currentProductId={product.node.id}
+          currentTags={product.node.tags}
+          limit={3}
+        />
       </div>
 
       {/* Booking Dialog */}

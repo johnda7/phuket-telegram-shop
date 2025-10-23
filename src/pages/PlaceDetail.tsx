@@ -462,7 +462,7 @@ const PlaceDetail = () => {
               <div className="w-24 h-24 mx-auto mb-4 bg-[#0088cc] rounded-full flex items-center justify-center">
                 <MessageCircle className="w-12 h-12 text-white" />
               </div>
-              <h3 className="text-xl font-bold mb-2">Телеграм бот Инсайдера</h3>
+              <h3 className="text-xl font-bold mb-2">Телеграм бот PhuketDa</h3>
               <p className="text-sm text-muted-foreground mb-4">
                 Собрали лучшие места и локации Пхукета. Запускай, чтобы иметь под рукой лучший гид.
               </p>

@@ -31,6 +31,28 @@ const categoryData: Record<string, { title: string; description: string; places:
         duration: "Полдня",
         tags: ["Этичное общение", "Кормление", "Купание"],
         handle: "phuket-elephant-sanctuary"
+      },
+      {
+        id: "2",
+        title: "Elephant Retirement Park Phuket",
+        description: "Дом для пожилых слонов, спасенных из туристической индустрии. Можно кормить, гулять и купаться со слонами в их естественной среде.",
+        image: "/placeholder.svg",
+        rating: 4.8,
+        distance: "30 км от Патонга",
+        duration: "3-4 часа",
+        tags: ["Этичный туризм", "Фотографии", "Природа"],
+        handle: "elephant-retirement-park"
+      },
+      {
+        id: "3",
+        title: "Phang Nga Elephant Park",
+        description: "Центр реабилитации слонов в провинции Пханг-Нга. Экскурсии включают кормление, купание слонов и прогулку по джунглям.",
+        image: "/placeholder.svg",
+        rating: 4.7,
+        distance: "60 км от Пхукета",
+        duration: "Полдня",
+        tags: ["Купание", "Джунгли", "Трансфер"],
+        handle: "phang-nga-elephant"
       }
     ]
   },
@@ -48,6 +70,17 @@ const categoryData: Record<string, { title: string; description: string; places:
         duration: "Весь день",
         tags: ["Для детей", "Горки", "Бассейны"],
         handle: "splash-jungle"
+      },
+      {
+        id: "2",
+        title: "Andamanda Phuket",
+        description: "Новейший тематический аквапарк с уникальным дизайном в стиле тайской мифологии. Экстремальные горки и семейные аттракционы.",
+        image: "/placeholder.svg",
+        rating: 4.6,
+        distance: "15 км от аэропорта",
+        duration: "Весь день",
+        tags: ["Новый", "Экстрим", "Тематический"],
+        handle: "andamanda"
       }
     ]
   },
@@ -65,6 +98,28 @@ const categoryData: Record<string, { title: string; description: string; places:
         duration: "Вечер",
         tags: ["Шоу", "Ужин", "Слоны"],
         handle: "phuket-fantasea"
+      },
+      {
+        id: "2",
+        title: "Carnival Magic",
+        description: "Новый карнавальный парк с впечатляющим шоу птиц, акробатикой и фейерверками. Ночное световое шоу и парад.",
+        image: "/placeholder.svg",
+        rating: 4.7,
+        distance: "Камала",
+        duration: "Вечер",
+        tags: ["Новое", "Световое шоу", "Карнавал"],
+        handle: "carnival-magic"
+      },
+      {
+        id: "3",
+        title: "Hanuman World Phuket",
+        description: "Приключенческий парк с зиплайнами, веревочными трассами и роллерглайдером над джунглями. 33 платформы и живописные виды.",
+        image: "/placeholder.svg",
+        rating: 4.8,
+        distance: "Чалонг",
+        duration: "2-3 часа",
+        tags: ["Зиплайн", "Адреналин", "Природа"],
+        handle: "hanuman-world"
       }
     ]
   },
@@ -82,6 +137,39 @@ const categoryData: Record<string, { title: string; description: string; places:
         duration: "30 минут",
         tags: ["Фото", "Закат", "Бесплатно"],
         handle: "karon-viewpoint"
+      },
+      {
+        id: "2",
+        title: "Мыс Промтеп (Promthep Cape)",
+        description: "Самая южная точка Пхукета с захватывающими видами на закат. Маяк, статуя слона и смотровая площадка 360°.",
+        image: "/placeholder.svg",
+        rating: 4.7,
+        distance: "Раваи",
+        duration: "1 час",
+        tags: ["Закат", "Маяк", "Популярное"],
+        handle: "promthep-cape"
+      },
+      {
+        id: "3",
+        title: "Ранг Хилл (Rang Hill)",
+        description: "Холм в центре Пхукет Тауна с панорамным видом на город и горы. Парк для прогулок, фитнес-площадки и кафе.",
+        image: "/placeholder.svg",
+        rating: 4.4,
+        distance: "Пхукет Таун",
+        duration: "1 час",
+        tags: ["Город", "Парк", "Фитнес"],
+        handle: "rang-hill"
+      },
+      {
+        id: "4",
+        title: "Ветряная мельница (Windmill Viewpoint)",
+        description: "Тихая смотровая площадка с видом на пляж Най Харн и ветряными мельницами. Меньше туристов, отличное место для фото.",
+        image: "/placeholder.svg",
+        rating: 4.5,
+        distance: "Най Харн",
+        duration: "30 минут",
+        tags: ["Тихо", "Пляж", "Мельницы"],
+        handle: "windmill-viewpoint"
       }
     ]
   },
@@ -99,6 +187,28 @@ const categoryData: Record<string, { title: string; description: string; places:
         duration: "1-2 часа",
         tags: ["Святыня", "Вид", "Бесплатно"],
         handle: "big-buddha"
+      },
+      {
+        id: "2",
+        title: "Ват Чалонг (Wat Chalong)",
+        description: "Самый большой и важный буддийский храм Пхукета. Красивая архитектура, пагода с реликвией Будды и музей монахов.",
+        image: "/placeholder.svg",
+        rating: 4.6,
+        distance: "Чалонг",
+        duration: "1 час",
+        tags: ["История", "Архитектура", "Музей"],
+        handle: "wat-chalong"
+      },
+      {
+        id: "3",
+        title: "Храм Пхра Тонг (Wat Phra Thong)",
+        description: "Древний храм с легендарной статуей золотого Будды, наполовину погруженной в землю. Священное место для местных жителей.",
+        image: "/placeholder.svg",
+        rating: 4.5,
+        distance: "Тхаланг",
+        duration: "45 минут",
+        tags: ["Легенда", "Золотой Будда", "Древний"],
+        handle: "wat-phra-thong"
       }
     ]
   },
@@ -116,6 +226,17 @@ const categoryData: Record<string, { title: string; description: string; places:
         duration: "1 час",
         tags: ["История", "Культура", "Архитектура"],
         handle: "thai-hua-museum"
+      },
+      {
+        id: "2",
+        title: "Музей оловянных рудников Kathu Mining Museum",
+        description: "Интерактивный музей о истории добычи олова на Пхукете. Экспозиции, старое оборудование и видео.",
+        image: "/placeholder.svg",
+        rating: 4.3,
+        distance: "Катху",
+        duration: "1 час",
+        tags: ["Интерактивный", "Горное дело", "Бесплатно"],
+        handle: "kathu-mining-museum"
       }
     ]
   },
@@ -133,6 +254,28 @@ const categoryData: Record<string, { title: string; description: string; places:
         duration: "2-3 часа",
         tags: ["Еда", "Сувениры", "Воскресенье"],
         handle: "phuket-walking-street"
+      },
+      {
+        id: "2",
+        title: "Чиллва Маркет (Chillva Market)",
+        description: "Хипстерский ночной рынок с винтажной одеждой, стрит-артом, живой музыкой и творческими кафе. Работает вечерами.",
+        image: "/placeholder.svg",
+        rating: 4.5,
+        distance: "Пхукет Таун",
+        duration: "2 часа",
+        tags: ["Винтаж", "Музыка", "Молодежный"],
+        handle: "chillva-market"
+      },
+      {
+        id: "3",
+        title: "Ночной рынок Макасан (Malin Plaza)",
+        description: "Популярный ночной рынок с морепродуктами, тайской едой и дешевыми сувенирами. Работает каждый вечер.",
+        image: "/placeholder.svg",
+        rating: 4.3,
+        distance: "Патонг",
+        duration: "1-2 часа",
+        tags: ["Морепродукты", "Ежедневно", "Доступно"],
+        handle: "malin-plaza"
       }
     ]
   },
@@ -150,6 +293,28 @@ const categoryData: Record<string, { title: string; description: string; places:
         duration: "1-2 часа",
         tags: ["Набережная", "Закат", "Бесплатно"],
         handle: "patong-promenade"
+      },
+      {
+        id: "2",
+        title: "Старый город Пхукета",
+        description: "Исторический район с португальской и китайской архитектурой, цветными домами, арт-галереями и кафе.",
+        image: "/placeholder.svg",
+        rating: 4.7,
+        distance: "Пхукет Таун",
+        duration: "2-3 часа",
+        tags: ["История", "Фото", "Архитектура"],
+        handle: "old-phuket-town"
+      },
+      {
+        id: "3",
+        title: "Сад бабочек и аквариум",
+        description: "Тропический сад с сотнями бабочек, аквариум с морскими обитателями и сад орхидей.",
+        image: "/placeholder.svg",
+        rating: 4.4,
+        distance: "Панва",
+        duration: "1-2 часа",
+        tags: ["Природа", "Семейное", "Фото"],
+        handle: "butterfly-garden"
       }
     ]
   },
@@ -167,6 +332,28 @@ const categoryData: Record<string, { title: string; description: string; places:
         duration: "3-4 часа",
         tags: ["Шопинг", "Еда", "Кондиционер"],
         handle: "central-phuket"
+      },
+      {
+        id: "2",
+        title: "Jungceylon Shopping Mall",
+        description: "Большой ТЦ в центре Патонга с магазинами одежды, электроники, супермаркетом и фуд-кортом.",
+        image: "/placeholder.svg",
+        rating: 4.3,
+        distance: "Патонг",
+        duration: "2-3 часа",
+        tags: ["Центр Патонга", "Удобно", "Большой"],
+        handle: "jungceylon"
+      },
+      {
+        id: "3",
+        title: "Premium Outlet Phuket",
+        description: "Аутлет с брендовой одеждой и обувью со скидками до 70%. Nike, Adidas, Levi's и другие марки.",
+        image: "/placeholder.svg",
+        rating: 4.4,
+        distance: "По дороге в аэропорт",
+        duration: "2 часа",
+        tags: ["Скидки", "Бренды", "Аутлет"],
+        handle: "premium-outlet"
       }
     ]
   },
@@ -184,6 +371,28 @@ const categoryData: Record<string, { title: string; description: string; places:
         duration: "9 дней",
         tags: ["Фестиваль", "Культура", "Октябрь"],
         handle: "vegetarian-festival"
+      },
+      {
+        id: "2",
+        title: "Songkran - Тайский Новый год",
+        description: "Водный фестиваль 13-15 апреля. Уличные водные битвы, религиозные церемонии и празднования по всему острову.",
+        image: "/placeholder.svg",
+        rating: 4.9,
+        distance: "Везде",
+        duration: "3 дня",
+        tags: ["Апрель", "Вода", "Веселье"],
+        handle: "songkran"
+      },
+      {
+        id: "3",
+        title: "Loy Krathong - Фестиваль света",
+        description: "Ноябрьский фестиваль с запуском плавучих свечей на воду и фонариков в небо. Романтичная атмосфера.",
+        image: "/placeholder.svg",
+        rating: 4.7,
+        distance: "Пляжи и озера",
+        duration: "Вечер",
+        tags: ["Ноябрь", "Романтика", "Свечи"],
+        handle: "loy-krathong"
       }
     ]
   }

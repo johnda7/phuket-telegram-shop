@@ -33,6 +33,7 @@ const PlaceDetail = () => {
   const [relatedTours, setRelatedTours] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [relatedPlaces, setRelatedPlaces] = useState<ShopifyProduct[]>([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
@@ -117,14 +118,33 @@ const PlaceDetail = () => {
         
         setPlace(placeData);
         
+        // Загружаем ВСЕ продукты для связанных мест и туров
+        const allProductsData = await fetchProducts(100);
+        
+        // Фильтруем похожие места (те же теги или категория)
+        const placeTags = product.tags || [];
+        const relatedPlacesData = allProductsData.filter(
+          (p) =>
+            p.node.productType === "place" &&
+            p.node.id !== product.id &&
+            p.node.tags?.some(tag => placeTags.includes(tag))
+        );
+        
         // Загружаем связанные туры
         if (relatedTourHandles.length > 0) {
-          const allProducts = await fetchProducts(50);
-          const tours = allProducts.filter(p => 
+          const tours = allProductsData.filter(p => 
             relatedTourHandles.includes(p.node.handle)
           );
-          setRelatedTours(tours.slice(0, 2));
+          setRelatedTours(tours.slice(0, 6));
+        } else {
+          // Если нет привязанных туров, показываем общие туры
+          const tours = allProductsData.filter(p => 
+            p.node.productType !== "place"
+          );
+          setRelatedTours(tours.slice(0, 6));
         }
+        
+        setRelatedPlaces(relatedPlacesData.slice(0, 6));
         
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load place');
@@ -362,12 +382,12 @@ const PlaceDetail = () => {
               )}
             </div>
 
-            {/* Related Tours */}
+            {/* Related Tours - Внутри главного контента */}
             {relatedTours.length > 0 && (
               <div className="mb-8">
                 <h2 className="text-2xl font-bold mb-6">🎟️ Туры сюда</h2>
                 <div className="grid md:grid-cols-2 gap-4">
-                  {relatedTours.map((tour) => (
+                  {relatedTours.slice(0, 2).map((tour) => (
                     <ProductCard
                       key={tour.node.id}
                       product={tour.node}
@@ -401,6 +421,67 @@ const PlaceDetail = () => {
             </div>
           </div>
         </div>
+
+        {/* Related Places Section - Полная ширина */}
+        {relatedPlaces.length > 0 && (
+          <section className="py-16 animate-fade-in border-t border-border/50 mt-12">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                Похожие места
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                Другие интересные локации в этой категории
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {relatedPlaces.map((place, index) => (
+                <div
+                  key={place.node.id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <ProductCard
+                    product={place.node}
+                    showPrice={false}
+                    showRating={true}
+                    linkPrefix="/place"
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Related Tours Section - Полная ширина */}
+        {relatedTours.length > 2 && (
+          <section className="py-16 animate-fade-in bg-muted/20 -mx-4 px-4 mt-12">
+            <div className="container mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+                  Туры в этот район
+                </h2>
+                <p className="text-muted-foreground text-lg">
+                  Забронируйте экскурсию и посетите это место
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {relatedTours.slice(2).map((tour, index) => (
+                  <div
+                    key={tour.node.id}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <ProductCard
+                      product={tour.node}
+                      showPrice={true}
+                      showRating={true}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

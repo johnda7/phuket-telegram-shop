@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductCard } from "@/components/ProductCard";
 import { useMetaTags } from "@/hooks/useMetaTags";
+import { PlaceFeatures } from "@/components/PlaceFeatures";
 
 interface ParsedPlace {
   id: string;
@@ -273,13 +274,21 @@ const PlaceDetail = () => {
 
             {/* Categories */}
             <div className="flex flex-wrap gap-2 mb-6">
-              {place.tags.slice(0, 5).map((tag, index) => (
+              {place.tags.filter(tag => 
+                !tag.startsWith('category:') && 
+                !tag.startsWith('district:') && 
+                !tag.startsWith('related-') &&
+                !tag.startsWith('price-level:') &&
+                tag !== 'place' &&
+                tag !== 'beach'
+              ).slice(0, 5).map((tag, index) => (
                 <Badge key={index} variant="secondary" className="text-base px-3 py-1">
                   {tag}
                 </Badge>
               ))}
               {district && (
                 <Badge variant="outline" className="text-base px-3 py-1">
+                  <MapPin className="w-3 h-3 inline mr-1" />
                   {district}
                 </Badge>
               )}
@@ -290,13 +299,24 @@ const PlaceDetail = () => {
               <Button
                 onClick={openMaps}
                 variant="outline"
-                className="mb-6 gap-2"
+                className="mb-8 gap-2"
               >
                 <MapPin className="w-4 h-4" />
-                Гео: Открыть на карте
+                Открыть на карте
                 <ExternalLink className="w-4 h-4" />
               </Button>
             )}
+
+            {/* Place Features Component - Красивые характеристики! */}
+            <div className="mb-8">
+              <PlaceFeatures
+                tags={place.tags}
+                district={district}
+                priceLevel={priceLevel}
+                duration={place.duration}
+                rating={rating}
+              />
+            </div>
 
             {/* Image Gallery */}
             {images.length > 0 && (

@@ -242,10 +242,16 @@ const ProductDetail = () => {
                 )}
               </div>
 
-              {/* Rating */}
+              {/* Rating (take from tags like "rating:4.5" or fallback) */}
               <div className="absolute top-7 right-7 z-10 bg-background/90 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1 shadow-lg">
                 <Star className="w-4 h-4 fill-warning text-warning" />
-                <span className="text-sm font-semibold">4.8</span>
+                {(() => {
+                  const ratingTag = tags.find(t => t && t.toString().toLowerCase().startsWith('rating:'));
+                  const rating = ratingTag ? ratingTag.split(':')[1] : null;
+                  return (
+                    <span className="text-sm font-semibold">{rating ?? '—'}</span>
+                  );
+                })()}
               </div>
 
               {/* Main Carousel Image */}
@@ -324,205 +330,15 @@ const ProductDetail = () => {
                 className="w-full mb-6 gap-2"
               >
                 <Share2 className="w-5 h-5" />
-                Поделиться туром
+                Поделиться
               </Button>
 
-              {/* Tour Details with Icons */}
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="flex items-center gap-3 text-sm">
-                  <Clock className="w-5 h-5 text-primary" />
-                  <div>
-                    <p className="text-muted-foreground">Продолжительность:</p>
-                    <p className="font-semibold">2 дня / 1 ночь</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-3 text-sm">
-                  <Users className="w-5 h-5 text-primary" />
-                  <div>
-                    <p className="text-muted-foreground">Группа:</p>
-                    <p className="font-semibold">до 30 человек</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-3 text-sm">
-                  <Calendar className="w-5 h-5 text-primary" />
-                  <div>
-                    <p className="text-muted-foreground">Расписание:</p>
-                    <p className="font-semibold">Ежедневно</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-3 text-sm">
-                  <Car className="w-5 h-5 text-primary" />
-                  <div>
-                    <p className="text-muted-foreground">Трансфер:</p>
-                    <p className="font-semibold">Включен</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Program */}
+              {/* Description - HTML from Shopify */}
               <div className="border-t pt-6">
-                <h2 className="text-xl font-bold mb-4">📋 Программа тура</h2>
-                
-                <div className="space-y-6">
-                  {/* Day 1 */}
-                  <div>
-                    <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
-                      <span className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
-                      День 1
-                    </h3>
-                    <div className="space-y-2 ml-10 text-sm text-muted-foreground">
-                      <p className="flex items-start gap-2">
-                        <Clock className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                        <span><strong>08:00</strong> - Выезд из отеля на Пхукете</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <MapPin className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                        <span><strong>10:00</strong> - Прибытие на остров Пхи-Пхи Дон • Заселение в отель 3* на берегу моря</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <Utensils className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                        <span>Обед в местном ресторане</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <Waves className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                        <span>Снорклинг в бухте Лох Далам • Свободное время на пляже</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <Camera className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                        <span>Ужин и прогулка по вечерней набережной</span>
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Day 2 */}
-                  <div>
-                    <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
-                      <span className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
-                      День 2
-                    </h3>
-                    <div className="space-y-2 ml-10 text-sm text-muted-foreground">
-                      <p className="flex items-start gap-2">
-                        <Utensils className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                        <span><strong>08:00</strong> - Завтрак в отеле</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <Waves className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                        <span><strong>09:00</strong> - Экскурсия на спидботе к бухте Майя Бэй</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <Waves className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                        <span>Снорклинг в бухте Пиле • Посещение пещеры викингов</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <Utensils className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                        <span>Обед на острове</span>
-                      </p>
-                      <p className="flex items-start gap-2">
-                        <Car className="w-4 h-4 mt-0.5 text-primary flex-shrink-0" />
-                        <span><strong>15:00</strong> - Возвращение на Пхукет • <strong>17:00</strong> - Трансфер в отель</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* What's Included */}
-              <div className="border-t pt-6 mt-6">
-                <h2 className="text-xl font-bold mb-4">✅ Что включено</h2>
-                <div className="grid md:grid-cols-2 gap-3 mb-6">
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-success" />
-                    </div>
-                    <span className="text-sm">Трансфер от отеля и обратно</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-success" />
-                    </div>
-                    <span className="text-sm">Проживание в отеле 3* (1 ночь)</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-success" />
-                    </div>
-                    <span className="text-sm">2 завтрака, 2 обеда, 1 ужин</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-success" />
-                    </div>
-                    <span className="text-sm">Все экскурсии на спидботе</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-success" />
-                    </div>
-                    <span className="text-sm">Снаряжение для снорклинга</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-success" />
-                    </div>
-                    <span className="text-sm">Русскоговорящий гид</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-success" />
-                    </div>
-                    <span className="text-sm">Страховка</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-success/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-success" />
-                    </div>
-                    <span className="text-sm">Питьевая вода</span>
-                  </div>
-                </div>
-
-                <h3 className="text-lg font-bold mb-4 mt-6">❌ Не включено</h3>
-                <div className="grid md:grid-cols-2 gap-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <X className="w-3 h-3 text-destructive" />
-                    </div>
-                    <span className="text-sm text-muted-foreground">Дополнительные напитки в ресторанах</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <X className="w-3 h-3 text-destructive" />
-                    </div>
-                    <span className="text-sm text-muted-foreground">Личные расходы</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <X className="w-3 h-3 text-destructive" />
-                    </div>
-                    <span className="text-sm text-muted-foreground">Национальный парк (400 бат/взрослый, 200 бат/ребенок)</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Important Info */}
-              <div className="border-t pt-6 mt-6">
-                <h2 className="text-xl font-bold mb-4">ℹ️ Важная информация</h2>
-                <div className="glass-card p-4 space-y-2 text-sm text-muted-foreground">
-                  <p className="flex items-start gap-2">
-                    <span className="text-primary">•</span>
-                    Рекомендуется взять с собой: купальник, солнцезащитный крем, головной убор, полотенце
-                  </p>
-                  <p className="flex items-start gap-2">
-                    <span className="text-primary">•</span>
-                    Время выезда может незначительно меняться в зависимости от локации отеля
-                  </p>
-                  <p className="flex items-start gap-2">
-                    <span className="text-primary">•</span>
-                    Не рекомендуется беременным женщинам и людям с проблемами спины
-                  </p>
-                </div>
+                <div 
+                  className="prose prose-lg max-w-none"
+                  dangerouslySetInnerHTML={{ __html: product.node.descriptionHtml || product.node.description || '' }}
+                />
               </div>
 
               {/* Tour Map */}
@@ -540,22 +356,49 @@ const ProductDetail = () => {
                 Экскурсия с ночевкой на островах Пхи-Пхи
               </p>
 
-              {/* Tour Quick Info */}
-              <div className="space-y-3 mb-6 text-sm">
-                <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 text-warning fill-warning" />
-                  <span className="font-semibold">4.8</span>
-                  <span className="text-muted-foreground ml-auto">2 дня / 1 ночь</span>
+              {/* Quick Info: render tour-specific fields only for tours, otherwise show info product CTA/summary */}
+              {((product.node.productType && product.node.productType.toLowerCase().includes('excurs')) || tags.includes('tour')) ? (
+                <div className="space-y-3 mb-6 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Star className="w-4 h-4 text-warning fill-warning" />
+                    <span className="font-semibold">{(() => {
+                      const ratingTag = tags.find(t => t && t.toString().toLowerCase().startsWith('rating:'));
+                      return ratingTag ? ratingTag.split(':')[1] : '—';
+                    })()}</span>
+                    <span className="text-muted-foreground ml-auto">{product.node.options.find(o=>o.name.toLowerCase().includes('day')) ? 'длительность' : ''}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-muted-foreground" />
+                    {/* prefer metafield or tags — fallback to variant option if present */}
+                    <span className="text-muted-foreground">{product.node.tags.find(t=>t.match(/\d+-day|\d+day|\d+\s?дн/)) ?? '—'}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">{product.node.tags.find(t=>t.toLowerCase().includes('group')) ?? '—'}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">2 дня / 1 ночь</span>
+              ) : (
+                <div className="space-y-3 mb-6 text-sm">
+                  {/* Information product: show summary + CTA to tours */}
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-muted-foreground" />
+                    <span className="font-semibold">Информация</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {/* Show entrance price if variant price is 0 -> Бесплатно */}
+                    {parseFloat(product.node.priceRange.minVariantPrice.amount) === 0 ? (
+                      <p>Вход: <strong>Бесплатно</strong></p>
+                    ) : (
+                      <p>Цена: <strong>{parseFloat(product.node.priceRange.minVariantPrice.amount).toFixed(0)} {product.node.priceRange.minVariantPrice.currencyCode}</strong></p>
+                    )}
+                    <p className="mt-2">{product.node.description?.substring(0, 160)}</p>
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    <Button size="sm" className="w-full" onClick={() => window.location.href = '/tours'}>Посмотреть туры</Button>
+                    <Button size="sm" variant="outline" className="w-full" onClick={() => window.open('https://t.me/phuketda_bot', '_blank')}>Написать в Телеграм</Button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">до 30 человек</span>
-                </div>
-              </div>
+              )}
 
               {/* Price and Buttons Section */}
               <div className="border-t pt-6">

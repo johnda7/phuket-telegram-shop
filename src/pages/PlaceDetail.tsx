@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { fetchProductByHandle, fetchProducts, type ShopifyProduct } from "@/lib/shopify";
-import { Loader2, MapPin, Star, ChevronLeft, ChevronRight, ExternalLink, MessageCircle, ChevronRight as ChevronRightIcon } from "lucide-react";
+import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
+import { getPlaceByHandle, getRelatedPlaces, type Place } from "@/data/places";
+import { Loader2, MapPin, Star, ChevronLeft, ChevronRight, ExternalLink, MessageCircle, ChevronRight as ChevronRightIcon, Clock, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ProductCard } from "@/components/ProductCard";
@@ -9,32 +10,43 @@ import { useMetaTags } from "@/hooks/useMetaTags";
 
 const PlaceDetail = () => {
   const { handle } = useParams<{ handle: string }>();
-  const [product, setProduct] = useState<ShopifyProduct | null>(null);
-  const [relatedPlaces, setRelatedPlaces] = useState<ShopifyProduct[]>([]);
+  const [place, setPlace] = useState<Place | null>(null);
+  const [relatedPlaces, setRelatedPlaces] = useState<Place[]>([]);
   const [relatedTours, setRelatedTours] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
-    const loadProduct = async () => {
+    const loadPlace = async () => {
       if (!handle) return;
       
       try {
         setLoading(true);
-        const data = await fetchProductByHandle(handle);
-        setProduct(data);
         
-        // Load related content
-        const allProducts = await fetchProducts(50);
-        const tours = allProducts.filter(p => p.node.tags.includes('tour'));
-        const places = allProducts.filter(p => 
-          p.node.tags.some(tag => ['пляж', 'место', 'beach', 'place'].includes(tag.toLowerCase())) &&
-          p.node.handle !== handle
-        );
+        // Загружаем место из локальной базы
+        const placeData = getPlaceByHandle(handle);
+        if (!placeData) {
+          setError('Место не найдено');
+          setLoading(false);
+          return;
+        }
         
-        setRelatedTours(tours.slice(0, 2));
-        setRelatedPlaces(places.slice(0, 3));
+        setPlace(placeData);
+        
+        // Загружаем связанные места
+        const related = getRelatedPlaces(handle, 3);
+        setRelatedPlaces(related);
+        
+        // Загружаем связанные туры из Shopify
+        if (placeData.relatedTours && placeData.relatedTours.length > 0) {
+          const allProducts = await fetchProducts(50);
+          const tours = allProducts.filter(p => 
+            placeData.relatedTours!.includes(p.node.handle)
+          );
+          setRelatedTours(tours.slice(0, 2));
+        }
+        
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load place');
       } finally {
@@ -42,14 +54,14 @@ const PlaceDetail = () => {
       }
     };
 
-    loadProduct();
+    loadPlace();
   }, [handle]);
 
   // Update meta tags for SEO
   useMetaTags({
-    title: product ? `${product.node.title} | PhuketDa` : 'PhuketDa - Пляжи Пхукета',
-    description: product?.node.description?.substring(0, 160) || 'Откройте для себя лучшие места Пхукета',
-    image: product?.node.images.edges[0]?.node.url || 'https://phuketda.app/og-image.jpg',
+    title: place ? `${place.title} | PhuketDa` : 'PhuketDa - Места Пхукета',
+    description: place?.description?.substring(0, 160) || 'Откройте для себя лучшие места Пхукета',
+    image: place?.images[0] || 'https://phuketda.app/og-image.jpg',
     url: window.location.href,
   });
 
@@ -61,24 +73,24 @@ const PlaceDetail = () => {
     );
   }
 
-  if (error || !product) {
+  if (error || !place) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-destructive mb-4">{error || 'Place not found'}</p>
-          <Link to="/beaches">
-            <Button>← Вернуться к пляжам</Button>
+          <p className="text-destructive mb-4">{error || 'Место не найдено'}</p>
+          <Link to="/categories">
+            <Button>← Вернуться к категориям</Button>
           </Link>
         </div>
       </div>
     );
   }
 
-  const images = product.node.images.edges;
-  const category = product.node.productType || 'Пляж';
-  const district = 'Пхукет'; // Can be extracted from tags or metadata in future
-  const rating = 4.8;
-  const reviewsCount = 2524;
+  const images = place.images;
+  const district = place.district || 'Пхукет';
+  const rating = place.rating || 4.5;
+  const reviewsCount = place.reviewsCount || 100;
+  const priceLevel = place.priceLevel || 2;
   
   const nextImage = () => {
     setSelectedImageIndex((prev) => (prev + 1) % images.length);
@@ -89,8 +101,11 @@ const PlaceDetail = () => {
   };
 
   const openMaps = () => {
-    // For demo purposes - in production would use actual coordinates
-    window.open('https://maps.app.goo.gl/b3Qv3S5sKsWTVvEm6', '_blank');
+    if (place.mapUrl) {
+      window.open(place.mapUrl, '_blank');
+    } else if (place.coordinates) {
+      window.open(`https://www.google.com/maps?q=${place.coordinates.lat},${place.coordinates.lng}`, '_blank');
+    }
   };
 
   return (
@@ -110,14 +125,14 @@ const PlaceDetail = () => {
             Пляжи
           </Link>
           <ChevronRightIcon className="w-4 h-4" />
-          <span className="text-foreground font-medium">{product.node.title}</span>
+          <span className="text-foreground font-medium">{place.title}</span>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Title */}
-            <h1 className="text-4xl font-bold mb-6">{product.node.title}</h1>
+            <h1 className="text-4xl font-bold mb-6">{place.title}</h1>
 
             {/* Rating & Meta */}
             <div className="flex flex-wrap items-center gap-4 mb-6">
@@ -135,16 +150,42 @@ const PlaceDetail = () => {
                 <span className="font-bold text-lg">{rating}</span>
                 <span className="text-muted-foreground">({reviewsCount})</span>
               </div>
+              
+              {/* Duration */}
+              {place.duration && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Clock className="w-4 h-4" />
+                  <span>{place.duration}</span>
+                </div>
+              )}
+              
+              {/* Price Level */}
+              <div className="flex items-center gap-1">
+                {[...Array(4)].map((_, i) => (
+                  <DollarSign
+                    key={i}
+                    className={`w-4 h-4 ${
+                      i < priceLevel
+                        ? 'text-green-600'
+                        : 'text-muted-foreground/30'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Categories */}
             <div className="flex flex-wrap gap-2 mb-6">
-              <Badge variant="secondary" className="text-base px-3 py-1">
-                {category}
-              </Badge>
-              <Badge variant="outline" className="text-base px-3 py-1">
-                {district}
-              </Badge>
+              {place.tags.slice(0, 5).map((tag, index) => (
+                <Badge key={index} variant="secondary" className="text-base px-3 py-1">
+                  {tag}
+                </Badge>
+              ))}
+              {district && (
+                <Badge variant="outline" className="text-base px-3 py-1">
+                  {district}
+                </Badge>
+              )}
             </div>
 
             {/* Google Maps Link */}
@@ -164,8 +205,8 @@ const PlaceDetail = () => {
                 {/* Main Image with Navigation */}
                 <div className="relative aspect-video rounded-xl overflow-hidden bg-secondary/20 group mb-4">
                   <img
-                    src={images[selectedImageIndex].node.url}
-                    alt={`${product.node.title} ${selectedImageIndex + 1}`}
+                    src={images[selectedImageIndex]}
+                    alt={`${place.title} ${selectedImageIndex + 1}`}
                     className="w-full h-full object-cover"
                   />
 
@@ -194,39 +235,52 @@ const PlaceDetail = () => {
                     {selectedImageIndex + 1} / {images.length}
                   </div>
                 </div>
-
-                {/* Thumbnail Strip */}
-                {images.length > 1 && (
-                  <div className="grid grid-cols-6 gap-2">
-                    {images.slice(0, 6).map((image, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSelectedImageIndex(index)}
-                        className={`aspect-square rounded-lg overflow-hidden ${
-                          index === selectedImageIndex
-                            ? 'ring-2 ring-primary'
-                            : 'opacity-60 hover:opacity-100'
-                        } transition-all`}
-                      >
-                        <img
-                          src={image.node.url}
-                          alt={`Thumbnail ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
             )}
 
             {/* Description */}
             <div className="glass-card p-6 mb-8">
+              <h2 className="text-2xl font-bold mb-4">О месте</h2>
               <div className="prose prose-lg max-w-none">
                 <p className="text-foreground leading-relaxed whitespace-pre-wrap">
-                  {product.node.description || "Описание скоро появится"}
+                  {place.description}
                 </p>
               </div>
+              
+              {/* Best Time */}
+              {place.bestTime && (
+                <div className="mt-6 p-4 bg-primary/5 rounded-lg">
+                  <p className="font-semibold text-primary mb-1">Лучшее время для посещения:</p>
+                  <p className="text-foreground">{place.bestTime}</p>
+                </div>
+              )}
+              
+              {/* Amenities */}
+              {place.amenities && place.amenities.length > 0 && (
+                <div className="mt-6">
+                  <p className="font-semibold mb-2">Удобства:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {place.amenities.map((amenity, index) => (
+                      <Badge key={index} variant="outline">{amenity}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Tips */}
+              {place.tips && place.tips.length > 0 && (
+                <div className="mt-6">
+                  <p className="font-semibold mb-3">💡 Полезные советы:</p>
+                  <ul className="space-y-2">
+                    {place.tips.map((tip, index) => (
+                      <li key={index} className="text-sm text-muted-foreground flex gap-2">
+                        <span className="text-primary">•</span>
+                        <span>{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
 
             {/* Related Tours */}
@@ -274,27 +328,27 @@ const PlaceDetail = () => {
                   Лучшие места на пляже {district}
                 </h3>
                 <div className="space-y-4">
-                  {relatedPlaces.map((place) => (
+                  {relatedPlaces.map((relPlace) => (
                     <Link
-                      key={place.node.id}
-                      to={`/place/${place.node.handle}`}
+                      key={relPlace.id}
+                      to={`/place/${relPlace.handle}`}
                       className="flex gap-3 group"
                     >
                       <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                        {place.node.images.edges[0]?.node && (
+                        {relPlace.images[0] && (
                           <img
-                            src={place.node.images.edges[0].node.url}
-                            alt={place.node.title}
+                            src={relPlace.images[0]}
+                            alt={relPlace.title}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                           />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="font-semibold line-clamp-1 group-hover:text-primary transition-colors">
-                          {place.node.title}
+                          {relPlace.title}
                         </h4>
                         <p className="text-xs text-muted-foreground line-clamp-2">
-                          {place.node.description?.substring(0, 80)}
+                          {relPlace.description.substring(0, 80)}...
                         </p>
                       </div>
                     </Link>

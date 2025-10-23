@@ -58,12 +58,14 @@ const PlaceDetail = () => {
         
         // Парсим метафилды
         const getMetafield = (key: string) => {
-          return product.metafields?.find(m => m.key === key)?.value;
+          if (!product.metafields) return undefined;
+          return product.metafields.find(m => m && m.key === key)?.value;
         };
 
         const parseJSON = (value: string | undefined) => {
+          if (!value) return undefined;
           try {
-            return value ? JSON.parse(value) : undefined;
+            return JSON.parse(value);
           } catch {
             return undefined;
           }

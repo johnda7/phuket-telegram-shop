@@ -318,42 +318,77 @@ const PlaceDetail = () => {
               />
             </div>
 
-            {/* Image Gallery */}
+            {/* Image Gallery - Улучшенная галерея с thumbnail preview */}
             {images.length > 0 && (
               <div className="mb-8">
+                <h2 className="text-2xl font-bold mb-4">📸 Фотогалерея</h2>
+                
                 {/* Main Image with Navigation */}
-                <div className="relative aspect-video rounded-xl overflow-hidden bg-secondary/20 group mb-4">
+                <div className="relative aspect-video rounded-2xl overflow-hidden bg-secondary/20 group mb-4 shadow-xl">
                   <img
                     src={images[selectedImageIndex]}
                     alt={`${place.title} ${selectedImageIndex + 1}`}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
+
+                  {/* Gradient Overlay for better text visibility */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20 pointer-events-none" />
 
                   {/* Navigation Arrows */}
                   {images.length > 1 && (
                     <>
                       <button
                         onClick={prevImage}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/90 backdrop-blur-sm rounded-full p-3 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background shadow-xl"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-sm rounded-full p-3 opacity-0 group-hover:opacity-100 transition-all hover:bg-white hover:scale-110 shadow-2xl z-10"
                         aria-label="Previous image"
                       >
-                        <ChevronLeft className="w-6 h-6" />
+                        <ChevronLeft className="w-6 h-6 text-foreground" />
                       </button>
                       <button
                         onClick={nextImage}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/90 backdrop-blur-sm rounded-full p-3 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background shadow-xl"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/95 backdrop-blur-sm rounded-full p-3 opacity-0 group-hover:opacity-100 transition-all hover:bg-white hover:scale-110 shadow-2xl z-10"
                         aria-label="Next image"
                       >
-                        <ChevronRight className="w-6 h-6" />
+                        <ChevronRight className="w-6 h-6 text-foreground" />
                       </button>
                     </>
                   )}
 
-                  {/* Image Counter */}
-                  <div className="absolute bottom-4 right-4 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
+                  {/* Image Counter with better styling */}
+                  <div className="absolute bottom-4 right-4 bg-black/80 backdrop-blur-md px-4 py-2 rounded-full text-sm font-bold text-white shadow-xl">
                     {selectedImageIndex + 1} / {images.length}
                   </div>
                 </div>
+
+                {/* Thumbnail Grid */}
+                {images.length > 1 && (
+                  <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
+                    {images.map((image, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedImageIndex(index)}
+                        className={`
+                          relative aspect-square rounded-lg overflow-hidden 
+                          transition-all duration-300 hover:scale-105 hover:shadow-lg
+                          ${index === selectedImageIndex 
+                            ? 'ring-4 ring-primary shadow-xl scale-105' 
+                            : 'ring-1 ring-border opacity-70 hover:opacity-100'
+                          }
+                        `}
+                      >
+                        <img
+                          src={image}
+                          alt={`Thumbnail ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        {/* Active indicator */}
+                        {index === selectedImageIndex && (
+                          <div className="absolute inset-0 bg-primary/20 pointer-events-none" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

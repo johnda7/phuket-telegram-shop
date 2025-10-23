@@ -18,8 +18,8 @@ const categories: CategoryConfig[] = [
   { id: 'all', label: 'Всё', emoji: '🗺️', tags: [], color: 'from-blue-500 to-cyan-500' },
   { id: 'tour', label: 'Туры', emoji: '🎟️', tags: ['islands', 'popular', '1-day', '2-days'], color: 'from-emerald-500 to-teal-500' },
   { id: 'beach', label: 'Пляжі', emoji: '🏖️', tags: ['beach', 'пляж'], color: 'from-orange-500 to-amber-500' },
-  { id: 'temple', label: 'Храмы', emoji: '🛕', tags: ['temple', 'культурные', 'temples'], color: 'from-violet-500 to-purple-500' },
-  { id: 'restaurant', label: 'Рестораны', emoji: '🍜', tags: ['restaurant'], color: 'from-red-500 to-pink-500' },
+  { id: 'temple', label: 'Места', emoji: '📍', tags: ['place', 'category:viewpoints', 'category:elephants', 'category:waterfalls', 'category:restaurants', 'category:spa'], color: 'from-violet-500 to-purple-500' },
+  { id: 'restaurant', label: 'Рестораны', emoji: '🍜', tags: ['category:restaurants'], color: 'from-red-500 to-pink-500' },
   { id: 'district', label: 'Районы', emoji: '🏘️', tags: ['district'], color: 'from-purple-500 to-indigo-500' },
 ];
 

@@ -175,13 +175,25 @@ const Index = () => {
         </div>
 
         {/* Quick Links */}
-        <div className="space-y-3 mb-6">
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <Link to="/categories">
+            <Card className="hover:shadow-md transition-all">
+              <CardContent className="p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Info className="w-5 h-5 text-primary" />
+                  <span className="font-medium text-sm">📍 Каталог</span>
+                </div>
+                <span className="text-muted-foreground">→</span>
+              </CardContent>
+            </Card>
+          </Link>
+          
           <Link to="/phuket">
             <Card className="hover:shadow-md transition-all">
               <CardContent className="p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Info className="w-5 h-5 text-primary" />
-                  <span className="font-medium">ℹ️ Полезная информация</span>
+                  <span className="font-medium text-sm">ℹ️ Инсайдер</span>
                 </div>
                 <span className="text-muted-foreground">→</span>
               </CardContent>
@@ -193,11 +205,6 @@ const Index = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">🎟️ Экскурсии</h2>
-            <Link to="/phuket">
-              <Button variant="ghost" size="sm" className="text-primary">
-                Смотреть всё →
-              </Button>
-            </Link>
           </div>
           
           {/* iOS 26 Style Tag Filter */}

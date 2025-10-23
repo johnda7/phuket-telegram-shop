@@ -42,16 +42,19 @@ const PlaceDetail = () => {
       try {
         setLoading(true);
         
-        // Загружаем место из Shopify
-        const shopifyProduct = await fetchProductByHandle(handle);
+        // Загружаем ВСЕ продукты из Shopify (т.к. handle с кириллицей не работает в query)
+        const allProducts = await fetchProducts(100);
         
-        if (!shopifyProduct?.node) {
+        // Ищем нужный продукт по handle
+        const foundProduct = allProducts.find(p => p.node.handle === handle);
+        
+        if (!foundProduct) {
           setError('Место не найдено');
           setLoading(false);
           return;
         }
 
-        const product = shopifyProduct.node;
+        const product = foundProduct.node;
         
         // Парсим метафилды
         const getMetafield = (key: string) => {

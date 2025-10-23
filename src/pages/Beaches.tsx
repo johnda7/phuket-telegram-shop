@@ -22,7 +22,12 @@ const Beaches = () => {
     (product) => 
       product.node.productType?.toLowerCase().includes('пляж') ||
       product.node.productType?.toLowerCase().includes('место') ||
-      product.node.tags?.some(tag => tag.toLowerCase().includes('пляж'))
+      product.node.productType?.toLowerCase() === 'place' ||
+      product.node.tags?.some(tag => 
+        tag.toLowerCase().includes('пляж') ||
+        tag.toLowerCase().includes('category:beaches') ||
+        tag.toLowerCase().includes('category:temples')
+      )
   ) || [];
 
   return (

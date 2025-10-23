@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
+import { fetchProducts, fetchProductByHandle, type ShopifyProduct } from "@/lib/shopify";
 import { getPlaceByHandle, getRelatedPlaces, type Place } from "@/data/places";
 import { Loader2, MapPin, Star, ChevronLeft, ChevronRight, ExternalLink, MessageCircle, ChevronRight as ChevronRightIcon, Clock, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,8 +24,36 @@ const PlaceDetail = () => {
       try {
         setLoading(true);
         
-        // Загружаем место из локальной базы
-        const placeData = getPlaceByHandle(handle);
+        // Сначала пробуем загрузить из локальной базы
+        let placeData = getPlaceByHandle(handle);
+        
+        // Если не найдено локально, пробуем загрузить из Shopify
+        if (!placeData) {
+          try {
+            const shopifyProduct = await fetchProductByHandle(handle);
+            if (shopifyProduct?.node) {
+              const product = shopifyProduct.node;
+              // Конвертируем Shopify продукт в Place
+              placeData = {
+                id: product.id,
+                handle: product.handle,
+                title: product.title,
+                description: product.description,
+                category: product.tags.includes('category:beaches') ? 'beaches' as const : 
+                         product.tags.includes('category:temples') ? 'temples' as const : 
+                         'attractions' as const,
+                images: product.images.edges.map(img => img.node.url),
+                tags: product.tags,
+                rating: 4.5,
+                reviewsCount: 100,
+                priceLevel: 2 as const,
+              };
+            }
+          } catch (err) {
+            console.error('Error loading from Shopify:', err);
+          }
+        }
+        
         if (!placeData) {
           setError('Место не найдено');
           setLoading(false);

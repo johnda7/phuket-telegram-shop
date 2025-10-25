@@ -777,6 +777,166 @@ mutation {
 
 ---
 
+## 🏷️ РАСШИРЕННАЯ СИСТЕМА ТЕГОВ
+
+### Обязательные теги:
+```
+tour           - для экскурсий
+info           - для информационных статей (Insider)
+insider        - алиас для info
+category:{name} - категория (используй для группировки)
+```
+
+### Категории (category:):
+```
+beaches        - Пляжи
+temples        - Храмы
+viewpoints     - Смотровые площадки
+restaurants    - Рестораны
+spa            - СПА и массаж
+elephants      - Парки слонов
+museums        - Музеи
+nightmarkets   - Ночные рынки
+shopping       - Торговые центры
+attractions    - Достопримечательности
+aquaparks      - Аквапарки
+waterfalls     - Водопады
+```
+
+### Районы Пхукета (district:):
+```
+district:Kathu
+district:Patong
+district:Cherngtalay
+district:Thalang
+district:Chalong
+district:Rawai
+district:Karon
+district:Kamala
+district:Kata
+district:PhuketTown
+```
+
+### Опциональные теги для Places:
+```
+popular        - Популярное место
+family         - Для семей с детьми
+romantic       - Романтичное
+photo          - Инстаграмное место
+free           - Бесплатно
+paid           - Платный вход
+nature         - Природное место
+culture        - Культурное место
+luxury         - Премиум-класс
+budget         - Бюджетный вариант
+```
+
+### Специальные теги для связей:
+```
+includes:{handle}      - тур включает это место
+near:{handle}          - находится рядом с этим местом
+similar-to:{handle}    - похожее место
+rating:{value}         - рейтинг (4.5, 4.7 и т.д.)
+```
+
+---
+
+## 📊 METAFIELDS (Дополнительная информация)
+
+### Что такое metafields?
+**Metafields** - это дополнительные поля Shopify для хранения структурированной информации, которой нет в базовой схеме продукта.
+
+### Обязательные metafields для Information Products:
+
+```json
+{
+  "namespace": "custom",
+  "key": "coordinates",
+  "value": "7.9936,98.2964",
+  "type": "single_line_text_field"
+}
+```
+
+| Key | Type | Описание | Пример |
+|-----|------|----------|--------|
+| `coordinates` | string | GPS координаты (lat,lng) | "7.9936,98.2964" |
+| `rating` | string | Рейтинг 0-5 | "4.7" |
+| `district` | string | Район | "Cherngtalay" |
+
+### Рекомендуемые metafields:
+
+| Key | Type | Описание | Пример |
+|-----|------|----------|--------|
+| `duration` | string | Время посещения | "2-3 часа" |
+| `amenities` | string | Удобства (через запятую) | "Туалеты,Парковка,Кафе" |
+| `best_time` | string | Лучшее время | "Ноябрь-Апрель" |
+| `how_to_get` | string | Как добраться | "15 мин от аэропорта" |
+| `working_hours` | string | Часы работы | "08:00-18:00" |
+| `entry_price` | string | Стоимость входа | "100 бат" |
+| `phone` | string | Телефон | "+66 76 123 456" |
+| `website` | string | Сайт | "https://example.com" |
+| `features` | string | Особенности | "Wi-Fi,Кондиционер" |
+| `dress_code` | string | Дресс-код | "Закрытые плечи, длинные брюки" |
+
+### Как использовать metafields:
+
+**1. Создание через Admin API:**
+```graphql
+mutation {
+  productUpdate(input: {
+    id: "gid://shopify/Product/XXXXXXX",
+    metafields: [
+      {
+        namespace: "custom",
+        key: "coordinates",
+        value: "7.8965,98.2965",
+        type: "single_line_text_field"
+      },
+      {
+        namespace: "custom",
+        key: "rating",
+        value: "4.7",
+        type: "single_line_text_field"
+      }
+    ]
+  }) {
+    product { id }
+    userErrors { field message }
+  }
+}
+```
+
+**2. Чтение через Storefront API:**
+```graphql
+query {
+  products(first: 10) {
+    edges {
+      node {
+        id
+        title
+        metafields(identifiers: [
+          { namespace: "custom", key: "coordinates" }
+          { namespace: "custom", key: "rating" }
+          { namespace: "custom", key: "amenities" }
+        ]) {
+          key
+          value
+        }
+      }
+    }
+  }
+}
+```
+
+**3. Использование в компонентах:**
+```typescript
+const coordinates = product.metafields?.find(m => m.key === 'coordinates')?.value;
+const rating = product.metafields?.find(m => m.key === 'rating')?.value;
+const amenities = product.metafields?.find(m => m.key === 'amenities')?.value.split(',');
+```
+
+---
+
 ## 🔑 Доступы к Shopify
 
 ### Где найти credentials:

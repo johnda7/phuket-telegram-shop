@@ -353,7 +353,7 @@ const ProductDetail = () => {
             <div className="glass-card p-6 sticky top-24">
               <h3 className="text-2xl font-bold mb-2">{product.node.title}</h3>
               <p className="text-sm text-muted-foreground mb-6">
-                Экскурсия с ночевкой на островах Пхи-Пхи
+                {product.node.description?.substring(0, 100) || ''}
               </p>
 
               {/* Quick Info: render tour-specific fields only for tours, otherwise show info product CTA/summary */}
@@ -478,9 +478,9 @@ const ProductDetail = () => {
         open={bookingDialogOpen}
         onOpenChange={setBookingDialogOpen}
         tourTitle={product.node.title}
-        tourDescription="Экскурсия с ночевкой на островах Пхи-Пхи"
-        adultPrice={4500}
-        childPrice={3950}
+        tourDescription={product.node.description?.substring(0, 200) || ''}
+        adultPrice={selectedVariant ? parseFloat(selectedVariant.price.amount) : parseFloat(product.node.priceRange.minVariantPrice.amount)}
+        childPrice={selectedVariant ? parseFloat(selectedVariant.price.amount) * 0.8 : parseFloat(product.node.priceRange.minVariantPrice.amount) * 0.8}
       />
     </div>
   );

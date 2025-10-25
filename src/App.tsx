@@ -26,7 +26,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <CartDrawer />
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.MODE === 'production' ? '/phuket-telegram-shop' : ''}>
           <AppLayout>
             <Routes>
               <Route path="/" element={<Index />} />

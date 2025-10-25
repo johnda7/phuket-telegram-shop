@@ -337,7 +337,7 @@ const ProductDetail = () => {
               <div className="border-t pt-6">
                 <div 
                   className="prose prose-lg max-w-none"
-                  dangerouslySetInnerHTML={{ __html: product.node.descriptionHtml || product.node.description || '' }}
+                  dangerouslySetInnerHTML={{ __html: product.node.description || '' }}
                 />
               </div>
 

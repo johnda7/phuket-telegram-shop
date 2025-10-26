@@ -1,9 +1,11 @@
+
 import { ReactNode } from "react";
 import { BottomNav } from "./BottomNav";
 import { TourMenu } from "./TourMenu";
 import { ShoppingCart } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 import { Link } from "react-router-dom";
+import logo from "@/assets/phuketda-logo-temp.svg";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -21,8 +23,8 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
           <div className="flex items-center gap-3">
             <TourMenu />
             <Link to="/" className="flex items-center gap-2">
-              <span className="text-2xl">🏝️</span>
-              <span className="font-bold text-lg">PhuketDA</span>
+              <img src={logo} alt="PhuketDA Logo" className="h-8 w-8 rounded-full bg-white shadow" />
+              <span className="font-bold text-lg text-[#007AFF]">PhuketDA</span>
             </Link>
           </div>
           

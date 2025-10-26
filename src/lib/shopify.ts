@@ -214,4 +214,26 @@ export async function fetchProductByHandle(handle: string): Promise<ShopifyProdu
   return { node: data.data.product };
 }
 
+/**
+ * Fetch products by category (using tag filter)
+ * Example: fetchProductsByCategory('shopping') returns products tagged with 'category:shopping'
+ */
+export async function fetchProductsByCategory(categoryId: string, limit: number = 50): Promise<ShopifyProduct[]> {
+  const allProducts = await fetchProducts(limit);
+  const categoryTag = `category:${categoryId}`;
+  return allProducts.filter(product => 
+    product.node.tags.includes(categoryTag)
+  );
+}
+
+/**
+ * Fetch products by multiple tags
+ */
+export async function fetchProductsByTags(tags: string[], limit: number = 50): Promise<ShopifyProduct[]> {
+  const allProducts = await fetchProducts(limit);
+  return allProducts.filter(product => 
+    tags.some(tag => product.node.tags.includes(tag))
+  );
+}
+
 export { SHOPIFY_STORE_PERMANENT_DOMAIN };

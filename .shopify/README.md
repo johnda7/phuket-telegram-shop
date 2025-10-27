@@ -1,271 +1,224 @@
-# Shopify Configuration & API Access
+# 📚 SHOPIFY GUIDES - ПОЛНОЕ РУКОВОДСТВО
 
-## 🏪 Store Information
-
-**Store Name:** Phuket Telegram Shop  
-**Store URL:** `phuket-telegram-shop-117ck.myshopify.com`  
-**Admin URL:** https://admin.shopify.com/store/phuket-telegram-shop-117ck
+> **⚠️ КРИТИЧЕСКИ ВАЖНО!** Это главный файл с руководствами по работе с Shopify. Читайте его ПЕРВЫМ перед началом работы с любой категорией!
 
 ---
 
-## 🔑 Admin Credentials
+## 🎯 ОБЗОР РУКОВОДСТВ
 
-**Email:** `anotherstoriz@gmail.com`  
-**Password:** `Qazwsx1.`
+### Основные руководства:
+1. **[CATEGORY_FILLING_GUIDE.md](./CATEGORY_FILLING_GUIDE.md)** - Полное руководство по заполнению категорий
+2. **[PHOTO_WORKFLOW_GUIDE.md](./PHOTO_WORKFLOW_GUIDE.md)** - Работа с фотографиями
+3. **[METAFIELDS_GUIDE.md](./METAFIELDS_GUIDE.md)** - Работа с metafields
+4. **[PHOTO_UPLOAD_GUIDE.md](./PHOTO_UPLOAD_GUIDE.md)** - Загрузка фотографий в Shopify
+5. **[AUTO_PHOTO_PARSING_GUIDE.md](./AUTO_PHOTO_PARSING_GUIDE.md)** - Автоматический парсинг фотографий
 
-> ⚠️ **Security Note:** These credentials provide full access to Shopify Admin panel. Keep them secure!
-
----
-
-## 🔧 API Access Tokens
-
-### Storefront API (Read-Only, Public)
-- **Use:** Frontend website, displaying products
-- **Token:** `89e6c827e100c3d0b35e5957424b3cc7`
-- **Endpoint:** `https://phuket-telegram-shop-117ck.myshopify.com/api/2025-07/graphql.json`
-- **Header:** `X-Shopify-Storefront-Access-Token`
-- **Permissions:** Read products, collections, checkout (no write access)
-
-### Admin API (Full Access, Private)
-- **Use:** Backend operations, managing products, orders
-- **Token:** `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`
-- **Endpoint:** `https://phuket-telegram-shop-117ck.myshopify.com/admin/api/2025-07/graphql.json`
-- **Header:** `X-Shopify-Access-Token`
-- **Permissions:** Full access (135 scopes enabled)
-
-> ⚠️ **Critical:** Admin API token has FULL control over the store. Never commit to public repos!
+### Дополнительные файлы:
+- **[CREDENTIALS.md](./CREDENTIALS.md)** - Логины и токены
+- **[TOKENS.txt](./TOKENS.txt)** - Быстрый доступ к токенам
 
 ---
 
-## 📋 How to Use APIs (For AI Agents)
+## 🚀 БЫСТРЫЙ СТАРТ
 
-### Example 1: Get All Products (Storefront API)
+### Для новой категории:
+
+1. **Прочитайте [CATEGORY_FILLING_GUIDE.md](./CATEGORY_FILLING_GUIDE.md)** - основное руководство
+2. **Следуйте пошаговому процессу** - не пропускайте шаги
+3. **Используйте готовые скрипты** - они проверены и работают
+4. **Проверяйте результат в браузере** - после каждого шага
+
+### Для работы с фотографиями:
+
+1. **Прочитайте [PHOTO_WORKFLOW_GUIDE.md](./PHOTO_WORKFLOW_GUIDE.md)**
+2. **Создайте placeholder изображения** - для быстрого заполнения
+3. **Загрузите в Shopify** - используя REST API
+4. **Замените на реальные** - когда будет время
+
+### Для работы с metafields:
+
+1. **Прочитайте [METAFIELDS_GUIDE.md](./METAFIELDS_GUIDE.md)**
+2. **Создайте fallback данные** - в `src/data/placeMetafields.ts`
+3. **Обновите компоненты** - для использования fallback данных
+4. **Загрузите в Shopify** - используя Admin API
+
+---
+
+## 📋 ЧЕКЛИСТ ДЛЯ КАЖДОЙ КАТЕГОРИИ
+
+### Перед началом работы:
+- [ ] Прочитал все руководства
+- [ ] Понял процесс заполнения категории
+- [ ] Подготовил данные для всех мест
+- [ ] Создал необходимые скрипты
+
+### Во время работы:
+- [ ] Следую пошаговому процессу
+- [ ] Проверяю каждый шаг в браузере
+- [ ] Использую правильные namespace и типы
+- [ ] Не пропускаю паузы между запросами
+
+### После завершения:
+- [ ] Все места отображаются корректно
+- [ ] Fallback данные работают
+- [ ] Фотографии загружены
+- [ ] Metafields обновлены
+- [ ] Дизайн соответствует iOS 26
+- [ ] Коммит и пуш в GitHub
+
+---
+
+## 🚨 КРИТИЧЕСКИЕ ОШИБКИ
+
+### ТОП-10 ошибок, которые убивают проект:
+
+1. **Неправильный namespace** - используйте "place_info", не "custom"
+2. **Экранирование кавычек** - заменяйте " на \"
+3. **Неправильные типы metafields** - single_line_text_field для текста
+4. **Загрузка внешних URL** - используйте base64 для Trial аккаунта
+5. **Отсутствие паузы** - 1.5 сек между запросами к API
+6. **Неправильные координаты** - формат "lat,lng" без пробелов
+7. **Неправильный priceLevel** - число как строка, не символы
+8. **Отсутствие fallback данных** - Storefront API не возвращает metafields
+9. **Неправильное именование файлов** - только латиница и дефисы
+10. **Отсутствие проверки** - всегда проверяйте результат в браузере
+
+---
+
+## 🎯 ПРИМЕРЫ УСПЕШНЫХ КАТЕГОРИЙ
+
+### Торговые центры (Shopping) ✅
+- **Статус:** Полностью готово
+- **Мест:** 7
+- **Описания:** Премиум с HTML форматированием
+- **Фотографии:** Placeholder + реальные
+- **Metafields:** Все поля заполнены
+- **Дизайн:** iOS 26 + Liquid Glass
+
+### Следующие категории:
+- **Пляжи (Beaches)** - в процессе
+- **Храмы (Temples)** - планируется
+- **Рестораны (Restaurants)** - планируется
+
+---
+
+## 🔧 ГОТОВЫЕ СКРИПТЫ
+
+### Для каждой категории создайте:
 
 ```bash
-curl -X POST \
-  'https://phuket-telegram-shop-117ck.myshopify.com/api/2025-07/graphql.json' \
-  -H 'Content-Type: application/json' \
-  -H 'X-Shopify-Storefront-Access-Token: 89e6c827e100c3d0b35e5957424b3cc7' \
-  -d '{"query":"{ products(first: 20) { edges { node { id title handle tags priceRange { minVariantPrice { amount currencyCode } } } } } }"}'
+# Создание placeholder изображений
+node scripts/create-[category]-placeholders.cjs
+
+# Загрузка placeholder в Shopify
+node scripts/upload-[category]-placeholders.cjs
+
+# Обновление описаний
+node scripts/update-[category]-descriptions.cjs
+
+# Обновление metafields
+node scripts/update-[category]-metafields.cjs
+
+# Проверка результата
+node scripts/check-[category]-metafields.cjs
 ```
 
-### Example 2: Update Product Handle (Admin API)
+### Мастер-скрипты:
 
 ```bash
-curl -X POST \
-  'https://phuket-telegram-shop-117ck.myshopify.com/admin/api/2025-07/graphql.json' \
-  -H 'Content-Type: application/json' \
-  -H 'X-Shopify-Access-Token: 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' \
-  -d '{"query":"mutation { productUpdate(input: { id: \"gid://shopify/Product/XXX\", handle: \"new-handle\" }) { product { id handle } userErrors { field message } } }"}'
+# Полная настройка категории
+node scripts/setup-category-[category].cjs
+
+# Массовое обновление
+node scripts/mass-update-[category].cjs
 ```
 
-### Example 3: Create New Product (Admin API)
+---
+
+## 📞 ПОДДЕРЖКА
+
+### Если что-то не работает:
+
+1. **Проверьте консоль браузера** - там будут ошибки
+2. **Проверьте Shopify Admin** - загружены ли данные
+3. **Проверьте fallback данные** - правильный ли handle
+4. **Проверьте скрипты** - правильные ли namespace и типы
+5. **Проверьте паузы** - не спамите API
+
+### Полезные команды:
 
 ```bash
-curl -X POST \
-  'https://phuket-telegram-shop-117ck.myshopify.com/admin/api/2025-07/graphql.json' \
-  -H 'Content-Type: application/json' \
-  -H 'X-Shopify-Access-Token: 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' \
-  -d '{
-    "query": "mutation { productCreate(input: { title: \"New Tour\", productType: \"Excursions\", tags: [\"tour\", \"islands\"], variants: [{ price: \"120\", title: \"Adult\" }] }) { product { id title handle } userErrors { field message } } }"
-  }'
-```
+# Проверить metafields
+node scripts/check-[category]-metafields.cjs
 
-### Example 4: Delete Product (Admin API)
+# Обновить описания
+node scripts/update-[category]-descriptions.cjs
 
-```bash
-curl -X POST \
-  'https://phuket-telegram-shop-117ck.myshopify.com/admin/api/2025-07/graphql.json' \
-  -H 'Content-Type: application/json' \
-  -H 'X-Shopify-Access-Token: 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' \
-  -d '{"query":"mutation { productDelete(input: { id: \"gid://shopify/Product/XXX\" }) { deletedProductId userErrors { field message } } }"}'
+# Загрузить фотографии
+node scripts/upload-[category]-photos.cjs
+
+# Проверить результат
+npm run dev
 ```
 
 ---
 
-## 🏗️ Product Structure
+## 🎯 ФИЛОСОФИЯ
 
-### Tours (Excursions)
-```json
-{
-  "title": "🏝️ Название тура",
-  "handle": "tour-name-in-english",
-  "productType": "Excursions",
-  "tags": ["tour", "islands", "category-name"],
-  "variants": [
-    {
-      "title": "Взрослый",
-      "price": "120.00"
-    },
-    {
-      "title": "Детский (4-11 лет)",
-      "price": "90.00"
-    }
-  ]
-}
-```
+### Принципы работы:
 
-### Phuket Insider (Info Pages)
-```json
-{
-  "title": "📍 Название места/статьи",
-  "handle": "place-name-in-english",
-  "productType": "Information",
-  "tags": ["info", "insider", "category"],
-  "variants": [
-    {
-      "title": "Default",
-      "price": "0.00"
-    }
-  ]
-}
-```
+1. **Fallback данные** - надежность превыше всего
+2. **Placeholder изображения** - быстрое заполнение
+3. **Премиум описания** - качество контента
+4. **iOS 26 дизайн** - современный интерфейс
+5. **Автоматизация** - повторяемость процессов
+
+### Цели:
+
+- **Быстрое заполнение** всех категорий
+- **Качественный контент** для каждого места
+- **Стабильная работа** сайта
+- **Легкое масштабирование** на новые категории
 
 ---
 
-## 📊 Common Operations for AI Agents
+## 📊 СТАТИСТИКА
 
-### 1. List All Products
-```graphql
-query {
-  products(first: 50) {
-    edges {
-      node {
-        id
-        title
-        handle
-        productType
-        tags
-        variants(first: 10) {
-          edges {
-            node {
-              id
-              title
-              price
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
+### Торговые центры (эталон):
+- **Время заполнения:** 2 дня
+- **Мест:** 7
+- **Описаний:** 7 премиум
+- **Фотографий:** 21 (3 на место)
+- **Metafields:** 35 (5 на место)
+- **Скриптов:** 20+
+- **Ошибок:** 0 (после исправлений)
 
-### 2. Get Product by Handle
-```graphql
-query {
-  product(handle: "phi-phi-2-days-1-night") {
-    id
-    title
-    description
-    tags
-    variants(first: 10) {
-      edges {
-        node {
-          id
-          title
-          price
-          availableForSale
-        }
-      }
-    }
-  }
-}
-```
-
-### 3. Update Product
-```graphql
-mutation {
-  productUpdate(input: {
-    id: "gid://shopify/Product/XXX",
-    title: "New Title",
-    handle: "new-handle",
-    tags: ["tour", "islands"]
-  }) {
-    product {
-      id
-      title
-      handle
-    }
-    userErrors {
-      field
-      message
-    }
-  }
-}
-```
-
-### 4. Create Product with Variants
-```graphql
-mutation {
-  productCreate(input: {
-    title: "New Tour Name",
-    productType: "Excursions",
-    handle: "new-tour-handle",
-    tags: ["tour", "category"],
-    variants: [
-      { title: "Взрослый", price: "120" },
-      { title: "Детский (4-11 лет)", price: "90" }
-    ]
-  }) {
-    product {
-      id
-      title
-      handle
-    }
-    userErrors {
-      field
-      message
-    }
-  }
-}
-```
+### Цель для других категорий:
+- **Время заполнения:** 1 день (с готовыми скриптами)
+- **Мест:** 10-20 на категорию
+- **Описаний:** 10-20 премиум
+- **Фотографий:** 30-60 (3 на место)
+- **Metafields:** 50-100 (5 на место)
+- **Ошибок:** 0 (следуя руководствам)
 
 ---
 
-## 🚨 Important Notes for AI Agents
-
-1. **Always use Admin API for modifications** (creating, updating, deleting products)
-2. **Use Storefront API for reading data** (what the website sees)
-3. **Product IDs format:** `gid://shopify/Product/XXXXXXXXX`
-4. **Variant IDs format:** `gid://shopify/ProductVariant/XXXXXXXXX`
-5. **Handles must be unique** and URL-friendly (no emojis, spaces, special chars)
-6. **Tags are crucial for filtering:**
-   - `tour` - for Tours page
-   - `info` - for Phuket Insider page
-   - Add descriptive tags: `islands`, `temples`, `beaches`, etc.
+**Последнее обновление:** $(date)  
+**Версия:** 1.0  
+**Создано на основе:** Успешного опыта с категорией "Торговые центры"
 
 ---
 
-## 📚 Shopify GraphQL Documentation
-
-- **Admin API:** https://shopify.dev/docs/api/admin-graphql
-- **Storefront API:** https://shopify.dev/docs/api/storefront
-- **GraphQL Explorer:** https://shopify.dev/docs/apps/tools/graphiql-admin-api
+🎯 **ПОМНИТЕ:** Каждая категория должна быть такой же качественной, как "Торговые центры"! Следуйте руководствам ТОЧНО, и у вас получится отличный результат! 🚀
 
 ---
 
-## 🔄 API Rate Limits
+## 📚 ССЫЛКИ НА РУКОВОДСТВА
 
-- **Storefront API:** 1000 points per minute (cost per query varies)
-- **Admin API:** 2000 points available, restores at 100 points/second
-- **Check throttle status** in `extensions.cost.throttleStatus` in response
-
----
-
-## ✅ Quick Checklist for AI Agents
-
-Before making changes:
-- [ ] Use Admin API token (not Storefront)
-- [ ] Get product ID first (via query)
-- [ ] Format handle correctly (lowercase, hyphens, no special chars)
-- [ ] Add proper tags (`tour` or `info`)
-- [ ] Set productType (`Excursions` or `Information`)
-- [ ] Create variants with titles and prices
-- [ ] Check for userErrors in response
-- [ ] Verify changes via Storefront API (what users see)
-
----
-
-**Last Updated:** October 22, 2025  
-**Maintained by:** AI Agent (GitHub Copilot)
+- **[CATEGORY_FILLING_GUIDE.md](./CATEGORY_FILLING_GUIDE.md)** - Основное руководство
+- **[PHOTO_WORKFLOW_GUIDE.md](./PHOTO_WORKFLOW_GUIDE.md)** - Работа с фотографиями  
+- **[METAFIELDS_GUIDE.md](./METAFIELDS_GUIDE.md)** - Работа с metafields
+- **[PHOTO_UPLOAD_GUIDE.md](./PHOTO_UPLOAD_GUIDE.md)** - Загрузка фотографий
+- **[AUTO_PHOTO_PARSING_GUIDE.md](./AUTO_PHOTO_PARSING_GUIDE.md)** - Автоматический парсинг
+- **[CREDENTIALS.md](./CREDENTIALS.md)** - Логины и токены
+- **[TOKENS.txt](./TOKENS.txt)** - Быстрый доступ

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 export const AIConsiergeWidget = () => {
   const handleTelegramClick = () => {
     // TODO: Add actual Telegram bot link
-    window.open('https://t.me/your_bot', '_blank');
+    window.open('https://t.me/PHUKETDABOT', '_blank');
   };
 
   return (

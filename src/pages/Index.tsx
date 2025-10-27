@@ -91,7 +91,7 @@ const Index = () => {
   }, [selectedTag, products]);
 
   const handleTelegramClick = () => {
-    window.open('https://t.me/+meHzcVXS2mIzZmU1', '_blank');
+    window.open('https://t.me/PHUKETDABOT', '_blank');
   };
 
   return (

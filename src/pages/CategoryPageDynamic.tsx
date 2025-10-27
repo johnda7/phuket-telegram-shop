@@ -5,9 +5,11 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowRight } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { fetchProductsByCategory, type ShopifyProduct } from "@/lib/shopify";
 import DaBot from "@/components/DaBot";
+import { PlaceCard } from "@/components/PlaceCard";
+import { ShoppingMap } from "@/components/ShoppingMap";
 
 interface CategoryConfig {
   title: string;
@@ -20,7 +22,7 @@ const categoryConfigs: Record<string, CategoryConfig> = {
   shopping: {
     title: "Торговые центры на Пхукете",
     heroImage: "https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=1600&h=400&fit=crop",
-    description: "Торговые центры на Пхукете представляют собой уникальное сочетание традиционного тайского колорита и современных мировых брендов. Здесь можно найти всё: от модных бутиков и экзотических сувениров до ресторанов с разнообразной кухней и развлекательных зон для всей семьи. Торговый центр на Пхукете — это не просто место для покупок, но и отличный способ провести время в комфортной обстановке, наслаждаясь атмосферой тропического острова. Большие торговые центры с брендами на Пхукете предлагают широкий выбор магазинов и развлечений для всех возрастов.",
+    description: "🛍️ **Торговые центры Пхукета** — это уникальное сочетание традиционного тайского колорита и современных мировых брендов. Здесь можно найти всё: от модных бутиков и экзотических сувениров до ресторанов с разнообразной кухней и развлекательных зон для всей семьи.\n\n**🔥 ТОП торговых центров:**\n• **Central Phuket** — самый большой ТЦ с люксовыми бутиками\n• **Jungceylon** — в сердце Патонга, рядом с пляжем\n• **Premium Outlet** — скидки до 70% на бренды\n• **Big C & Tesco Lotus** — супермаркеты для повседневных покупок\n\n**💡 Советы:**\n• Лучшее время для шоппинга — день (кондиционеры)\n• В аутлетах скидки круглый год\n• В супермаркетах можно купить тайские продукты\n• В торговых центрах есть фуд-корты и развлечения",
     breadcrumbs: [
       { label: "Главная", path: "/" },
       { label: "Что посетить?", path: "/categories" },
@@ -36,6 +38,9 @@ const CategoryPageDynamic = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<"all" | "open">("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedDistrict, setSelectedDistrict] = useState<string>("all");
+  const [showMap, setShowMap] = useState(false);
   
   const config = categoryId ? categoryConfigs[categoryId] : null;
 
@@ -56,6 +61,69 @@ const CategoryPageDynamic = () => {
 
     loadProducts();
   }, [categoryId]);
+
+  // Функция для подсчета продуктов по категориям
+  const getCategoryCount = (category: string) => {
+    return products.filter(product => {
+      const productTags = product.node.tags || [];
+      return productTags.some(tag => 
+        tag === category || 
+        tag === `category:${category}` ||
+        (category === "mall" && (tag === "mall" || tag === "shopping")) ||
+        (category === "supermarket" && tag === "supermarket") ||
+        (category === "outlet" && tag === "outlet") ||
+        (category === "luxury" && tag === "luxury") ||
+        (category === "market" && tag === "market")
+      );
+    }).length;
+  };
+
+  // Функция для подсчета продуктов по районам
+  const getDistrictCount = (district: string) => {
+    return products.filter(product => {
+      const productTags = product.node.tags || [];
+      return productTags.some(tag => 
+        tag === `district:${district}` ||
+        tag === district ||
+        (district === "phuket-town" && tag === "district:PhuketTown") ||
+        (district === "bang-tao" && tag === "district:BangTao") ||
+        (district === "thalang" && tag === "district:Thalang")
+      );
+    }).length;
+  };
+
+  // Фильтрация продуктов по выбранным фильтрам
+  const filteredProducts = products.filter(product => {
+    const productTags = product.node.tags || [];
+    
+    // Фильтр по категории
+    if (selectedCategory !== "all") {
+      const hasCategory = productTags.some(tag => 
+        tag === selectedCategory || 
+        tag === `category:${selectedCategory}` ||
+        (selectedCategory === "mall" && (tag === "mall" || tag === "shopping")) ||
+        (selectedCategory === "supermarket" && tag === "supermarket") ||
+        (selectedCategory === "outlet" && tag === "outlet") ||
+        (selectedCategory === "luxury" && tag === "luxury") ||
+        (selectedCategory === "market" && tag === "market")
+      );
+      if (!hasCategory) return false;
+    }
+    
+    // Фильтр по району
+    if (selectedDistrict !== "all") {
+      const hasDistrict = productTags.some(tag => 
+        tag === `district:${selectedDistrict}` ||
+        tag === selectedDistrict ||
+        (selectedDistrict === "phuket-town" && tag === "district:PhuketTown") ||
+        (selectedDistrict === "bang-tao" && tag === "district:BangTao") ||
+        (selectedDistrict === "thalang" && tag === "district:Thalang")
+      );
+      if (!hasDistrict) return false;
+    }
+    
+    return true;
+  });
 
   if (!config) {
     return (
@@ -110,9 +178,31 @@ const CategoryPageDynamic = () => {
           </nav>
           {/* Description */}
           <div className="mb-8 max-w-5xl">
-            <p className="text-base leading-relaxed text-muted-foreground">
-              {config.description}
-            </p>
+            <div className="text-base leading-relaxed text-muted-foreground">
+              {config.description && config.description.split('\n').map((line, index) => {
+                if (line.startsWith('**') && line.endsWith('**')) {
+                  return (
+                    <h3 key={index} className="text-lg font-bold text-foreground mb-3 mt-6">
+                      {line.replace(/\*\*/g, '')}
+                    </h3>
+                  );
+                } else if (line.startsWith('•')) {
+                  return (
+                    <p key={index} className="ml-4 mb-2">
+                      <span className="text-primary">•</span> {line.substring(1).trim()}
+                    </p>
+                  );
+                } else if (line.trim() === '') {
+                  return <br key={index} />;
+                } else {
+                  return (
+                    <p key={index} className="mb-3">
+                      {line}
+                    </p>
+                  );
+                }
+              })}
+            </div>
           </div>
           {/* Filters & Map Button */}
           <div className="mb-8">
@@ -142,26 +232,58 @@ const CategoryPageDynamic = () => {
                 </button>
               </div>
               {/* Category Dropdown - iOS Style */}
-              <select className="px-5 py-2.5 rounded-full border-2 border-border bg-white text-sm font-medium hover:border-primary/50 transition-colors cursor-pointer shadow-sm">
-                <option>Категория: Торговые центры</option>
-                <option>Категория: Все места</option>
+              <select 
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="px-5 py-2.5 rounded-full border-2 border-border bg-white text-sm font-medium hover:border-primary/50 transition-colors cursor-pointer shadow-sm"
+              >
+                <option value="all">Категория: Все места ({products.length})</option>
+                <option value="mall">Категория: Торговые центры ({getCategoryCount("mall")})</option>
+                <option value="supermarket">Категория: Супермаркеты ({getCategoryCount("supermarket")})</option>
+                <option value="outlet">Категория: Аутлеты ({getCategoryCount("outlet")})</option>
+                <option value="luxury">Категория: Люксовые бутики ({getCategoryCount("luxury")})</option>
+                <option value="market">Категория: Рынки ({getCategoryCount("market")})</option>
               </select>
               {/* District Dropdown - iOS Style */}
-              <select className="px-5 py-2.5 rounded-full border-2 border-border bg-white text-sm font-medium hover:border-primary/50 transition-colors cursor-pointer shadow-sm">
-                <option>Район: Все</option>
-                <option>Район: Патонг</option>
-                <option>Район: Пхукет Таун</option>
-                <option>Район: Чалонг</option>
-                <option>Район: Банг Тао</option>
+              <select 
+                value={selectedDistrict}
+                onChange={(e) => setSelectedDistrict(e.target.value)}
+                className="px-5 py-2.5 rounded-full border-2 border-border bg-white text-sm font-medium hover:border-primary/50 transition-colors cursor-pointer shadow-sm"
+              >
+                <option value="all">Район: Все ({products.length})</option>
+                <option value="patong">Район: Патонг ({getDistrictCount("patong")})</option>
+                <option value="phuket-town">Район: Пхукет Таун ({getDistrictCount("phuket-town")})</option>
+                <option value="chalong">Район: Чалонг ({getDistrictCount("chalong")})</option>
+                <option value="karon">Район: Карон ({getDistrictCount("karon")})</option>
+                <option value="kata">Район: Ката ({getDistrictCount("kata")})</option>
+                <option value="thalang">Район: Тхаланг ({getDistrictCount("thalang")})</option>
+                <option value="bang-tao">Район: Банг Тао ({getDistrictCount("bang-tao")})</option>
+                <option value="kamala">Район: Камала ({getDistrictCount("kamala")})</option>
+                <option value="rawai">Район: Равай ({getDistrictCount("rawai")})</option>
               </select>
+              {/* Reset Filters Button */}
+              {(selectedCategory !== "all" || selectedDistrict !== "all") && (
+                <button
+                  onClick={() => {
+                    setSelectedCategory("all");
+                    setSelectedDistrict("all");
+                  }}
+                  className="px-4 py-2.5 rounded-full border-2 border-primary/20 bg-primary/5 text-primary text-sm font-medium hover:bg-primary/10 transition-colors cursor-pointer shadow-sm"
+                >
+                  🔄 Сбросить
+                </button>
+              )}
             </div>
             {/* Map Preview Card - Interactive */}
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl p-6 border-2 border-blue-200/50 hover:border-blue-300 transition-all duration-300 cursor-pointer group shadow-md hover:shadow-xl">
+            <div 
+              onClick={() => setShowMap(true)}
+              className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl p-6 border-2 border-blue-200/50 hover:border-blue-300 transition-all duration-300 cursor-pointer group shadow-md hover:shadow-xl"
+            >
               <div className="flex items-center justify-between gap-4">
                 <div className="flex-1">
                   <h3 className="text-lg font-bold text-blue-900 mb-1 flex items-center gap-2">
                     🗺️ Смотреть на карте
-                    <span className="text-sm font-normal text-blue-600">({products.length} мест)</span>
+                    <span className="text-sm font-normal text-blue-600">({filteredProducts.length} мест)</span>
                   </h3>
                   <p className="text-sm text-blue-700">
                     Посмотрите расположение всех торговых центров на интерактивной карте
@@ -179,54 +301,51 @@ const CategoryPageDynamic = () => {
           </div>
           {/* Products Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {products.map((product) => {
-              const image = product.node.images.edges[0]?.node.url || "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=600";
-              // Extract district from tags (district:xxx)
-              const districtTag = product.node.tags.find((tag: string) => tag.startsWith('district:'));
-              const district = districtTag ? districtTag.replace('district:', '').split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : '';
-              // Mock rating (в будущем из metafields)
-              const rating = 4.5;
-              return (
-                <Link
-                  key={product.node.id}
-                  to={`/place/${product.node.handle}`}
-                  className="group block overflow-hidden rounded-xl bg-card shadow-md hover:shadow-xl transition-all duration-300"
-                >
-                  {/* Image */}
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    <img
-                      src={image}
-                      alt={product.node.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    {/* Blue Arrow Button */}
-                    <div className="absolute bottom-4 right-4 bg-[#007AFF] text-white p-3 rounded-full shadow-lg group-hover:scale-110 transition-transform">
-                      <ArrowRight className="w-5 h-5" />
-                    </div>
-                  </div>
-                  {/* Content */}
-                  <div className="p-5">
-                    <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors leading-tight">
-                      {product.node.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground line-clamp-3 mb-3 leading-relaxed">
-                      {product.node.description}
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
+            {filteredProducts.map((product) => (
+              <PlaceCard key={product.node.id} product={product.node} />
+            ))}
           </div>
           {/* Empty State */}
-          {products.length === 0 && (
+          {filteredProducts.length === 0 && (
             <div className="text-center py-16">
-              <p className="text-muted-foreground text-lg">
-                Места скоро появятся
+              <div className="w-24 h-24 mx-auto mb-6 bg-muted/20 rounded-full flex items-center justify-center">
+                <span className="text-4xl">🛍️</span>
+              </div>
+              <h3 className="text-xl font-bold mb-2">
+                {selectedCategory !== "all" || selectedDistrict !== "all" 
+                  ? "Ничего не найдено" 
+                  : "Места скоро появятся"
+                }
+              </h3>
+              <p className="text-muted-foreground mb-6">
+                {selectedCategory !== "all" || selectedDistrict !== "all"
+                  ? "Попробуйте изменить фильтры или сбросить их"
+                  : "Мы работаем над добавлением новых торговых центров"
+                }
               </p>
+              {(selectedCategory !== "all" || selectedDistrict !== "all") && (
+                <button
+                  onClick={() => {
+                    setSelectedCategory("all");
+                    setSelectedDistrict("all");
+                  }}
+                  className="px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+                >
+                  🔄 Сбросить фильтры
+                </button>
+              )}
             </div>
           )}
         </div>
       </div>
+
+      {/* Shopping Map Modal */}
+      {showMap && (
+        <ShoppingMap 
+          products={filteredProducts} 
+          onClose={() => setShowMap(false)} 
+        />
+      )}
     </>
   );
 }

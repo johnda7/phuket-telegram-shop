@@ -108,7 +108,7 @@ const DaBot = () => {
 
                 {/* CTA - Open in Telegram */}
                 <a
-                  href="https://t.me/phuketda_bot"
+                  href="https://t.me/PHUKETDABOT"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block"

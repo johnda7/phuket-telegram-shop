@@ -1,0 +1,61 @@
+{
+  "place": "Central Festival Phuket",
+  "searchDate": "2025-10-27T12:25:26.832Z",
+  "count": 6,
+  "photos": [
+    {
+      "id": 1,
+      "url": "https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=1600&q=90",
+      "title": "Luxury Shopping Mall Interior - Modern Design",
+      "source": "Unsplash",
+      "description": "High-end shopping mall with premium brands",
+      "filename": "central-festival-phuket-1.jpg",
+      "alt": "Central Festival Phuket - Luxury Shopping Mall Interior - Modern Design"
+    },
+    {
+      "id": 2,
+      "url": "https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=1600&q=90",
+      "title": "Shopping Center with Green Roof Garden",
+      "source": "Unsplash",
+      "description": "Eco-friendly mall entrance with vegetation",
+      "filename": "central-festival-phuket-2.jpg",
+      "alt": "Central Festival Phuket - Shopping Center with Green Roof Garden"
+    },
+    {
+      "id": 3,
+      "url": "https://images.unsplash.com/photo-1441986380878-c4248f5b8b5b?w=1600&q=90",
+      "title": "Modern Shopping Complex Exterior",
+      "source": "Unsplash",
+      "description": "Contemporary architecture shopping center",
+      "filename": "central-festival-phuket-3.jpg",
+      "alt": "Central Festival Phuket - Modern Shopping Complex Exterior"
+    },
+    {
+      "id": 4,
+      "url": "https://images.unsplash.com/photo-1558470598-a5dda9640f68?w=1600&q=90",
+      "title": "Indoor Shopping Passage with Natural Light",
+      "source": "Unsplash",
+      "description": "Bright shopping corridor with skylights",
+      "filename": "central-festival-phuket-4.jpg",
+      "alt": "Central Festival Phuket - Indoor Shopping Passage with Natural Light"
+    },
+    {
+      "id": 5,
+      "url": "https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=1600&q=90",
+      "title": "Luxury Brand Store Display",
+      "source": "Unsplash",
+      "description": "Premium retail shopping experience",
+      "filename": "central-festival-phuket-5.jpg",
+      "alt": "Central Festival Phuket - Luxury Brand Store Display"
+    },
+    {
+      "id": 6,
+      "url": "https://images.unsplash.com/photo-1555529902-5261145633bf?w=1600&q=90",
+      "title": "Food Court and Entertainment Area",
+      "source": "Unsplash",
+      "description": "Modern dining and leisure space",
+      "filename": "central-festival-phuket-6.jpg",
+      "alt": "Central Festival Phuket - Food Court and Entertainment Area"
+    }
+  ]
+}

@@ -9,6 +9,7 @@ export interface ShopifyProduct {
     id: string;
     title: string;
     description: string;
+    descriptionHtml: string;
     handle: string;
     productType: string;
     tags: string[];
@@ -64,6 +65,7 @@ const STOREFRONT_QUERY = `
           id
           title
           description
+          descriptionHtml
           handle
           productType
           tags
@@ -102,6 +104,25 @@ const STOREFRONT_QUERY = `
             name
             values
           }
+          metafields(identifiers: [
+            {namespace: "place_info", key: "coordinates"},
+            {namespace: "place_info", key: "rating"},
+            {namespace: "place_info", key: "reviews_count"},
+            {namespace: "place_info", key: "duration"},
+            {namespace: "place_info", key: "best_time"},
+            {namespace: "place_info", key: "amenities"},
+            {namespace: "place_info", key: "tips"},
+            {namespace: "place_info", key: "map_url"},
+            {namespace: "place_info", key: "working_hours"},
+            {namespace: "place_info", key: "district"},
+            {namespace: "place_info", key: "price_level"},
+            {namespace: "place_info", key: "website"}
+          ]) {
+            namespace
+            key
+            value
+            type
+          }
         }
       }
     }
@@ -114,6 +135,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
       id
       title
       description
+      descriptionHtml
       handle
       productType
       tags

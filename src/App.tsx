@@ -14,6 +14,7 @@ import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import ProductDetail from "./pages/ProductDetail";
 import PlaceDetail from "./pages/PlaceDetail";
+import Services from "./pages/Services";
 import NotFound from "./pages/NotFound";
 import { CartDrawer } from "./components/CartDrawer";
 
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/product/:handle" element={<ProductDetail />} />
               <Route path="/place/:handle" element={<PlaceDetail />} />
+              <Route path="/services/:service" element={<Services />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

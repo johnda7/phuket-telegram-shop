@@ -11,7 +11,7 @@ import { fetchProductByHandle } from "@/lib/shopify";
 import { getPlaceMetafields, getDistrictInRussian } from "@/data/placeMetafields";
 import { 
   Loader2, MapPin, Star, ExternalLink, MessageCircle, 
-  Clock, DollarSign, ChevronLeft, ChevronRight,
+  Clock, DollarSign, ChevronLeft, ChevronRight, ArrowLeft,
   Wifi, ParkingCircle, Utensils, Film, ShoppingBag, Car, RefreshCw, Home, Share2
 } from "lucide-react";
 
@@ -204,6 +204,42 @@ const PlaceDetail = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      {/* 
+        🧭 NAVIGATION HEADER - Back Button + Breadcrumbs
+        iOS 26 Style Navigation
+      */}
+      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50">
+        <div className="flex items-center justify-between px-4 py-3">
+          {/* Back Button */}
+          <button
+            onClick={() => window.history.back()}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100/80 hover:bg-gray-200/80 active:scale-95 transition-all duration-200"
+          >
+            <ArrowLeft className="w-5 h-5 text-gray-700" />
+            <span className="text-gray-700 font-medium">Назад</span>
+          </button>
+
+          {/* Breadcrumbs */}
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <Link to="/" className="hover:text-primary transition-colors">
+              Главная
+            </Link>
+            <span>/</span>
+            <Link to="/categories" className="hover:text-primary transition-colors">
+              Категории
+            </Link>
+            <span>/</span>
+            <Link to="/category/shopping" className="hover:text-primary transition-colors">
+              Торговые центры
+            </Link>
+            <span>/</span>
+            <span className="text-gray-900 font-medium truncate max-w-32">
+              {place.title.split('(')[0].trim()}
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* 
         🌟 HERO SECTION - Full Screen Photo Gallery
         ALL BUTTONS WORK!

@@ -8,6 +8,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { fetchProductByHandle } from "@/lib/shopify";
+import { getPlaceMetafields, getDistrictInRussian } from "@/data/placeMetafields";
 import { 
   Loader2, MapPin, Star, ExternalLink, MessageCircle, 
   Clock, DollarSign, ChevronLeft, ChevronRight,
@@ -36,6 +37,23 @@ interface ParsedPlace {
   amenities?: string[];
 }
 
+// Функция для перевода районов на русский
+const getDistrictInRussian = (district: string): string => {
+  const districtMap: { [key: string]: string } = {
+    'PhuketTown': 'Пхукет Таун',
+    'Patong': 'Патонг',
+    'Thalang': 'Таланг',
+    'Chalong': 'Чалонг',
+    'Karon': 'Карон',
+    'Kata': 'Ката',
+    'Kamala': 'Камала',
+    'Rawai': 'Равай',
+    'Cherngtalay': 'Чернгталай',
+    'Kathu': 'Кату'
+  };
+  return districtMap[district] || district;
+};
+
 const PlaceDetail = () => {
   const { handle } = useParams<{ handle: string }>();
   const [place, setPlace] = useState<ParsedPlace | null>(null);
@@ -61,9 +79,7 @@ const PlaceDetail = () => {
         const categoryTag = product.tags.find(t => t.startsWith('category:'));
         const category = categoryTag?.replace('category:', '') || '';
         
-        // Parse district
-        const districtTag = product.tags.find(t => t.startsWith('district:'));
-        const district = districtTag?.replace('district:', '');
+        // District will be parsed from metafields below
         
         // Parse price level
         const priceLevelTag = product.tags.find(t => t.startsWith('price-level:'));
@@ -73,12 +89,18 @@ const PlaceDetail = () => {
         const workingHoursTag = product.tags.find(t => t.includes(':00'));
         const workingHours = workingHoursTag;
         
-        // Parse rating
-        const ratingTag = product.tags.find(t => t.startsWith('rating:'));
-        const rating = ratingTag ? parseFloat(ratingTag.replace('rating:', '')) : 4.5;
+        // Получаем metafields из fallback данных (Storefront API не может получить metafields)
+        const fallbackData = getPlaceMetafields(handle);
+        const rating = fallbackData.rating;
+        const coordinates = fallbackData.coordinates;
+        const district = fallbackData.district;
         
-        // Parse coordinates (from metafields or default)
-        const coordinates = '7.8905,98.3901'; // Central Phuket coordinates
+        console.log('🔍 Debug metafields (fallback):');
+        console.log('  Handle:', handle);
+        console.log('  Fallback data:', fallbackData);
+        console.log('  Final rating:', rating);
+        console.log('  Final district:', district);
+        console.log('  Final coordinates:', coordinates);
         
         // Images - ALL from Shopify!
         const images = product.images?.edges.map(e => ({
@@ -245,9 +267,9 @@ const PlaceDetail = () => {
               </span>
             </div>
 
-            {/* Title - Apple Typography - Z-INDEX 10! */}
-            <h1 className="text-3xl md:text-5xl font-black text-white mb-4 drop-shadow-2xl leading-tight">
-              Central Festival
+            {/* Title - Telegram Mobile Optimized */}
+            <h1 className="text-lg md:text-xl font-bold text-white mb-3 drop-shadow-2xl leading-tight px-2">
+              {place.title}
             </h1>
 
             {/* Meta Info - Z-INDEX 10! */}
@@ -264,7 +286,7 @@ const PlaceDetail = () => {
               {place.district && (
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30">
                   <MapPin className="w-4 h-4 text-white" />
-                  <span className="text-white font-medium">Пхукет Таун</span>
+                  <span className="text-white font-medium">{getDistrictInRussian(place.district)}</span>
                 </div>
               )}
               

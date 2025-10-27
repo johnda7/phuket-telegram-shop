@@ -174,15 +174,23 @@ const PRODUCT_BY_HANDLE_QUERY = `
         name
         values
       }
-      metafields(identifiers: [
-        {namespace: "place_info", key: "coordinates"},
-        {namespace: "place_info", key: "rating"},
-        {namespace: "place_info", key: "reviews_count"},
-        {namespace: "place_info", key: "duration"},
-        {namespace: "place_info", key: "best_time"},
-        {namespace: "place_info", key: "amenities"},
-        {namespace: "place_info", key: "tips"},
-        {namespace: "place_info", key: "map_url"}
+          metafields(identifiers: [
+            {namespace: "place_info", key: "coordinates"},
+            {namespace: "place_info", key: "rating"},
+            {namespace: "place_info", key: "district"},
+            {namespace: "custom", key: "coordinates"},
+            {namespace: "custom", key: "rating"},
+            {namespace: "custom", key: "district"},
+        {namespace: "place_info", key: "map_url"},
+        {namespace: "custom", key: "coordinates"},
+        {namespace: "custom", key: "rating"},
+        {namespace: "custom", key: "district"},
+        {namespace: "custom", key: "working_hours"},
+        {namespace: "custom", key: "price_level"},
+        {namespace: "custom", key: "duration"},
+        {namespace: "custom", key: "best_time"},
+        {namespace: "custom", key: "amenities"},
+        {namespace: "custom", key: "website"}
       ]) {
         namespace
         key

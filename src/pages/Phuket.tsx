@@ -34,7 +34,10 @@ const Phuket = () => {
     const loadProducts = async () => {
       try {
         setLoading(true);
+        console.log('🔄 Загружаем продукты...');
         const data = await fetchProducts(50);
+        console.log('📦 Загружено продуктов:', data.length);
+        console.log('📦 Продукты:', data.map(p => ({ title: p.node.title, type: p.node.productType, tags: p.node.tags })));
         setProducts(data);
         
         // Check URL params for initial category
@@ -46,6 +49,7 @@ const Phuket = () => {
           setFilteredProducts(data);
         }
       } catch (err) {
+        console.error('❌ Ошибка загрузки:', err);
         setError(err instanceof Error ? err.message : 'Failed to load content');
       } finally {
         setLoading(false);
@@ -56,14 +60,19 @@ const Phuket = () => {
   }, []);
 
   useEffect(() => {
+    console.log('🔄 Фильтрация продуктов...', { activeCategory, productsCount: products.length });
     if (activeCategory === 'all') {
+      console.log('📦 Показываем все продукты:', products.length);
       setFilteredProducts(products);
     } else {
       const category = categories.find(c => c.id === activeCategory);
       if (category) {
+        console.log('🏷️ Фильтруем по категории:', category.label, 'теги:', category.tags);
         const filtered = products.filter(p => 
           category.tags.some(tag => p.node.tags.includes(tag))
         );
+        console.log('📦 Отфильтровано продуктов:', filtered.length);
+        console.log('📦 Туры:', filtered.filter(p => p.node.productType === 'Excursions' || p.node.tags.includes('tour')));
         setFilteredProducts(filtered);
       }
     }
@@ -167,33 +176,38 @@ const Phuket = () => {
         </div>
 
         {/* Products Grid */}
-        {filteredProducts.length === 0 ? (
-          <div className="text-center py-20">
-            <MapPin className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-2xl font-semibold mb-2">Пока нет контента</h2>
-            <p className="text-muted-foreground">
-              Добавьте товары с соответствующими тегами в Shopify
-            </p>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.map((product) => {
-              const isTour = product.node.productType === 'Экскурсии' || 
-                             product.node.tags.some(tag => ['islands', 'popular', '1-day', '2-days'].includes(tag));
-              const isBeach = product.node.tags.some(tag => ['beach', 'пляж'].includes(tag));
-              
-              return (
-                <ProductCard
-                  key={product.node.id}
-                  product={product.node}
-                  showPrice={isTour}
-                  showRating={isBeach}
-                  linkPrefix={isTour ? "/product" : "/place"}
-                />
-              );
-            })}
-          </div>
-        )}
+        {(() => {
+          console.log('🎨 Рендеринг продуктов:', { filteredProductsCount: filteredProducts.length, loading, error });
+          return filteredProducts.length === 0 ? (
+            <div className="text-center py-20">
+              <MapPin className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h2 className="text-2xl font-semibold mb-2">Пока нет контента</h2>
+              <p className="text-muted-foreground">
+                Добавьте товары с соответствующими тегами в Shopify
+              </p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProducts.map((product) => {
+                const isTour = product.node.productType === 'Excursions' || 
+                               product.node.tags.some(tag => ['islands', 'popular', '1-day', '2-days', 'tour'].includes(tag));
+                const isBeach = product.node.tags.some(tag => ['beach', 'пляж'].includes(tag));
+                
+                console.log('🎯 Продукт:', { title: product.node.title, type: product.node.productType, isTour, isBeach });
+                
+                return (
+                  <ProductCard
+                    key={product.node.id}
+                    product={product.node}
+                    showPrice={isTour}
+                    showRating={isBeach}
+                    linkPrefix={isTour ? "/product" : "/place"}
+                  />
+                );
+              })}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

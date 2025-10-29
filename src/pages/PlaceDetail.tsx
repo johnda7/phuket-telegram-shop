@@ -9,10 +9,13 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { fetchProductByHandle } from "@/lib/shopify";
 import { getPlaceMetafields } from "@/data/placeMetafields";
+import { getCategoryNameInRussian } from "@/config/categories";
+import { getAllServices } from "@/config/services";
+import { getButtonClass, getCardClass, cn } from "@/styles/design-system";
 import { 
   Loader2, MapPin, Star, ExternalLink, MessageCircle, 
   Clock, DollarSign, ChevronLeft, ChevronRight, ArrowLeft,
-  Wifi, ParkingCircle, Utensils, Film, ShoppingBag, Car, Home, Share2, Ship
+  Wifi, ParkingCircle, Utensils, Film, Share2
 } from "lucide-react";
 
 interface PlacePhoto {
@@ -54,26 +57,7 @@ const getDistrictInRussian = (district: string): string => {
   return districtMap[district] || district;
 };
 
-// Функция для перевода категорий на русский
-const getCategoryNameInRussian = (category: string): string => {
-  const categoryMap: { [key: string]: string } = {
-    'shopping': 'Торговые центры',
-    'beaches': 'Пляжи',
-    'temples': 'Храмы',
-    'viewpoints': 'Смотровые площадки',
-    'aquaparks': 'Аквапарки',
-    'restaurants': 'Рестораны',
-    'nightlife': 'Ночная жизнь',
-    'markets': 'Рынки',
-    'attractions': 'Достопримечательности',
-    'spa': 'СПА и массаж',
-    'museums': 'Музеи',
-    'waterfalls': 'Водопады',
-    'parks': 'Парки',
-    'activities': 'Активности'
-  };
-  return categoryMap[category] || category;
-};
+// ✅ Используем централизованную функцию из config/categories.ts
 
 const PlaceDetail = () => {
   const { handle } = useParams<{ handle: string }>();
@@ -502,79 +486,28 @@ const PlaceDetail = () => {
               </div>
             </div>
 
-            {/* Telegram WebApp Style Grid - 4 СЕРВИСА! */}
+            {/* Telegram WebApp Style Grid - ДИНАМИЧЕСКИ из config/services.ts */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Link
-                to="/phuket"
-                className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors border border-gray-100"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <Ship className="w-5 h-5 text-[#007AFF]" />
+              {getAllServices().map((service) => (
+                <Link
+                  key={service.id}
+                  to={service.path}
+                  className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors border border-gray-100"
+                >
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", service.bgColor)}>
+                      <service.icon className={cn("w-5 h-5", service.iconColor)} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900 text-sm">{service.title}</div>
+                      <div className="text-xs text-gray-500">{service.subtitle}</div>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-gray-900 text-sm">Туры</div>
-                    <div className="text-xs text-gray-500">С гидом</div>
-                  </div>
-                </div>
-                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-
-              <Link
-                to="/services/car-rental"
-                className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors border border-gray-100"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
-                    <Car className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-gray-900 text-sm">Аренда авто</div>
-                    <div className="text-xs text-gray-500">Самостоятельно</div>
-                  </div>
-                </div>
-                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-
-              <Link
-                to="/services/currency-exchange"
-                className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors border border-gray-100"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
-                    <DollarSign className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-gray-900 text-sm">Обмен валюты</div>
-                    <div className="text-xs text-gray-500">Выгодный курс</div>
-                  </div>
-                </div>
-                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
-
-              <Link
-                to="/services/real-estate"
-                className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors border border-gray-100"
-              >
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
-                    <Home className="w-5 h-5 text-orange-600" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-gray-900 text-sm">Недвижимость</div>
-                    <div className="text-xs text-gray-500">Покупка и аренда</div>
-                  </div>
-                </div>
-                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </Link>
+                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+              ))}
             </div>
           </div>
         </div>

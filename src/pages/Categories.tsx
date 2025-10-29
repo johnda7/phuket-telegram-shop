@@ -101,6 +101,15 @@ const categories: Category[] = [
     id: "viewpoints",
     label: "Смотровые площадки",
     icon: Mountain,
+    description: "Лучшие виды на Пхукет с высоты - закаты и рассветы",
+    image: "/placeholder.svg",
+    path: "/category/viewpoints",
+    color: "from-orange-500 to-amber-500"
+  },
+  {
+    id: "viewpoints",
+    label: "Смотровые площадки",
+    icon: Mountain,
     description: "Панорамные виды на остров и море",
     image: "/placeholder.svg",
     path: "/category/viewpoints",

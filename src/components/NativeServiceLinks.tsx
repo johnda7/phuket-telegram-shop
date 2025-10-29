@@ -105,17 +105,15 @@ export const NativeServiceLinks = ({ context = 'default', className = '' }: Nati
       {/* Services Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {services.map((service) => {
-          const LinkComponent = service.external ? 'a' : Link;
-          const linkProps = service.external 
-            ? { href: service.link, target: '_blank', rel: 'noopener noreferrer' }
-            : { to: service.link };
-
-          return (
-            <LinkComponent
-              key={service.id}
-              {...linkProps}
-              className="group block"
-            >
+          if (service.external) {
+            return (
+              <a
+                key={service.id}
+                href={service.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block"
+              >
               <div className={`
                 ${service.bgColor} 
                 rounded-2xl p-6 
@@ -162,8 +160,64 @@ export const NativeServiceLinks = ({ context = 'default', className = '' }: Nati
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </div>
               </div>
-            </LinkComponent>
-          );
+            </a>
+            );
+          } else {
+            return (
+              <Link
+                key={service.id}
+                to={service.link}
+                className="group block"
+              >
+                <div className={`
+                  ${service.bgColor} 
+                  rounded-2xl p-6 
+                  border-2 border-gray-200/50
+                  hover:border-gray-300
+                  transition-all duration-300 
+                  hover:scale-105 
+                  hover:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.2)]
+                  hover:-translate-y-1
+                  cursor-pointer
+                  h-full
+                  flex flex-col
+                `}>
+                  {/* Icon with gradient background */}
+                  <div className="mb-4">
+                    <div className={`
+                      w-14 h-14 rounded-2xl 
+                      bg-gradient-to-br ${service.gradient}
+                      flex items-center justify-center
+                      shadow-lg
+                      group-hover:scale-110
+                      transition-transform duration-300
+                    `}>
+                      <span className="text-3xl">{service.emoji}</span>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <h3 className="text-lg font-black text-gray-900 mb-2 leading-tight">
+                    {service.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 font-medium mb-4 flex-1">
+                    {service.description}
+                  </p>
+
+                  {/* CTA */}
+                  <div className={`
+                    inline-flex items-center gap-2 
+                    text-sm font-bold ${service.iconColor}
+                    group-hover:gap-3
+                    transition-all duration-300
+                  `}>
+                    <span>{service.external ? 'Открыть' : 'Смотреть'}</span>
+                    <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  </div>
+                </div>
+              </Link>
+            );
+          }
         })}
       </div>
 

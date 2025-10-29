@@ -30,6 +30,17 @@ const categoryConfigs: Record<string, CategoryConfig> = {
       { label: "Сувениры и шопинг", path: "/categories" },
       { label: "Торговые центры на Пхукете" }
     ]
+  },
+  viewpoints: {
+    title: "Смотровые площадки на Пхукете",
+    heroImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&h=400&fit=crop",
+    description: "🌅 **Смотровые площадки Пхукета** — места, где открываются невероятные виды на остров с протяженными песчаными пляжами и зелеными джунглями. На высоких точках встречают самые эффектные закаты и рассветы. На некоторых смотровых можно даже встретить диких животных.\n\n**🔥 ТОП смотровых площадок:**\n• **Мыс Промтеп** — легендарные закаты над Андаманским морем\n• **Карон Вьюпоинт** — три пляжа одновременно в одном кадре\n• **Самет Нангше** — виды как в фильме \"Аватар\"\n• **Као Ранг** — панорама всего Пхукет Тауна\n\n**💡 Советы:**\n• Приезжайте за 30 минут до заката на западные смотровые\n• На рассвет едьте на восточные площадки (Ао Пор, Самет Нангше)\n• Берите воду и закуски — на высоте может не быть магазинов\n• Большинство смотровых бесплатные!\n• Будьте аккуратны на крутых дорогах",
+    breadcrumbs: [
+      { label: "Главная", path: "/" },
+      { label: "Что посетить?", path: "/categories" },
+      { label: "Достопримечательности", path: "/categories" },
+      { label: "Смотровые площадки на Пхукете" }
+    ]
   }
 };
 
@@ -237,12 +248,26 @@ const CategoryPageDynamic = () => {
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="px-5 py-2.5 rounded-full border-2 border-border bg-white text-sm font-medium hover:border-primary/50 transition-colors cursor-pointer shadow-sm"
               >
-                <option value="all">Категория: Все места ({products.length})</option>
-                <option value="mall">Категория: Торговые центры ({getCategoryCount("mall")})</option>
-                <option value="supermarket">Категория: Супермаркеты ({getCategoryCount("supermarket")})</option>
-                <option value="outlet">Категория: Аутлеты ({getCategoryCount("outlet")})</option>
-                <option value="luxury">Категория: Люксовые бутики ({getCategoryCount("luxury")})</option>
-                <option value="market">Категория: Рынки ({getCategoryCount("market")})</option>
+                {categoryId === 'shopping' && (
+                  <>
+                    <option value="all">Категория: Все места ({products.length})</option>
+                    <option value="mall">Категория: Торговые центры ({getCategoryCount("mall")})</option>
+                    <option value="supermarket">Категория: Супермаркеты ({getCategoryCount("supermarket")})</option>
+                    <option value="outlet">Категория: Аутлеты ({getCategoryCount("outlet")})</option>
+                    <option value="luxury">Категория: Люксовые бутики ({getCategoryCount("luxury")})</option>
+                    <option value="market">Категория: Рынки ({getCategoryCount("market")})</option>
+                  </>
+                )}
+                {categoryId === 'viewpoints' && (
+                  <>
+                    <option value="all">Тип: Все площадки ({products.length})</option>
+                    <option value="sunset">Тип: Закатные ({getCategoryCount("sunset")})</option>
+                    <option value="sunrise">Тип: Рассветные ({getCategoryCount("sunrise")})</option>
+                    <option value="panorama">Тип: Панорамные ({getCategoryCount("panorama")})</option>
+                    <option value="beach-view">Тип: С видом на пляжи ({getCategoryCount("beach-view")})</option>
+                    <option value="hidden">Тип: Секретные ({getCategoryCount("hidden")})</option>
+                  </>
+                )}
               </select>
               {/* District Dropdown - iOS Style */}
               <select 
@@ -251,15 +276,18 @@ const CategoryPageDynamic = () => {
                 className="px-5 py-2.5 rounded-full border-2 border-border bg-white text-sm font-medium hover:border-primary/50 transition-colors cursor-pointer shadow-sm"
               >
                 <option value="all">Район: Все ({products.length})</option>
-                <option value="patong">Район: Патонг ({getDistrictCount("patong")})</option>
-                <option value="phuket-town">Район: Пхукет Таун ({getDistrictCount("phuket-town")})</option>
-                <option value="chalong">Район: Чалонг ({getDistrictCount("chalong")})</option>
+                <option value="rawai">Район: Равай ({getDistrictCount("rawai")})</option>
                 <option value="karon">Район: Карон ({getDistrictCount("karon")})</option>
                 <option value="kata">Район: Ката ({getDistrictCount("kata")})</option>
+                <option value="chalong">Район: Чалонг ({getDistrictCount("chalong")})</option>
+                <option value="phuket-town">Район: Пхукет Таун ({getDistrictCount("phuket-town")})</option>
+                <option value="patong">Район: Патонг ({getDistrictCount("patong")})</option>
+                <option value="kamala">Район: Камала ({getDistrictCount("kamala")})</option>
                 <option value="thalang">Район: Тхаланг ({getDistrictCount("thalang")})</option>
                 <option value="bang-tao">Район: Банг Тао ({getDistrictCount("bang-tao")})</option>
-                <option value="kamala">Район: Камала ({getDistrictCount("kamala")})</option>
-                <option value="rawai">Район: Равай ({getDistrictCount("rawai")})</option>
+                {categoryId === 'viewpoints' && (
+                  <option value="phangnga">Район: Пханг Нга ({getDistrictCount("phangnga")})</option>
+                )}
               </select>
               {/* Reset Filters Button */}
               {(selectedCategory !== "all" || selectedDistrict !== "all") && (
@@ -286,7 +314,10 @@ const CategoryPageDynamic = () => {
                     <span className="text-sm font-normal text-blue-600">({filteredProducts.length} мест)</span>
                   </h3>
                   <p className="text-sm text-blue-700">
-                    Посмотрите расположение всех торговых центров на интерактивной карте
+                    {categoryId === 'viewpoints' 
+                      ? 'Посмотрите расположение всех смотровых площадок на интерактивной карте'
+                      : 'Посмотрите расположение всех торговых центров на интерактивной карте'
+                    }
                   </p>
                 </div>
                 <Button 
@@ -309,7 +340,7 @@ const CategoryPageDynamic = () => {
           {filteredProducts.length === 0 && (
             <div className="text-center py-16">
               <div className="w-24 h-24 mx-auto mb-6 bg-muted/20 rounded-full flex items-center justify-center">
-                <span className="text-4xl">🛍️</span>
+                <span className="text-4xl">{categoryId === 'viewpoints' ? '🌅' : '🛍️'}</span>
               </div>
               <h3 className="text-xl font-bold mb-2">
                 {selectedCategory !== "all" || selectedDistrict !== "all" 

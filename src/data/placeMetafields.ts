@@ -71,7 +71,21 @@ export const placeMetafieldsData: Record<string, PlaceMetafields> = {
     coordinates: '7.8905,98.2965',
     workingHours: '10:00-22:00',
     priceLevel: 3
-  }
+  },
+  
+  // VIEWPOINTS - Смотровые площадки
+  'promthep-cape': { rating: 4.8, district: 'Rawai', coordinates: '7.7625,98.3056', workingHours: '24/7', priceLevel: 0 },
+  'karon-viewpoint': { rating: 4.7, district: 'Karon', coordinates: '7.8333,98.3000', workingHours: '24/7', priceLevel: 0 },
+  'windmill-viewpoint': { rating: 4.6, district: 'Rawai', coordinates: '7.7591,98.3125', workingHours: '24/7', priceLevel: 0 },
+  'black-rock-viewpoint': { rating: 4.5, district: 'Thalang', coordinates: '7.9856,98.2789', workingHours: '24/7', priceLevel: 0 },
+  'khao-rang': { rating: 4.5, district: 'PhuketTown', coordinates: '7.8856,98.3845', workingHours: '05:00-21:00', priceLevel: 0 },
+  'laem-singh-viewpoint': { rating: 4.4, district: 'Kamala', coordinates: '7.9456,98.2723', workingHours: '24/7', priceLevel: 0 },
+  'kata-noi-viewpoint': { rating: 4.5, district: 'Kata', coordinates: '7.8178,98.2989', workingHours: '24/7', priceLevel: 0 },
+  'khao-khad-views-tower': { rating: 4.4, district: 'Chalong', coordinates: '7.8289,98.3678', workingHours: '08:00-18:00', priceLevel: 0 },
+  'monkey-hill': { rating: 4.3, district: 'PhuketTown', coordinates: '7.8923,98.3756', workingHours: '24/7', priceLevel: 0 },
+  'samet-nangshe-viewpoint': { rating: 4.9, district: 'Phangnga', coordinates: '8.2712,98.4389', workingHours: '24/7', priceLevel: 1 },
+  'ao-por-viewpoint': { rating: 4.6, district: 'Thalang', coordinates: '8.0145,98.4234', workingHours: '24/7', priceLevel: 0 },
+  'big-buddha-secret-viewpoint': { rating: 4.7, district: 'Chalong', coordinates: '7.8412,98.3089', workingHours: '08:00-18:00', priceLevel: 0 }
 };
 
 // Функция для получения metafields по handle

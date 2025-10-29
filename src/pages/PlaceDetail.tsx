@@ -8,7 +8,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { fetchProductByHandle } from "@/lib/shopify";
-import { getPlaceMetafields, getDistrictInRussian } from "@/data/placeMetafields";
+import { getPlaceMetafields } from "@/data/placeMetafields";
 import { 
   Loader2, MapPin, Star, ExternalLink, MessageCircle, 
   Clock, DollarSign, ChevronLeft, ChevronRight, ArrowLeft,

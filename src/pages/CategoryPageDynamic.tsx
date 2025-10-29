@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, Ship, Car, DollarSign } from "lucide-react";
+import { Loader2, ArrowLeft, Ship, Car, DollarSign, ShoppingBag, MapPin, Star } from "lucide-react";
 import { fetchProductsByCategory, type ShopifyProduct } from "@/lib/shopify";
 import DaBot from "@/components/DaBot";
 import { PlaceCard } from "@/components/PlaceCard";
@@ -180,17 +180,17 @@ const CategoryPageDynamic = () => {
           <div className="container mx-auto px-4 text-center">
             {/* Title */}
             <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-              {categoryId === 'shopping' ? '🛍️' : '🌅'} {config.title}
+              {config.title}
             </h1>
             
-            {/* Stats - Telegram Style */}
+            {/* Stats - Telegram Style с иконками Lucide */}
             <div className="flex items-center justify-center gap-4 text-white/90 text-sm">
-              <span className="flex items-center gap-1">
-                <span className="text-yellow-300">📍</span>
+              <span className="flex items-center gap-1.5">
+                <MapPin className="w-4 h-4" />
                 <span className="font-medium">{filteredProducts.length} {filteredProducts.length === 1 ? 'место' : 'мест'}</span>
               </span>
-              <span className="flex items-center gap-1">
-                <span className="text-green-300">⭐</span>
+              <span className="flex items-center gap-1.5">
+                <Star className="w-4 h-4 fill-white/90" />
                 <span className="font-medium">от 4.2 до 4.7</span>
               </span>
             </div>
@@ -202,8 +202,8 @@ const CategoryPageDynamic = () => {
           <div className="mb-6 bg-white/70 backdrop-blur-md rounded-2xl p-5 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
             <p className="text-sm text-gray-700 leading-relaxed">
               {categoryId === 'shopping' 
-                ? '🛍️ Торговые центры Пхукета — современные ТРЦ с мировыми брендами, ресторанами и развлечениями. Идеально для шопинга в комфортных условиях с кондиционерами.'
-                : config.description.split('\n')[0]
+                ? 'Торговые центры Пхукета — современные ТРЦ с мировыми брендами, ресторанами и развлечениями. Идеально для шопинга в комфортных условиях с кондиционерами.'
+                : config.description.split('\n')[0].replace(/[🛍️🌅📍⭐💡🔥]/g, '').trim()
               }
             </p>
           </div>
@@ -230,7 +230,7 @@ const CategoryPageDynamic = () => {
                     : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
                 }`}
               >
-                📍 Патонг
+                Патонг
               </button>
               <button
                 onClick={() => setSelectedDistrict("Karon")}
@@ -240,7 +240,7 @@ const CategoryPageDynamic = () => {
                     : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
                 }`}
               >
-                📍 Карон
+                Карон
               </button>
               <button
                 onClick={() => setSelectedDistrict("Chalong")}
@@ -250,7 +250,7 @@ const CategoryPageDynamic = () => {
                     : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
                 }`}
               >
-                📍 Чалонг
+                Чалонг
               </button>
               <button
                 onClick={() => setSelectedDistrict("Thalang")}
@@ -260,7 +260,7 @@ const CategoryPageDynamic = () => {
                     : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
                 }`}
               >
-                📍 Тхаланг
+                Тхаланг
               </button>
               <button
                 onClick={() => setSelectedDistrict("PhuketTown")}
@@ -270,7 +270,7 @@ const CategoryPageDynamic = () => {
                     : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
                 }`}
               >
-                📍 Пхукет Таун
+                Пхукет Таун
               </button>
             </div>
           </div>

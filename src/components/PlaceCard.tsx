@@ -46,15 +46,7 @@ export const PlaceCard = ({ product }: PlaceCardProps) => {
     return 'from-primary/10 to-secondary/10';
   };
   
-  // Emoji по типу места
-  const getEmoji = () => {
-    if (tags.includes('luxury')) return '💎';
-    if (tags.includes('outlet')) return '🏷️';
-    if (tags.includes('supermarket')) return '🛒';
-    if (tags.includes('mall')) return '🏬';
-    if (tags.includes('market')) return '🛍️';
-    return '🏢';
-  };
+  // ❌ УБРАЛ ДЕШЁВЫЕ ЭМОДЗИ - используем Lucide иконки или просто градиенты
   
   // Словарь переводов районов на русский
   const districtTranslations: Record<string, string> = {
@@ -196,13 +188,6 @@ export const PlaceCard = ({ product }: PlaceCardProps) => {
                        backgroundSize: '20px 20px'
                      }} 
                 />
-                
-                {/* Большой emoji с тенью */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-9xl filter drop-shadow-2xl group-hover:scale-125 transition-transform duration-500 ease-out">
-                    {getEmoji()}
-                  </div>
-                </div>
                 
                 {/* Top badges row - УЛУЧШЕННЫЕ */}
                 <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3 z-10">

@@ -102,6 +102,12 @@ const PlaceDetail = () => {
         console.log('  Final district:', district);
         console.log('  Final coordinates:', coordinates);
         
+        // Debug description data
+        console.log('📝 Debug description:');
+        console.log('  Product description:', product.description);
+        console.log('  Product descriptionHtml:', product.descriptionHtml);
+        console.log('  Product title:', product.title);
+        
         // Images - ALL from Shopify!
         const images = product.images?.edges.map(e => ({
           url: e.node.url,
@@ -206,34 +212,43 @@ const PlaceDetail = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* 
         🧭 NAVIGATION HEADER - Back Button + Breadcrumbs
-        iOS 26 Style Navigation
+        iOS 26 Style Navigation - App-like Design
       */}
-      <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200/50">
-        <div className="flex items-center justify-between px-4 py-3">
-          {/* Back Button */}
+      <div className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-200/30 shadow-sm">
+        <div className="flex items-center justify-between px-4 py-2.5">
+          {/* Back Button - iOS Style */}
           <button
             onClick={() => window.history.back()}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100/80 hover:bg-gray-200/80 active:scale-95 transition-all duration-200"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-gray-100/60 hover:bg-gray-200/70 active:scale-95 transition-all duration-200 group"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-700" />
-            <span className="text-gray-700 font-medium">Назад</span>
+            <ArrowLeft className="w-4 h-4 text-gray-600 group-hover:text-gray-800 transition-colors" />
+            <span className="text-gray-600 text-sm font-medium group-hover:text-gray-800 transition-colors">Назад</span>
           </button>
 
-          {/* Breadcrumbs */}
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Link to="/" className="hover:text-primary transition-colors">
+          {/* Breadcrumbs - Compact App Style */}
+          <div className="flex items-center gap-1 text-xs text-gray-500 max-w-[60%]">
+            <Link 
+              to="/" 
+              className="hover:text-primary transition-colors duration-150 px-1 py-0.5 rounded text-xs font-medium"
+            >
               Главная
             </Link>
-            <span>/</span>
-            <Link to="/categories" className="hover:text-primary transition-colors">
+            <span className="text-gray-300">•</span>
+            <Link 
+              to="/categories" 
+              className="hover:text-primary transition-colors duration-150 px-1 py-0.5 rounded text-xs font-medium"
+            >
               Категории
             </Link>
-            <span>/</span>
-            <Link to="/category/shopping" className="hover:text-primary transition-colors">
+            <span className="text-gray-300">•</span>
+            <Link 
+              to="/category/shopping" 
+              className="hover:text-primary transition-colors duration-150 px-1 py-0.5 rounded text-xs font-medium"
+            >
               Торговые центры
             </Link>
-            <span>/</span>
-            <span className="text-gray-900 font-medium truncate max-w-32">
+            <span className="text-gray-300">•</span>
+            <span className="text-gray-800 font-semibold truncate max-w-24">
               {place.title.split('(')[0].trim()}
             </span>
           </div>
@@ -396,7 +411,7 @@ const PlaceDetail = () => {
             
             {/* Telegram WebApp Style Content */}
             <div 
-              className="space-y-6"
+              className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-headings:font-bold prose-p:text-gray-600 prose-p:leading-relaxed prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-em:text-gray-500 prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-h2:mt-8 prose-h2:mb-4 prose-h3:mt-6 prose-h3:mb-3 prose-p:mb-4 prose-ul:my-4 prose-li:my-1"
               dangerouslySetInnerHTML={{ __html: place.descriptionHtml || place.description || '' }}
             />
           </div>

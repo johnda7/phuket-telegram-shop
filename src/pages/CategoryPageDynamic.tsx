@@ -154,184 +154,140 @@ const CategoryPageDynamic = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-background pb-24">
+      <div className="min-h-screen pb-24">
         {/* ДА БОТ - AI консьерж доступен везде! */}
         <DaBot />
-        {/* Hero Image */}
-        <div className="relative h-[300px] w-full overflow-hidden">
-          <img
-            src={config.heroImage}
-            alt={config.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-transparent" />
-          <h1 className="absolute bottom-8 left-1/2 -translate-x-1/2 text-4xl md:text-5xl font-bold text-white text-center whitespace-nowrap">
-            {config.title}
-          </h1>
-        </div>
-        <div className="container mx-auto px-4">
-          {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-sm py-6 flex-wrap">
-            {config.breadcrumbs.map((item, index) => (
-              <div key={index} className="flex items-center gap-2">
-                {item.path ? (
-                  <Link to={item.path} className="text-muted-foreground hover:text-primary">
-                    {item.label}
-                  </Link>
-                ) : (
-                  <span className="font-medium">{item.label}</span>
-                )}
-                {index < config.breadcrumbs.length - 1 && (
-                  <span className="text-muted-foreground">•</span>
-                )}
+        
+        {/* Hero - Telegram WebApp Style с Glassmorphism */}
+        <div className="relative overflow-hidden">
+          {/* Background gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500" />
+          
+          {/* Glassmorphism overlay */}
+          <div className="relative backdrop-blur-md bg-white/10 border-b border-white/20">
+            <div className="container mx-auto px-4 py-8">
+              {/* Breadcrumbs - Компактные */}
+              <nav className="flex items-center gap-1.5 text-xs mb-4 text-white/80">
+                <Link to="/" className="hover:text-white transition-colors">Главная</Link>
+                <span>•</span>
+                <span className="text-white font-medium">{categoryId === 'shopping' ? 'Торговые центры' : config.title}</span>
+              </nav>
+              
+              {/* Title - Компактный */}
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2">
+                {categoryId === 'shopping' ? '🛍️' : '🌅'} {config.title}
+              </h1>
+              
+              {/* Stats - Telegram Style */}
+              <div className="flex items-center gap-4 text-white/90 text-sm">
+                <span className="flex items-center gap-1">
+                  <span className="text-yellow-300">📍</span>
+                  <span className="font-medium">{products.length} мест</span>
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="text-green-300">⭐</span>
+                  <span className="font-medium">от 4.2 до 4.7</span>
+                </span>
               </div>
-            ))}
-          </nav>
-          {/* Description */}
-          <div className="mb-8 max-w-5xl">
-            <div className="text-base leading-relaxed text-muted-foreground">
-              {config.description && config.description.split('\n').map((line, index) => {
-                if (line.startsWith('**') && line.endsWith('**')) {
-                  return (
-                    <h3 key={index} className="text-lg font-bold text-foreground mb-3 mt-6">
-                      {line.replace(/\*\*/g, '')}
-                    </h3>
-                  );
-                } else if (line.startsWith('•')) {
-                  return (
-                    <p key={index} className="ml-4 mb-2">
-                      <span className="text-primary">•</span> {line.substring(1).trim()}
-                    </p>
-                  );
-                } else if (line.trim() === '') {
-                  return <br key={index} />;
-                } else {
-                  return (
-                    <p key={index} className="mb-3">
-                      {line}
-                    </p>
-                  );
-                }
-              })}
             </div>
           </div>
-          {/* Filters & Map Button */}
-          <div className="mb-8">
-            {/* Filter Buttons Row */}
-            <div className="flex flex-wrap gap-3 mb-4">
-              {/* All/Open Filter - iOS Style */}
-              <div className="inline-flex gap-1 bg-secondary/50 rounded-full p-1 shadow-sm">
-                <button
-                  onClick={() => setActiveFilter("all")}
-                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 ${
-                    activeFilter === "all"
-                      ? "bg-white text-foreground shadow-md"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Все
-                </button>
-                <button
-                  onClick={() => setActiveFilter("open")}
-                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 ${
-                    activeFilter === "open"
-                      ? "bg-white text-foreground shadow-md"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Открытые
-                </button>
-              </div>
-              {/* Category Dropdown - iOS Style */}
-              <select 
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-5 py-2.5 rounded-full border-2 border-border bg-white text-sm font-medium hover:border-primary/50 transition-colors cursor-pointer shadow-sm"
+        </div>
+
+        <div className="container mx-auto px-4 py-6">
+          {/* Description - Компактная карточка */}
+          <div className="mb-6 bg-white/70 backdrop-blur-md rounded-2xl p-5 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+            <p className="text-sm text-gray-700 leading-relaxed">
+              {categoryId === 'shopping' 
+                ? '🛍️ Торговые центры Пхукета — современные ТРЦ с мировыми брендами, ресторанами и развлечениями. Идеально для шопинга в комфортных условиях с кондиционерами.'
+                : config.description.split('\n')[0]
+              }
+            </p>
+          </div>
+
+          {/* Filters - Telegram Style Chips */}
+          <div className="mb-6">
+            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+              {/* Район фильтры как chips */}
+              <button
+                onClick={() => setSelectedDistrict("all")}
+                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  selectedDistrict === "all"
+                    ? "bg-[#007AFF] text-white shadow-md"
+                    : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
+                }`}
               >
-                {categoryId === 'shopping' && (
-                  <>
-                    <option value="all">Категория: Все места ({products.length})</option>
-                    <option value="mall">Категория: Торговые центры ({getCategoryCount("mall")})</option>
-                    <option value="supermarket">Категория: Супермаркеты ({getCategoryCount("supermarket")})</option>
-                    <option value="outlet">Категория: Аутлеты ({getCategoryCount("outlet")})</option>
-                    <option value="luxury">Категория: Люксовые бутики ({getCategoryCount("luxury")})</option>
-                    <option value="market">Категория: Рынки ({getCategoryCount("market")})</option>
-                  </>
-                )}
-                {categoryId === 'viewpoints' && (
-                  <>
-                    <option value="all">Тип: Все площадки ({products.length})</option>
-                    <option value="sunset">Тип: Закатные ({getCategoryCount("sunset")})</option>
-                    <option value="sunrise">Тип: Рассветные ({getCategoryCount("sunrise")})</option>
-                    <option value="panorama">Тип: Панорамные ({getCategoryCount("panorama")})</option>
-                    <option value="beach-view">Тип: С видом на пляжи ({getCategoryCount("beach-view")})</option>
-                    <option value="hidden">Тип: Секретные ({getCategoryCount("hidden")})</option>
-                  </>
-                )}
-              </select>
-              {/* District Dropdown - iOS Style */}
-              <select 
-                value={selectedDistrict}
-                onChange={(e) => setSelectedDistrict(e.target.value)}
-                className="px-5 py-2.5 rounded-full border-2 border-border bg-white text-sm font-medium hover:border-primary/50 transition-colors cursor-pointer shadow-sm"
+                Все районы
+              </button>
+              <button
+                onClick={() => setSelectedDistrict("patong")}
+                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  selectedDistrict === "patong"
+                    ? "bg-[#007AFF] text-white shadow-md"
+                    : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
+                }`}
               >
-                <option value="all">Район: Все ({products.length})</option>
-                <option value="rawai">Район: Равай ({getDistrictCount("rawai")})</option>
-                <option value="karon">Район: Карон ({getDistrictCount("karon")})</option>
-                <option value="kata">Район: Ката ({getDistrictCount("kata")})</option>
-                <option value="chalong">Район: Чалонг ({getDistrictCount("chalong")})</option>
-                <option value="phuket-town">Район: Пхукет Таун ({getDistrictCount("phuket-town")})</option>
-                <option value="patong">Район: Патонг ({getDistrictCount("patong")})</option>
-                <option value="kamala">Район: Камала ({getDistrictCount("kamala")})</option>
-                <option value="thalang">Район: Тхаланг ({getDistrictCount("thalang")})</option>
-                <option value="bang-tao">Район: Банг Тао ({getDistrictCount("bang-tao")})</option>
-                {categoryId === 'viewpoints' && (
-                  <option value="phangnga">Район: Пханг Нга ({getDistrictCount("phangnga")})</option>
-                )}
-              </select>
-              {/* Reset Filters Button */}
-              {(selectedCategory !== "all" || selectedDistrict !== "all") && (
-                <button
-                  onClick={() => {
-                    setSelectedCategory("all");
-                    setSelectedDistrict("all");
-                  }}
-                  className="px-4 py-2.5 rounded-full border-2 border-primary/20 bg-primary/5 text-primary text-sm font-medium hover:bg-primary/10 transition-colors cursor-pointer shadow-sm"
-                >
-                  🔄 Сбросить
-                </button>
-              )}
+                📍 Патонг
+              </button>
+              <button
+                onClick={() => setSelectedDistrict("karon")}
+                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  selectedDistrict === "karon"
+                    ? "bg-[#007AFF] text-white shadow-md"
+                    : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
+                }`}
+              >
+                📍 Карон
+              </button>
+              <button
+                onClick={() => setSelectedDistrict("chalong")}
+                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  selectedDistrict === "chalong"
+                    ? "bg-[#007AFF] text-white shadow-md"
+                    : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
+                }`}
+              >
+                📍 Чалонг
+              </button>
+              <button
+                onClick={() => setSelectedDistrict("thalang")}
+                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  selectedDistrict === "thalang"
+                    ? "bg-[#007AFF] text-white shadow-md"
+                    : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
+                }`}
+              >
+                📍 Тхаланг
+              </button>
             </div>
-            {/* Map Preview Card - Interactive */}
-            <div 
-              onClick={() => setShowMap(true)}
-              className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl p-6 border-2 border-blue-200/50 hover:border-blue-300 transition-all duration-300 cursor-pointer group shadow-md hover:shadow-xl"
-            >
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold text-blue-900 mb-1 flex items-center gap-2">
-                    🗺️ Смотреть на карте
-                    <span className="text-sm font-normal text-blue-600">({filteredProducts.length} мест)</span>
+          </div>
+
+          {/* Map Card - Компактная */}
+          <div 
+            onClick={() => setShowMap(true)}
+            className="mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-4 cursor-pointer hover:shadow-xl transition-all duration-300 group"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl">
+                  🗺️
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold text-base mb-0.5">
+                    Карта мест
                   </h3>
-                  <p className="text-sm text-blue-700">
-                    {categoryId === 'viewpoints' 
-                      ? 'Посмотрите расположение всех смотровых площадок на интерактивной карте'
-                      : 'Посмотрите расположение всех торговых центров на интерактивной карте'
-                    }
+                  <p className="text-white/80 text-xs">
+                    {filteredProducts.length} {filteredProducts.length === 1 ? 'место' : 'мест'}
                   </p>
                 </div>
-                <Button 
-                  size="lg"
-                  className="bg-[#007AFF] hover:bg-[#0063cc] text-white font-semibold px-8 shadow-lg"
-                  style={{ boxShadow: '0 2px 8px #007AFF33' }}
-                >
-                  ПОКАЗАТЬ НА КАРТЕ
-                </Button>
+              </div>
+              <div className="text-white text-xl group-hover:scale-110 transition-transform">
+                →
               </div>
             </div>
           </div>
-          {/* Products Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+
+          {/* Products Grid - Компактная сетка */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-12">
             {filteredProducts.map((product) => (
               <PlaceCard key={product.node.id} product={product.node} />
             ))}

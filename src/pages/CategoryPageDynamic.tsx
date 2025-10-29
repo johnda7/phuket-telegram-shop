@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, Ship, Car, DollarSign } from "lucide-react";
 import { fetchProductsByCategory, type ShopifyProduct } from "@/lib/shopify";
 import DaBot from "@/components/DaBot";
 import { PlaceCard } from "@/components/PlaceCard";
@@ -290,14 +290,14 @@ const CategoryPageDynamic = () => {
               <h3 className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">Наши сервисы</h3>
               
               <div className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-gray-100">
-                {/* Туры */}
+                {/* Туры - профессиональная иконка */}
                 <Link
                   to="/phuket"
                   className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors border-b border-gray-100"
                 >
                   <div className="flex items-center gap-3 flex-1">
-                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-xl">
-                      🏝️
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                      <Ship className="w-5 h-5 text-[#007AFF]" />
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-gray-900 text-sm">Туры на Пхукете</div>
@@ -309,14 +309,14 @@ const CategoryPageDynamic = () => {
                   </svg>
                 </Link>
 
-                {/* Аренда авто */}
+                {/* Аренда авто - профессиональная иконка */}
                 <Link
                   to="/services/car-rental"
                   className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors border-b border-gray-100"
                 >
                   <div className="flex items-center gap-3 flex-1">
-                    <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-xl">
-                      🚗
+                    <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+                      <Car className="w-5 h-5 text-green-600" />
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-gray-900 text-sm">Аренда авто</div>
@@ -328,7 +328,7 @@ const CategoryPageDynamic = () => {
                   </svg>
                 </Link>
 
-                {/* Обмен валюты */}
+                {/* Обмен валюты - профессиональная иконка */}
                 <a
                   href="https://t.me/bereza_manager"
                   target="_blank"
@@ -336,8 +336,8 @@ const CategoryPageDynamic = () => {
                   className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors"
                 >
                   <div className="flex items-center gap-3 flex-1">
-                    <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-xl">
-                      💱
+                    <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
+                      <DollarSign className="w-5 h-5 text-purple-600" />
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-gray-900 text-sm">Обмен валюты</div>

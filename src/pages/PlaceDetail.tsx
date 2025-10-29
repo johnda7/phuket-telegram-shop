@@ -54,6 +54,26 @@ const getDistrictInRussian = (district: string): string => {
   return districtMap[district] || district;
 };
 
+// Функция для перевода категорий на русский
+const getCategoryNameInRussian = (category: string): string => {
+  const categoryMap: { [key: string]: string } = {
+    'shopping': 'Торговые центры',
+    'beaches': 'Пляжи',
+    'temples': 'Храмы',
+    'viewpoints': 'Смотровые площадки',
+    'restaurants': 'Рестораны',
+    'nightlife': 'Ночная жизнь',
+    'markets': 'Рынки',
+    'attractions': 'Достопримечательности',
+    'spa': 'СПА и массаж',
+    'museums': 'Музеи',
+    'waterfalls': 'Водопады',
+    'parks': 'Парки',
+    'activities': 'Активности'
+  };
+  return categoryMap[category] || category;
+};
+
 const PlaceDetail = () => {
   const { handle } = useParams<{ handle: string }>();
   const [place, setPlace] = useState<ParsedPlace | null>(null);
@@ -225,7 +245,7 @@ const PlaceDetail = () => {
             <span className="text-gray-600 text-sm font-medium group-hover:text-gray-800 transition-colors">Назад</span>
           </button>
 
-          {/* Breadcrumbs - Compact App Style */}
+          {/* Breadcrumbs - Compact App Style - ДИНАМИЧЕСКИЕ! */}
           <div className="flex items-center gap-1 text-xs text-gray-500 max-w-[60%]">
             <Link 
               to="/" 
@@ -240,13 +260,17 @@ const PlaceDetail = () => {
             >
               Категории
             </Link>
-            <span className="text-gray-300">•</span>
-            <Link 
-              to="/category/shopping" 
-              className="hover:text-primary transition-colors duration-150 px-1 py-0.5 rounded text-xs font-medium"
-            >
-              Торговые центры
-            </Link>
+            {place.category && (
+              <>
+                <span className="text-gray-300">•</span>
+                <Link 
+                  to={`/category/${place.category}`}
+                  className="hover:text-primary transition-colors duration-150 px-1 py-0.5 rounded text-xs font-medium truncate"
+                >
+                  {getCategoryNameInRussian(place.category)}
+                </Link>
+              </>
+            )}
             <span className="text-gray-300">•</span>
             <span className="text-gray-800 font-semibold truncate max-w-24">
               {place.title.split('(')[0].trim()}

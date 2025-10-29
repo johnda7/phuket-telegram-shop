@@ -59,7 +59,7 @@ export const BookingDialog = ({
       const message = `🎫 Новое бронирование!\n\n` +
         `📍 Тур: ${tourTitle}\n` +
         `👥 Гости: ${validatedData.adults} взрослых, ${validatedData.children} детей\n` +
-        `💰 Сумма: ${totalPrice.toLocaleString()} ₽\n\n` +
+        `💰 Сумма: ${totalPrice.toLocaleString()} ฿\n\n` +
         `👤 Имя: ${validatedData.name}\n` +
         `📞 Телефон: ${validatedData.phone}\n` +
         `📧 Email: ${validatedData.email}`;
@@ -130,7 +130,7 @@ export const BookingDialog = ({
             <div className="glass-card p-4 mb-3 flex items-center justify-between">
               <div>
                 <p className="font-semibold">Взрослые</p>
-                <p className="text-sm text-muted-foreground">{adultPrice.toLocaleString()} ₽</p>
+                <p className="text-sm text-muted-foreground">{adultPrice.toLocaleString()} ฿</p>
               </div>
               <div className="flex items-center gap-3">
                 <Button
@@ -162,7 +162,7 @@ export const BookingDialog = ({
             <div className="glass-card p-4 mb-3 flex items-center justify-between">
               <div>
                 <p className="font-semibold">Дети (4-11 лет)</p>
-                <p className="text-sm text-muted-foreground">{childPrice.toLocaleString()} ₽</p>
+                <p className="text-sm text-muted-foreground">{childPrice.toLocaleString()} ฿</p>
               </div>
               <div className="flex items-center gap-3">
                 <Button
@@ -201,7 +201,7 @@ export const BookingDialog = ({
             <div className="flex items-center justify-between">
               <span className="text-lg font-bold">Итого:</span>
               <span className="text-3xl font-bold text-primary">
-                {totalPrice.toLocaleString()} ₽
+                {totalPrice.toLocaleString()} ฿
               </span>
             </div>
           </div>

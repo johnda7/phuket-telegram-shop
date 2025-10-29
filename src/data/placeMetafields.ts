@@ -78,6 +78,15 @@ export const placeMetafieldsData: Record<string, PlaceMetafields> = {
     priceLevel: 3
   },
   
+  // TOURS - Туры
+  'phi-phi-2-days-1-night': { 
+    rating: 4.8, 
+    district: 'Phuket', 
+    coordinates: '7.8905,98.2965', 
+    workingHours: '2 дня / 1 ночь', 
+    priceLevel: 3 
+  },
+  
   // VIEWPOINTS - Смотровые площадки
   'promthep-cape': { rating: 4.8, district: 'Rawai', coordinates: '7.7625,98.3056', workingHours: '24/7', priceLevel: 0 },
   'karon-viewpoint': { rating: 4.7, district: 'Karon', coordinates: '7.8333,98.3000', workingHours: '24/7', priceLevel: 0 },
@@ -120,5 +129,8 @@ export function getDistrictInRussian(district: string): string {
   };
   return districtMap[district] || district;
 }
+
+// Export alias для обратной совместимости
+export { placeMetafieldsData as placeMetafields };
 
 export default placeMetafieldsData;

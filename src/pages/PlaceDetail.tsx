@@ -15,7 +15,7 @@ import { getButtonClass, getCardClass, cn } from "@/styles/design-system";
 import { 
   Loader2, MapPin, Star, ExternalLink, MessageCircle, 
   Clock, DollarSign, ChevronLeft, ChevronRight, ArrowLeft,
-  Wifi, ParkingCircle, Utensils, Film, Share2
+  Wifi, ParkingCircle, Utensils, Film, Share2, ShoppingBag
 } from "lucide-react";
 
 interface PlacePhoto {
@@ -319,10 +319,10 @@ const PlaceDetail = () => {
         {/* Content Overlay */}
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-6">
           <div className="max-w-4xl mx-auto">
-            {/* Category Badge - ТОЛЬКО РУССКИЙ! */}
+            {/* Category Badge - Premium Style */}
             <div className="mb-4">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white text-sm font-medium">
-                <ShoppingBag className="w-4 h-4" />
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-white/50 text-gray-800 text-sm font-semibold shadow-lg">
+                <ShoppingBag className="w-4 h-4 text-[#007AFF]" />
                 Торговые центры
               </span>
             </div>
@@ -332,21 +332,19 @@ const PlaceDetail = () => {
               {place.title}
             </h1>
 
-            {/* Meta Info - Z-INDEX 10! */}
+            {/* Meta Info - Premium Style */}
             <div className="flex items-center justify-center gap-3 mb-6">
               {/* Rating */}
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30">
-                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 drop-shadow-lg" />
-                <span className="text-white font-bold">{place.rating.toFixed(1)}</span>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-white/50 shadow-lg">
+                <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                <span className="text-gray-800 font-bold">{place.rating.toFixed(1)}</span>
               </div>
               
-              {/* Price Level - УБРАНО! НЕ НУЖНО */}
-
-              {/* District - РУССКИЙ! */}
+              {/* District */}
               {place.district && (
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-md border border-white/30">
-                  <MapPin className="w-4 h-4 text-white" />
-                  <span className="text-white font-medium">{getDistrictInRussian(place.district)}</span>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-white/50 shadow-lg">
+                  <MapPin className="w-4 h-4 text-[#007AFF]" />
+                  <span className="text-gray-800 font-semibold">{getDistrictInRussian(place.district)}</span>
                 </div>
               )}
               

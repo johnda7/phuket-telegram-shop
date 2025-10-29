@@ -25,6 +25,18 @@ import {
   ShoppingCart,
   Droplets,
   MapPin as MapPinIcon,
+  Ship,
+  Eye,
+  Camera,
+  Heart,
+  Zap,
+  Tent,
+  Fish,
+  Bike,
+  PartyPopper,
+  Calendar,
+  Coffee,
+  Home,
   LucideIcon
 } from 'lucide-react';
 
@@ -407,6 +419,270 @@ export const CATEGORIES: Record<string, CategoryConfig> = {
     },
     priority: 'low',
     estimatedPlaces: 11
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // ДОПОЛНИТЕЛЬНЫЕ КАТЕГОРИИ ИЗ PHUKET INSIDER
+  // ═══════════════════════════════════════════════════════════════
+
+  excursions: {
+    id: 'excursions',
+    title: 'Экскурсии на Пхукете',
+    titleEn: 'Excursions',
+    description: 'Морские экскурсии на Пхукете — Пхи-Пхи, Джеймс Бонд, Симиланы. Лучшие туры по островам Андаманского моря.',
+    heroImage: 'https://images.unsplash.com/photo-1544551763-46a013bb2d83?w=1600&h=400&fit=crop',
+    icon: Ship,
+    iconColor: '#007AFF',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Что посетить?', path: '/categories' },
+      { label: 'Экскурсии' }
+    ],
+    seoTitle: 'Экскурсии на Пхукете - Морские туры по островам | PhuketDa',
+    seoDescription: 'Лучшие экскурсии Пхукета: Пхи-Пхи, Джеймс Бонд, Симиланы. Цены, программы, бронирование.',
+    seoKeywords: ['экскурсии пхукет', 'пхи-пхи', 'джеймс бонд', 'симиланы', 'морские туры'],
+    filters: {
+      showDistricts: false,
+      showRating: true,
+      showPriceLevel: true,
+      showOpenNow: false
+    },
+    priority: 'high',
+    estimatedPlaces: 15
+  },
+
+  attractions: {
+    id: 'attractions',
+    title: 'Достопримечательности Пхукета',
+    titleEn: 'Attractions',
+    description: 'Главные достопримечательности Пхукета — Большой Будда, Промтеп Кейп, Старый город. Культурные и исторические места.',
+    heroImage: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&h=400&fit=crop',
+    icon: Eye,
+    iconColor: '#34C759',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Что посетить?', path: '/categories' },
+      { label: 'Достопримечательности' }
+    ],
+    seoTitle: 'Достопримечательности Пхукета - Что посмотреть | PhuketDa',
+    seoDescription: 'Главные достопримечательности Пхукета: Большой Будда, Промтеп Кейп, Старый город. Фото, описания, как добраться.',
+    seoKeywords: ['достопримечательности пхукет', 'большой будда', 'промтеп кейп', 'старый город', 'что посмотреть'],
+    filters: {
+      showDistricts: true,
+      showRating: true,
+      showPriceLevel: false,
+      showOpenNow: false
+    },
+    priority: 'high',
+    estimatedPlaces: 20
+  },
+
+  amusement: {
+    id: 'amusement',
+    title: 'Парки развлечений',
+    titleEn: 'Amusement Parks',
+    description: 'Парки развлечений Пхукета — Splash Jungle, Andamanda, FantaSea. Аттракционы, шоу, развлечения для всей семьи.',
+    heroImage: 'https://images.unsplash.com/photo-1566127444979-b3d2b64d6c40?w=1600&h=400&fit=crop',
+    icon: Tent,
+    iconColor: '#FF9500',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Что посетить?', path: '/categories' },
+      { label: 'Парки развлечений' }
+    ],
+    seoTitle: 'Парки развлечений Пхукета - Аттракционы и шоу | PhuketDa',
+    seoDescription: 'Лучшие парки развлечений Пхукета: Splash Jungle, Andamanda, FantaSea. Цены, программы, как добраться.',
+    seoKeywords: ['парки развлечений пхукет', 'splash jungle', 'andamanda', 'fantasea', 'аттракционы'],
+    filters: {
+      showDistricts: true,
+      showRating: true,
+      showPriceLevel: true,
+      showOpenNow: true
+    },
+    priority: 'medium',
+    estimatedPlaces: 8
+  },
+
+  diving: {
+    id: 'diving',
+    title: 'Дайвинг на Пхукете',
+    titleEn: 'Diving',
+    description: 'Дайвинг на Пхукете — Симиланы, Рача, Корал. Лучшие дайв-сайты Андаманского моря. Сертификация PADI.',
+    heroImage: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1600&h=400&fit=crop',
+    icon: Fish,
+    iconColor: '#00B4D8',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Отдых и развлечения', path: '/categories' },
+      { label: 'Дайвинг' }
+    ],
+    seoTitle: 'Дайвинг на Пхукете - Лучшие дайв-сайты | PhuketDa',
+    seoDescription: 'Дайвинг Пхукета: Симиланы, Рача, Корал. Сертификация PADI, цены, сезоны, дайв-центры.',
+    seoKeywords: ['дайвинг пхукет', 'симиланы дайвинг', 'рача дайвинг', 'padi', 'дайв-сайты'],
+    filters: {
+      showDistricts: true,
+      showRating: true,
+      showPriceLevel: true,
+      showOpenNow: false
+    },
+    priority: 'medium',
+    estimatedPlaces: 12
+  },
+
+  fishing: {
+    id: 'fishing',
+    title: 'Рыбалка на Пхукете',
+    titleEn: 'Fishing',
+    description: 'Морская рыбалка на Пхукете — тунец, марлин, барракуда. Аренда катеров, рыболовные туры, трофеи.',
+    heroImage: 'https://images.unsplash.com/photo-1544551763-46a013bb2d83?w=1600&h=400&fit=crop',
+    icon: Fish,
+    iconColor: '#34C759',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Отдых и развлечения', path: '/categories' },
+      { label: 'Рыбалка' }
+    ],
+    seoTitle: 'Рыбалка на Пхукете - Морская рыбалка | PhuketDa',
+    seoDescription: 'Рыбалка Пхукета: тунец, марлин, барракуда. Аренда катеров, цены, сезоны, трофеи.',
+    seoKeywords: ['рыбалка пхукет', 'морская рыбалка', 'тунец', 'марлин', 'аренда катеров'],
+    filters: {
+      showDistricts: true,
+      showRating: true,
+      showPriceLevel: true,
+      showOpenNow: false
+    },
+    priority: 'low',
+    estimatedPlaces: 6
+  },
+
+  yachts: {
+    id: 'yachts',
+    title: 'Аренда яхт на Пхукете',
+    titleEn: 'Yacht Rental',
+    description: 'Аренда яхт на Пхукете — романтические круизы, корпоративы, свадьбы. От катеров до роскошных яхт.',
+    heroImage: 'https://images.unsplash.com/photo-1544551763-46a013bb2d83?w=1600&h=400&fit=crop',
+    icon: Ship,
+    iconColor: '#AF52DE',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Отдых и развлечения', path: '/categories' },
+      { label: 'Аренда яхт' }
+    ],
+    seoTitle: 'Аренда яхт на Пхукете - Романтические круизы | PhuketDa',
+    seoDescription: 'Аренда яхт Пхукета: катера, яхты, круизы. Цены, программы, бронирование, свадьбы на яхте.',
+    seoKeywords: ['аренда яхт пхукет', 'круизы пхукет', 'свадьба на яхте', 'катера', 'романтические туры'],
+    filters: {
+      showDistricts: true,
+      showRating: true,
+      showPriceLevel: true,
+      showOpenNow: false
+    },
+    priority: 'low',
+    estimatedPlaces: 8
+  },
+
+  zoos: {
+    id: 'zoos',
+    title: 'Зоопарки на Пхукете',
+    titleEn: 'Zoos',
+    description: 'Зоопарки и контактные зоопарки Пхукета — тигры, слоны, обезьяны. Семейный отдых с детьми.',
+    heroImage: 'https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=1600&h=400&fit=crop',
+    icon: Heart,
+    iconColor: '#FF2D55',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Отдых и развлечения', path: '/categories' },
+      { label: 'Зоопарки' }
+    ],
+    seoTitle: 'Зоопарки Пхукета - Контактные зоопарки | PhuketDa',
+    seoDescription: 'Зоопарки Пхукета: тигры, слоны, обезьяны. Контактные зоопарки, цены, программы для детей.',
+    seoKeywords: ['зоопарки пхукет', 'контактные зоопарки', 'тигры пхукет', 'семейный отдых', 'дети'],
+    filters: {
+      showDistricts: true,
+      showRating: true,
+      showPriceLevel: true,
+      showOpenNow: true
+    },
+    priority: 'low',
+    estimatedPlaces: 5
+  },
+
+  clubs: {
+    id: 'clubs',
+    title: 'Клубы на Пхукете',
+    titleEn: 'Clubs',
+    description: 'Лучшие клубы Пхукета — Illuzion, Tiger, Seduction. Ночная жизнь, вечеринки, шоу-программы.',
+    heroImage: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&h=400&fit=crop',
+    icon: PartyPopper,
+    iconColor: '#AF52DE',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Ночная жизнь', path: '/categories' },
+      { label: 'Клубы' }
+    ],
+    seoTitle: 'Клубы Пхукета - Ночная жизнь и вечеринки | PhuketDa',
+    seoDescription: 'Лучшие клубы Пхукета: Illuzion, Tiger, Seduction. Цены, программы, дресс-код, VIP-столы.',
+    seoKeywords: ['клубы пхукет', 'illuzion', 'tiger', 'ночная жизнь', 'вечеринки'],
+    filters: {
+      showDistricts: true,
+      showRating: true,
+      showPriceLevel: true,
+      showOpenNow: true
+    },
+    priority: 'medium',
+    estimatedPlaces: 12
+  },
+
+  bars: {
+    id: 'bars',
+    title: 'Бары на Пхукете',
+    titleEn: 'Bars',
+    description: 'Лучшие бары Пхукета — Sky Bar, Beach Bar, Rooftop. Коктейли, закаты, атмосфера.',
+    heroImage: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&h=400&fit=crop',
+    icon: Coffee,
+    iconColor: '#FF9500',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Ночная жизнь', path: '/categories' },
+      { label: 'Бары' }
+    ],
+    seoTitle: 'Бары Пхукета - Коктейли и закаты | PhuketDa',
+    seoDescription: 'Лучшие бары Пхукета: Sky Bar, Beach Bar, Rooftop. Коктейли, закаты, цены, атмосфера.',
+    seoKeywords: ['бары пхукет', 'sky bar', 'beach bar', 'коктейли', 'закаты'],
+    filters: {
+      showDistricts: true,
+      showRating: true,
+      showPriceLevel: true,
+      showOpenNow: true
+    },
+    priority: 'medium',
+    estimatedPlaces: 15
+  },
+
+  events: {
+    id: 'events',
+    title: 'Афиша событий',
+    titleEn: 'Events',
+    description: 'События на Пхукете — фестивали, концерты, выставки. Афиша мероприятий, билеты, расписание.',
+    heroImage: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&h=400&fit=crop',
+    icon: Calendar,
+    iconColor: '#FF3B30',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Полезное', path: '/categories' },
+      { label: 'Афиша событий' }
+    ],
+    seoTitle: 'События на Пхукете - Афиша мероприятий | PhuketDa',
+    seoDescription: 'Афиша событий Пхукета: фестивали, концерты, выставки. Билеты, расписание, как попасть.',
+    seoKeywords: ['события пхукет', 'фестивали', 'концерты', 'афиша', 'билеты'],
+    filters: {
+      showDistricts: true,
+      showRating: false,
+      showPriceLevel: true,
+      showOpenNow: true
+    },
+    priority: 'low',
+    estimatedPlaces: 20
   }
 };
 

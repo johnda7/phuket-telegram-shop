@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
-import { Loader2, MapPin } from "lucide-react";
+import { Loader2, MapPin, Menu } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
+import { TourMenu } from "@/components/TourMenu";
 import { Button } from "@/components/ui/button";
 
 type Category = 'all' | 'tour' | 'beach' | 'temple' | 'restaurant' | 'district';
@@ -15,12 +16,12 @@ interface CategoryConfig {
 }
 
 const categories: CategoryConfig[] = [
-  { id: 'all', label: 'Всё', emoji: '🗺️', tags: [], color: 'from-blue-500 to-cyan-500' },
-  { id: 'tour', label: 'Туры', emoji: '🎟️', tags: ['islands', 'popular', '1-day', '2-days'], color: 'from-emerald-500 to-teal-500' },
-  { id: 'beach', label: 'Пляжі', emoji: '🏖️', tags: ['beach', 'пляж'], color: 'from-orange-500 to-amber-500' },
-  { id: 'temple', label: 'Места', emoji: '📍', tags: ['place', 'category:viewpoints', 'category:elephants', 'category:waterfalls', 'category:restaurants', 'category:spa'], color: 'from-violet-500 to-purple-500' },
-  { id: 'restaurant', label: 'Рестораны', emoji: '🍜', tags: ['category:restaurants'], color: 'from-red-500 to-pink-500' },
-  { id: 'district', label: 'Районы', emoji: '🏘️', tags: ['district'], color: 'from-purple-500 to-indigo-500' },
+  { id: 'all', label: 'Все туры', emoji: '🎟️', tags: [], color: 'from-blue-500 to-cyan-500' },
+  { id: 'tour', label: 'Острова', emoji: '🏝️', tags: ['islands', 'phi-phi', 'james-bond'], color: 'from-emerald-500 to-teal-500' },
+  { id: 'beach', label: '1 день', emoji: '☀️', tags: ['1-day', 'однодневные'], color: 'from-orange-500 to-amber-500' },
+  { id: 'temple', label: '2+ дня', emoji: '🌙', tags: ['2-days', 'многодневные'], color: 'from-violet-500 to-purple-500' },
+  { id: 'restaurant', label: 'Популярные', emoji: '⭐', tags: ['популярное', 'хит', 'ХИТ'], color: 'from-red-500 to-pink-500' },
+  { id: 'district', label: 'Приключения', emoji: '🎯', tags: ['adventures', 'приключения'], color: 'from-purple-500 to-indigo-500' },
 ];
 
 const Phuket = () => {
@@ -34,11 +35,31 @@ const Phuket = () => {
     const loadProducts = async () => {
       try {
         setLoading(true);
-        console.log('🔄 Загружаем продукты...');
-        const data = await fetchProducts(50);
+        console.log('🔄 Загружаем ТУРЫ...');
+        const data = await fetchProducts(100);
         console.log('📦 Загружено продуктов:', data.length);
-        console.log('📦 Продукты:', data.map(p => ({ title: p.node.title, type: p.node.productType, tags: p.node.tags })));
-        setProducts(data);
+        
+        // Filter ONLY tours (Excursions or with 'tour' tag)
+        const toursOnly = data.filter(p => 
+          p.node.productType === 'Excursions' || p.node.tags.includes('tour')
+        );
+        
+        // Sort tours: template first, then by publishedAt
+        const sortedTours = toursOnly.sort((a, b) => {
+          const aIsTemplate = a.node.tags.includes('template');
+          const bIsTemplate = b.node.tags.includes('template');
+          
+          if (aIsTemplate && !bIsTemplate) return -1;
+          if (!aIsTemplate && bIsTemplate) return 1;
+          
+          // If both or neither are template, sort by publishedAt
+          return new Date(b.node.publishedAt).getTime() - new Date(a.node.publishedAt).getTime();
+        });
+        
+        console.log('🎟️ Найдено туров:', sortedTours.length);
+        console.log('🎟️ Все продукты:', data.map(p => ({ title: p.node.title, type: p.node.productType, tags: p.node.tags })));
+        console.log('🎟️ Туры (отсортированы):', sortedTours.map(p => ({ title: p.node.title, type: p.node.productType, tags: p.node.tags, isTemplate: p.node.tags.includes('template') })));
+        setProducts(sortedTours);
         
         // Check URL params for initial category
         const params = new URLSearchParams(window.location.search);
@@ -46,7 +67,7 @@ const Phuket = () => {
         if (urlCategory && categories.find(c => c.id === urlCategory)) {
           setActiveCategory(urlCategory);
         } else {
-          setFilteredProducts(data);
+          setFilteredProducts(toursOnly);
         }
       } catch (err) {
         console.error('❌ Ошибка загрузки:', err);
@@ -60,19 +81,22 @@ const Phuket = () => {
   }, []);
 
   useEffect(() => {
-    console.log('🔄 Фильтрация продуктов...', { activeCategory, productsCount: products.length });
+    console.log('🔄 Фильтрация туров...', { activeCategory, productsCount: products.length });
     if (activeCategory === 'all') {
-      console.log('📦 Показываем все продукты:', products.length);
+      console.log('📦 Показываем все туры:', products.length);
       setFilteredProducts(products);
     } else {
       const category = categories.find(c => c.id === activeCategory);
       if (category) {
         console.log('🏷️ Фильтруем по категории:', category.label, 'теги:', category.tags);
         const filtered = products.filter(p => 
-          category.tags.some(tag => p.node.tags.includes(tag))
+          category.tags.some(tag => 
+            p.node.tags.some(productTag => 
+              productTag.toLowerCase().includes(tag.toLowerCase())
+            )
+          )
         );
-        console.log('📦 Отфильтровано продуктов:', filtered.length);
-        console.log('📦 Туры:', filtered.filter(p => p.node.productType === 'Excursions' || p.node.tags.includes('tour')));
+        console.log('📦 Отфильтровано туров:', filtered.length);
         setFilteredProducts(filtered);
       }
     }
@@ -101,35 +125,53 @@ const Phuket = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* SEO Meta Tags */}
+      <head>
+        <title>🎟️ Туры по Пхукету - Лучшие экскурсии и острова | PhuketDa</title>
+        <meta name="description" content="Лучшие туры по Пхукету: Пхи-Пхи, Джеймс Бонд, Симиланские острова. Морские экскурсии, приключения, многодневные туры. Бронирование онлайн." />
+        <meta name="keywords" content="туры Пхукет, экскурсии Пхукет, Пхи-Пхи, Джеймс Бонд, Симиланские острова, морские туры, приключения" />
+        <link rel="canonical" href="https://phuketda.com/tours" />
+      </head>
+      
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
+        {/* Header with Menu */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">🗺️ Всё о Пхукете</h1>
-          <p className="text-muted-foreground">
-            Туры, пляжи, храмы и полезная информация в одном месте
-          </p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">🎟️ Туры по Пхукету</h1>
+              <p className="text-muted-foreground">
+                Лучшие экскурсии и туры на острова Пхи-Пхи, Джеймс Бонд и другие достопримечательности
+              </p>
+            </div>
+            <TourMenu 
+              trigger={
+                <Button variant="outline" size="lg" className="gap-2">
+                  <Menu className="w-5 h-5" />
+                  Меню туров
+                </Button>
+              }
+            />
+          </div>
         </div>
 
-        {/* Featured Banner - Beaches */}
-        <a 
-          href="/beaches"
-          className="block mb-8 group"
-        >
-          <div className="glass-card overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
-            <div className="relative h-48 bg-gradient-to-r from-primary/20 to-success/20 flex items-center justify-center">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200')] bg-cover bg-center opacity-20 group-hover:opacity-30 transition-opacity" />
+        {/* Featured Banner - Popular Tours */}
+        <div className="mb-8">
+          <div className="glass-card overflow-hidden">
+            <div className="relative h-48 bg-gradient-to-r from-blue-500/20 to-purple-600/20 flex items-center justify-center">
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200')] bg-cover bg-center opacity-20" />
               <div className="relative z-10 text-center">
-                <h2 className="text-3xl font-bold mb-2">🏖️ Пляжи Пхукета</h2>
+                <h2 className="text-3xl font-bold mb-2">🏝️ Популярные туры</h2>
                 <p className="text-lg text-muted-foreground mb-4">
-                  Откройте для себя лучшие пляжи острова
+                  Пхи-Пхи, Джеймс Бонд, Симиланские острова и многое другое
                 </p>
-                <Button size="lg" className="bg-[#4CAF50] hover:bg-[#4CAF50]/90">
-                  Смотреть все пляжи →
-                </Button>
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#007AFF] text-white rounded-full">
+                  <MapPin className="w-4 h-4" />
+                  <span>Выберите тур</span>
+                </div>
               </div>
             </div>
           </div>
-        </a>
+        </div>
 
         {/* iOS 26 Style Category Filter */}
         <div className="mb-8 -mx-4 px-4 overflow-x-auto">

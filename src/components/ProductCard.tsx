@@ -112,7 +112,7 @@ export const ProductCard = ({
               <>
                 <div>
                   <span className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                    ${price.toFixed(0)}
+                    {price.toFixed(0)} ฿
                   </span>
                   <span className="text-sm text-muted-foreground ml-1">
                     / чел

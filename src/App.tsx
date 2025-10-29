@@ -32,6 +32,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/phuket" element={<Phuket />} />
+              <Route path="/tours" element={<Phuket />} />
               <Route path="/beaches" element={<Beaches />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/category/:categoryId" element={<CategoryPageDynamic />} />

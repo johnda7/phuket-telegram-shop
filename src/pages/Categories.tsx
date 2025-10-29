@@ -30,6 +30,7 @@ import {
   PartyPopper,
   Flame
 } from "lucide-react";
+import { cn } from "@/styles/design-system";
 
 interface Category {
   id: string;
@@ -107,7 +108,7 @@ const categories: Category[] = [
     color: "from-orange-500 to-amber-500"
   },
   {
-    id: "viewpoints",
+    id: "viewpoints2",
     label: "Смотровые площадки",
     icon: Mountain,
     description: "Панорамные виды на остров и море",
@@ -334,69 +335,55 @@ const Categories = () => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      {/* Hero Section */}
-      <div className="relative h-[40vh] bg-gradient-to-br from-primary/20 via-primary/10 to-background overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/placeholder.svg')] bg-cover bg-center opacity-10" />
-        <div className="relative h-full flex flex-col items-center justify-center text-center px-4">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Что посетить на Пхукете
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
-            Исследуйте лучшие места острова: от райских пляжей до древних храмов
-          </p>
-        </div>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <div className="container mx-auto px-4 pt-6 pb-3">
+        <h1 className="text-2xl font-bold">Категории</h1>
+        <p className="text-sm text-muted-foreground mt-1">Выберите раздел — компактные карточки в стиле Telegram Wallet</p>
       </div>
 
-      {/* Categories Grid */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {/* Categories Grid - Compact Wallet Style */}
+      <div className="container mx-auto px-4 pb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {categories.map((category) => {
             const Icon = category.icon;
             return (
               <Link
                 key={category.id}
                 to={category.path}
+                className={cn(
+                  "group p-4 rounded-2xl border bg-card hover:bg-accent/30 transition-all",
+                  "hover:shadow-md hover:-translate-y-0.5"
+                )}
                 onMouseEnter={() => setActiveCategory(category.id)}
                 onMouseLeave={() => setActiveCategory(null)}
               >
-                <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group">
-                  <div className={`h-48 bg-gradient-to-br ${category.color} relative overflow-hidden`}>
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Icon className="w-20 h-20 text-white/90 group-hover:scale-110 transition-transform" />
+                <div className="flex items-center gap-3">
+                  <div className={cn(
+                    "w-12 h-12 rounded-2xl flex items-center justify-center",
+                    `bg-gradient-to-r ${category.color}`
+                  )}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-semibold text-sm text-foreground group-hover:text-[#007AFF] truncate">
+                      {category.label}
                     </div>
-                    <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                      <span className="text-white text-sm font-medium">Новое</span>
+                    <div className="text-xs text-muted-foreground truncate">
+                      {category.description}
                     </div>
                   </div>
-                  <CardContent className="p-6">
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                      {category.label}
-                    </h3>
-                    <p className="text-muted-foreground text-sm line-clamp-2">
-                      {category.description}
-                    </p>
-                    <div className="mt-4 flex items-center text-primary text-sm font-medium">
-                      Узнать больше
-                      <svg
-                        className={`ml-2 w-4 h-4 transition-transform ${
-                          activeCategory === category.id ? "translate-x-1" : ""
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                  </CardContent>
-                </Card>
+                  <svg
+                    className={`ml-auto w-4 h-4 text-muted-foreground group-hover:text-[#007AFF] transition-transform ${
+                      activeCategory === category.id ? "translate-x-1" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
               </Link>
             );
           })}

@@ -247,8 +247,9 @@ export async function fetchProductByHandle(handle: string): Promise<ShopifyProdu
 /**
  * Fetch products by category (using tag filter)
  * Example: fetchProductsByCategory('shopping') returns products tagged with 'category:shopping'
+ * ⚠️ УВЕЛИЧЕН ЛИМИТ ДО 250 чтобы загрузить ВСЕ продукты из Shopify!
  */
-export async function fetchProductsByCategory(categoryId: string, limit: number = 50): Promise<ShopifyProduct[]> {
+export async function fetchProductsByCategory(categoryId: string, limit: number = 250): Promise<ShopifyProduct[]> {
   const allProducts = await fetchProducts(limit);
   const categoryTag = `category:${categoryId}`;
   return allProducts.filter(product => 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Ship, Compass, Target, MapPin, Waves, Info, Star, Zap, Mountain, Landmark, Eye, Camera } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -12,11 +12,11 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface MenuItem {
-  icon: string;
+  icon: React.ComponentType<{ className?: string }>;
   label: string;
   href?: string;
   submenu?: {
-    icon: string;
+    icon: React.ComponentType<{ className?: string }>;
     label: string;
     href: string;
     tag: string;
@@ -25,44 +25,45 @@ interface MenuItem {
 
 const menuStructure: MenuItem[] = [
   {
-    icon: "🌴",
-    label: "Морские туры",
+    icon: Ship,
+    label: "Туры",
     submenu: [
-      { icon: "🚤", label: "Все морские туры", href: "/phuket?category=tour", tag: "islands" },
-      { icon: "🏝️", label: "Пхи-Пхи острова", href: "/product/phi-phi-2-days-1-night", tag: "phi-phi" },
-      { icon: "🎬", label: "Джеймс Бонд", href: "/product/james-bond-island-tour", tag: "james-bond" },
-      { icon: "🐠", label: "Рача и Корал", href: "/product/racha-coral-islands", tag: "racha" },
-      { icon: "💎", label: "Премиум туры", href: "/phuket?category=tour", tag: "premium" },
-      { icon: "🌙", label: "Многодневные", href: "/phuket?category=tour", tag: "2-days" },
+      { icon: Star, label: "Пхукет да", href: "/phuket", tag: "phuket-da" },
+      { icon: Ship, label: "Все морские туры", href: "/phuket?category=tour", tag: "islands" },
+      { icon: Compass, label: "Пхи-Пхи острова", href: "/product/phi-phi-2-days-1-night", tag: "phi-phi" },
+      { icon: Camera, label: "Джеймс Бонд", href: "/product/james-bond-island-tour", tag: "james-bond" },
+      { icon: Waves, label: "Рача и Корал", href: "/product/racha-coral-islands", tag: "racha" },
+      { icon: Star, label: "Премиум туры", href: "/phuket?category=tour", tag: "premium" },
+      { icon: Compass, label: "Многодневные", href: "/phuket?category=tour", tag: "2-days" },
     ]
   },
   {
-    icon: "🎯",
+    icon: Target,
     label: "Приключения",
     submenu: [
-      { icon: "⚡", label: "Все активные туры", href: "/phuket?category=tour", tag: "adventure" },
-      { icon: "🪂", label: "Зиплайн и ATV", href: "/product/rafting-spa-atv", tag: "zipline" },
-      { icon: "🐘", label: "Слоны и джунгли", href: "/phuket?category=temple", tag: "elephants" },
-      { icon: "🏞️", label: "Водопады и природа", href: "/product/khao-lak-safari", tag: "nature" },
+      { icon: Zap, label: "Все активные туры", href: "/phuket?category=tour", tag: "adventure" },
+      { icon: Mountain, label: "Зиплайн и ATV", href: "/product/rafting-spa-atv", tag: "zipline" },
+      { icon: Landmark, label: "Слоны и джунгли", href: "/phuket?category=temple", tag: "elephants" },
+      { icon: Mountain, label: "Водопады и природа", href: "/product/khao-lak-safari", tag: "nature" },
     ]
   },
   {
-    icon: "📍",
+    icon: MapPin,
     label: "Достопримечательности",
     submenu: [
-      { icon: "🏛️", label: "Все места", href: "/phuket?category=temple", tag: "place" },
-      { icon: "⛩️", label: "Храмы", href: "/phuket?category=temple", tag: "temples" },
-      { icon: "👁️", label: "Смотровые площадки", href: "/categories/viewpoints", tag: "viewpoints" },
-      { icon: "🎭", label: "Культурные места", href: "/phuket?category=temple", tag: "culture" },
+      { icon: Landmark, label: "Все места", href: "/phuket?category=temple", tag: "place" },
+      { icon: Landmark, label: "Храмы", href: "/phuket?category=temple", tag: "temples" },
+      { icon: Eye, label: "Смотровые площадки", href: "/categories/viewpoints", tag: "viewpoints" },
+      { icon: Landmark, label: "Культурные места", href: "/phuket?category=temple", tag: "culture" },
     ]
   },
   {
-    icon: "🏖️",
+    icon: Waves,
     label: "Пляжи",
     href: "/beaches",
   },
   {
-    icon: "ℹ️",
+    icon: Info,
     label: "Полезная информация",
     href: "/phuket",
   }
@@ -85,7 +86,7 @@ export const TourMenu = ({ trigger }: TourMenuProps) => {
       <SheetTrigger asChild>
         {trigger || (
           <Button variant="ghost" size="sm" className="gap-2">
-            <span>📋</span>
+            <span className="text-lg">☰</span>
             <span className="hidden sm:inline">Меню</span>
           </Button>
         )}
@@ -93,7 +94,7 @@ export const TourMenu = ({ trigger }: TourMenuProps) => {
       <SheetContent side="left" className="w-[300px] sm:w-[350px] overflow-y-auto">
         <SheetHeader className="mb-6">
           <SheetTitle className="text-2xl">
-            🏝️ PhuketDa
+            PhuketDa
           </SheetTitle>
         </SheetHeader>
         
@@ -106,7 +107,7 @@ export const TourMenu = ({ trigger }: TourMenuProps) => {
                   onClick={() => setIsOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary/80 transition-all group"
                 >
-                  <span className="text-xl">{section.icon}</span>
+                  <section.icon className="w-5 h-5 text-[#007AFF]" />
                   <span className="font-medium">{section.label}</span>
                   <ChevronRight className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
@@ -121,7 +122,7 @@ export const TourMenu = ({ trigger }: TourMenuProps) => {
                         : "hover:bg-secondary/80"
                     )}
                   >
-                    <span className="text-xl">{section.icon}</span>
+                    <section.icon className="w-5 h-5 text-[#007AFF]" />
                     <span className="font-medium">{section.label}</span>
                     <ChevronDown 
                       className={cn(
@@ -140,7 +141,7 @@ export const TourMenu = ({ trigger }: TourMenuProps) => {
                           onClick={() => setIsOpen(false)}
                           className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-secondary/60 transition-all text-sm group"
                         >
-                          <span>{item.icon}</span>
+                          <item.icon className="w-4 h-4 text-gray-600" />
                           <span>{item.label}</span>
                           <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
                         </Link>

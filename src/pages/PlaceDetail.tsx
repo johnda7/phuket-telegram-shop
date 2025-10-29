@@ -12,7 +12,7 @@ import { getPlaceMetafields } from "@/data/placeMetafields";
 import { 
   Loader2, MapPin, Star, ExternalLink, MessageCircle, 
   Clock, DollarSign, ChevronLeft, ChevronRight, ArrowLeft,
-  Wifi, ParkingCircle, Utensils, Film, ShoppingBag, Car, RefreshCw, Home, Share2
+  Wifi, ParkingCircle, Utensils, Film, ShoppingBag, Car, Home, Share2, Ship
 } from "lucide-react";
 
 interface PlacePhoto {
@@ -479,37 +479,58 @@ const PlaceDetail = () => {
 
             {/* Telegram WebApp Style Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Link
+            <Link
                 to="/phuket"
-                className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-4 text-center hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors border border-gray-100"
               >
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className="text-xl">🏝️</span>
-                  <span className="font-semibold">Туры</span>
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                    <Ship className="w-5 h-5 text-[#007AFF]" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-gray-900 text-sm">Туры</div>
+                    <div className="text-xs text-gray-500">С гидом</div>
+                  </div>
                 </div>
-                <p className="text-blue-100 text-sm">С гидом</p>
+                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </Link>
-              
+
               <Link
                 to="/services/car-rental"
-                className="group bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl p-4 text-center hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors border border-gray-100"
               >
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className="text-xl">🚗</span>
-                  <span className="font-semibold">Аренда авто</span>
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+                    <Car className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-gray-900 text-sm">Аренда авто</div>
+                    <div className="text-xs text-gray-500">Самостоятельно</div>
+                  </div>
                 </div>
-                <p className="text-green-100 text-sm">Самостоятельно</p>
+                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </Link>
-              
+
               <Link
                 to="/services/currency-exchange"
-                className="group bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl p-4 text-center hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors border border-gray-100"
               >
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className="text-xl">💱</span>
-                  <span className="font-semibold">Обмен валюты</span>
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
+                    <DollarSign className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-gray-900 text-sm">Обмен валюты</div>
+                    <div className="text-xs text-gray-500">Выгодный курс</div>
+                  </div>
                 </div>
-                <p className="text-purple-100 text-sm">Выгодный курс</p>
+                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </Link>
             </div>
           </div>

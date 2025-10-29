@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, Ship, Car, DollarSign, ShoppingBag, MapPin, Star } from "lucide-react";
+import { Loader2, ArrowLeft, Ship, Car, DollarSign, Home, ShoppingBag, MapPin, Star } from "lucide-react";
 import { fetchProductsByCategory, type ShopifyProduct } from "@/lib/shopify";
 import DaBot from "@/components/DaBot";
 import { PlaceCard } from "@/components/PlaceCard";
@@ -344,7 +344,7 @@ const CategoryPageDynamic = () => {
                   href="https://t.me/bereza_manager"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                  className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors border-b border-gray-100"
                 >
                   <div className="flex items-center gap-3 flex-1">
                     <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
@@ -359,6 +359,25 @@ const CategoryPageDynamic = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </a>
+
+                {/* Недвижимость - профессиональная иконка */}
+                <Link
+                  to="/services/real-estate"
+                  className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                >
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
+                      <Home className="w-5 h-5 text-orange-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900 text-sm">Недвижимость</div>
+                      <div className="text-xs text-gray-500">Покупка и аренда</div>
+                    </div>
+                  </div>
+                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
               </div>
             </div>
           )}

@@ -502,8 +502,8 @@ const PlaceDetail = () => {
               </div>
             </div>
 
-            {/* Telegram WebApp Style Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Telegram WebApp Style Grid - 4 СЕРВИСА! */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <Link
                 to="/phuket"
                 className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors border border-gray-100"
@@ -551,6 +551,24 @@ const PlaceDetail = () => {
                   <div className="flex-1">
                     <div className="font-semibold text-gray-900 text-sm">Обмен валюты</div>
                     <div className="text-xs text-gray-500">Выгодный курс</div>
+                  </div>
+                </div>
+                <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
+
+              <Link
+                to="/services/real-estate"
+                className="flex items-center justify-between p-4 bg-white rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-colors border border-gray-100"
+              >
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
+                    <Home className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-gray-900 text-sm">Недвижимость</div>
+                    <div className="text-xs text-gray-500">Покупка и аренда</div>
                   </div>
                 </div>
                 <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

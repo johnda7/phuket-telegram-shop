@@ -419,18 +419,23 @@ function generateTelegramStyleHTML(center) {
     ${featuresHTML}
   </div>
 
-  <!-- Must-See Highlight -->
-  <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-5 text-white">
-    <div class="flex items-center gap-3 mb-3">
-      <span class="text-2xl">⭐</span>
-      <h3 class="text-lg font-bold">Обязательно посетите!</h3>
-    </div>
-    <div class="space-y-2">
-      <div class="flex items-center gap-2">
-        <span class="text-2xl">${center.mustSee.icon}</span>
-        <div>
-          <p class="font-semibold">${center.mustSee.title}</p>
-          <p class="text-yellow-100 text-sm">${center.mustSee.description}</p>
+  <!-- Must-See Highlight - iOS 26 Premium Style -->
+  <div class="relative overflow-hidden bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl p-6 border border-blue-200/50 shadow-sm">
+    <div class="absolute inset-0 bg-gradient-to-r from-white/40 via-transparent to-white/20"></div>
+    <div class="relative">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
+          <span class="text-white text-lg">⭐</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900">Обязательно посетите!</h3>
+      </div>
+      <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 space-y-2">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">${center.mustSee.icon}</span>
+          <div>
+            <p class="font-bold text-lg text-gray-900">${center.mustSee.title}</p>
+            <p class="text-gray-600 text-sm leading-relaxed">${center.mustSee.description}</p>
+          </div>
         </div>
       </div>
     </div>

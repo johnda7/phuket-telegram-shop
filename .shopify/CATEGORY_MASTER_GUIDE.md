@@ -360,7 +360,7 @@ https://phuket-insider.com/ru/category/plyazhi/
 - 📊 **Quick Info Cards** - 2 быстрые карточки
 - 📝 **Белая карточка** - основное описание
 - 🎨 **Feature Cards** - 2 карточки с градиентами
-- ⭐ **Must-See** - желто-оранжевый блок
+- ⭐ **Must-See** - iOS 26 премиум блок (голубой градиент с glassmorphism)
 - ✨ **Удобства** - компактный grid
 - 🎯 **Action Buttons** - 3 кнопки с градиентами
 - 💬 **Final CTA** - серый блок с текстом
@@ -760,18 +760,23 @@ function generateTelegramStyleHTML(place) {
     ${featuresHTML}
   </div>
 
-  <!-- Must-See Highlight -->
-  <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-5 text-white">
-    <div class="flex items-center gap-3 mb-3">
-      <span class="text-2xl">⭐</span>
-      <h3 class="text-lg font-bold">Обязательно посетите!</h3>
-    </div>
-    <div class="space-y-2">
-      <div class="flex items-center gap-2">
-        <span class="text-2xl">${place.mustSee.icon}</span>
-        <div>
-          <p class="font-semibold">${place.mustSee.title}</p>
-          <p class="text-yellow-100 text-sm">${place.mustSee.description}</p>
+  <!-- Must-See Highlight - iOS 26 Premium Style -->
+  <div class="relative overflow-hidden bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl p-6 border border-blue-200/50 shadow-sm">
+    <div class="absolute inset-0 bg-gradient-to-r from-white/40 via-transparent to-white/20"></div>
+    <div class="relative">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
+          <span class="text-white text-lg">⭐</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900">Обязательно посетите!</h3>
+      </div>
+      <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 space-y-2">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">${place.mustSee.icon}</span>
+          <div>
+            <p class="font-bold text-lg text-gray-900">${place.mustSee.title}</p>
+            <p class="text-gray-600 text-sm leading-relaxed">${place.mustSee.description}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -2378,7 +2383,7 @@ const categoryFilters = {
 - ✅ Quick Info Cards (2 карточки)
 - ✅ Main Description (белая карточка)
 - ✅ Features Grid (2 блока)
-- ✅ Must-See Highlight (желто-оранжевый)
+- ✅ Must-See Highlight (iOS 26 премиум - голубой градиент с glassmorphism)
 - ✅ Amenities (grid)
 - ✅ Action Buttons (3 кнопки)
 - ✅ Final CTA (серый блок)
@@ -2671,16 +2676,24 @@ const telegramStyleDescription = `
   </div>
 
   <!-- Must-See - АДАПТИРОВАНО -->
-  <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-5 text-white">
-    <div class="flex items-center gap-3 mb-3">
-      <span class="text-2xl">⭐</span>
-      <h3 class="text-lg font-bold">Обязательно посетите!</h3>
-    </div>
-    <div class="flex items-center gap-2">
-      <span class="text-2xl">🌅</span>
-      <div>
-        <p class="font-semibold">Закат на Патонге</p>
-        <p class="text-sm">Невероятные закаты 18:00-19:00</p>
+  <!-- Must-See Highlight - iOS 26 Premium Style -->
+  <div class="relative overflow-hidden bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl p-6 border border-blue-200/50 shadow-sm">
+    <div class="absolute inset-0 bg-gradient-to-r from-white/40 via-transparent to-white/20"></div>
+    <div class="relative">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
+          <span class="text-white text-lg">⭐</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900">Обязательно посетите!</h3>
+      </div>
+      <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 space-y-2">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🌅</span>
+          <div>
+            <p class="font-bold text-lg text-gray-900">Закат на Патонге</p>
+            <p class="text-gray-600 text-sm leading-relaxed">Невероятные закаты 18:00-19:00</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -3194,6 +3207,189 @@ import { Ship, Car, DollarSign } from "lucide-react";
 // PlaceDetail.tsx рендерит блок "Наши сервисы" с Lucide React иконками
 // ✅ ПРЕМИУМ!
 ```
+
+---
+
+## 🎨 НОВЫЙ ДИЗАЙН БЛОКА "ОБЯЗАТЕЛЬНО ПОСЕТИТЕ!" (iOS 26)
+
+### ⚠️ КРИТИЧЕСКИ ВАЖНО!
+
+**29 октября 2025:** Блок "Обязательно посетите!" обновлён с желто-оранжевого на **iOS 26 премиум стиль**!
+
+### ❌ СТАРЫЙ ДИЗАЙН (НЕ ИСПОЛЬЗУЙ!):
+```html
+<!-- УСТАРЕВШИЙ - Желто-оранжевый градиент -->
+<div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl p-5 text-white">
+  <div class="flex items-center gap-3 mb-3">
+    <span class="text-2xl">⭐</span>
+    <h3 class="text-lg font-bold">Обязательно посетите!</h3>
+  </div>
+  <div class="flex items-center gap-2">
+    <span class="text-2xl">🐠</span>
+    <div>
+      <p class="font-semibold">Aquaria Phuket</p>
+      <p class="text-yellow-100 text-sm">Крупнейший океанариум...</p>
+    </div>
+  </div>
+</div>
+```
+
+**ПРОБЛЕМЫ:**
+- ❌ Дешёвый желто-оранжевый градиент
+- ❌ Белый текст плохо читается
+- ❌ Не соответствует iOS 26
+- ❌ Нет glassmorphism эффекта
+
+### ✅ НОВЫЙ ДИЗАЙН (ИСПОЛЬЗУЙ ВЕЗДЕ!):
+```html
+<!-- iOS 26 Premium Style -->
+<div class="relative overflow-hidden bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl p-6 border border-blue-200/50 shadow-sm">
+  <!-- Glassmorphism Background -->
+  <div class="absolute inset-0 bg-gradient-to-r from-white/40 via-transparent to-white/20"></div>
+  
+  <div class="relative">
+    <!-- Header with Icon -->
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
+        <span class="text-white text-lg">⭐</span>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900">Обязательно посетите!</h3>
+    </div>
+    
+    <!-- Content Card -->
+    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 space-y-2">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🐠</span>
+        <div>
+          <p class="font-bold text-lg text-gray-900">Aquaria Phuket</p>
+          <p class="text-gray-600 text-sm leading-relaxed">Крупнейший океанариум на острове — более 25,000 морских обитателей</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+**ПРЕИМУЩЕСТВА:**
+- ✅ Премиум iOS 26 стиль
+- ✅ Голубой градиент (#007AFF семейство)
+- ✅ Glassmorphism эффект (`backdrop-blur-sm`)
+- ✅ Читаемый тёмный текст на светлом фоне
+- ✅ Профессиональные тени и borders
+- ✅ Многослойная структура (слои глубины)
+
+### 🎨 АНАТОМИЯ НОВОГО ДИЗАЙНА:
+
+**Слой 1: Внешний контейнер**
+```html
+<div class="relative overflow-hidden bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-2xl p-6 border border-blue-200/50 shadow-sm">
+```
+- `from-blue-500/10 to-purple-500/10` - лёгкий голубо-фиолетовый градиент (10% opacity)
+- `rounded-2xl` - большие скруглённые углы (16px)
+- `border-blue-200/50` - полупрозрачная граница
+
+**Слой 2: Glassmorphism фон**
+```html
+<div class="absolute inset-0 bg-gradient-to-r from-white/40 via-transparent to-white/20"></div>
+```
+- `from-white/40 via-transparent to-white/20` - "жидкое стекло" эффект
+- Создаёт глубину и премиум вид
+
+**Слой 3: Заголовок с иконкой**
+```html
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
+  <span class="text-white text-lg">⭐</span>
+</div>
+<h3 class="text-xl font-bold text-gray-900">Обязательно посетите!</h3>
+```
+- Квадратная иконка 40x40px с градиентом
+- Жирный заголовок `text-xl font-bold`
+- Тёмный текст `text-gray-900` для читаемости
+
+**Слой 4: Контент карточка**
+```html
+<div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 space-y-2">
+```
+- `bg-white/70` - полупрозрачный белый фон
+- `backdrop-blur-sm` - размытие фона (glassmorphism)
+- Контрастирует с внешним контейнером
+
+### 📐 КЛЮЧЕВЫЕ ПАРАМЕТРЫ:
+
+**Цвета:**
+- Градиент фона: `from-blue-500/10 to-purple-500/10` (10% opacity)
+- Граница: `border-blue-200/50` (50% opacity)
+- Иконка: `from-blue-500 to-blue-600` (100% opacity)
+- Контент фон: `bg-white/70` (70% opacity)
+- Текст заголовка: `text-gray-900` (почти чёрный)
+- Текст описания: `text-gray-600` (средне-серый)
+
+**Размеры:**
+- Padding внешний: `p-6` (24px)
+- Padding контент: `p-4` (16px)
+- Иконка: `w-10 h-10` (40x40px)
+- Border radius внешний: `rounded-2xl` (16px)
+- Border radius внутренний: `rounded-xl` (12px)
+
+**Эффекты:**
+- Shadow: `shadow-sm` (мягкая тень)
+- Blur: `backdrop-blur-sm` (4px blur)
+- Overflow: `overflow-hidden` (обрезать выступающие элементы)
+
+### 🔄 КАК ОБНОВИТЬ СУЩЕСТВУЮЩИЕ КАТЕГОРИИ:
+
+**Если у тебя уже есть категория с СТАРЫМ дизайном:**
+
+1. **Открой мастер-скрипт:**
+```bash
+# Например для пляжей:
+scripts/apply-telegram-style-to-all-beaches.cjs
+```
+
+2. **Найди блок Must-See:**
+```javascript
+// Найди строки с "from-yellow-400 to-orange-500"
+```
+
+3. **Замени ПОЛНОСТЬЮ на новый дизайн:**
+```javascript
+// Скопируй весь код из раздела "✅ НОВЫЙ ДИЗАЙН" выше
+```
+
+4. **Запусти скрипт:**
+```bash
+node scripts/apply-telegram-style-to-all-beaches.cjs
+```
+
+5. **Проверь результат:**
+```bash
+# Открой любое место категории
+http://localhost:8080/place/[handle]
+```
+
+### ✅ ЧЕКЛИСТ ОБНОВЛЕНИЯ:
+
+```markdown
+- [ ] Нашёл мастер-скрипт категории
+- [ ] Нашёл блок Must-See (ищи "yellow-400")
+- [ ] Заменил на новый iOS 26 дизайн
+- [ ] Сохранил файл
+- [ ] Запустил скрипт
+- [ ] Проверил в браузере
+- [ ] Все места обновлены правильно
+```
+
+### 🎯 РЕЗУЛЬТАТ:
+
+**До обновления:**
+- Дешёвый желто-оранжевый блок
+- Похож на старый дизайн 2010 года
+
+**После обновления:**
+- Премиум iOS 26 стиль
+- Glassmorphism "жидкое стекло"
+- Профессиональный и дорогой вид
+- Соответствует Jobs + Perplexity философии
 
 ---
 

@@ -2,70 +2,45 @@
 // Агент всегда сам ищет и устраняет ошибки, не спрашивает пользователя о деталях, не просит скриншоты и логи — только самодиагностика и автофиксы.
 // Любые баги, белый экран, ошибки — агент обязан сам локализовать и исправить, не перекладывая ответственность на пользователя.
 // Вся разработка — исключительно через vibe/live coding, без ручных инструкций от пользователя.
-import { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Loader2, ArrowLeft, Ship, Car, DollarSign, Home, ShoppingBag, MapPin, Star } from "lucide-react";
+
+/**
+ * 🗂️ ДИНАМИЧЕСКАЯ СТРАНИЦА КАТЕГОРИИ
+ * 
+ * Использует:
+ * - config/categories.ts для всех настроек
+ * - styles/design-system.ts для стилей
+ * - config/services.ts для сервисов
+ * 
+ * Философия:
+ * - 100% динамическая (работает для ЛЮБОЙ категории)
+ * - Фильтры генерируются автоматически из тегов
+ * - Design System для всех компонентов
+ * - Telegram Wallet стиль
+ */
+
+import { useEffect, useState, useMemo } from "react";
+import { useParams, Link } from "react-router-dom";
+import { Loader2, ArrowLeft, MapPin, Star } from "lucide-react";
 import { fetchProductsByCategory, type ShopifyProduct } from "@/lib/shopify";
+import { getCategoryConfig, categoryExists } from "@/config/categories";
+import { getAllServices } from "@/config/services";
+import { getButtonClass, getCardClass, cn } from "@/styles/design-system";
 import DaBot from "@/components/DaBot";
 import { PlaceCard } from "@/components/PlaceCard";
-import { ShoppingMap } from "@/components/ShoppingMap";
-
-interface CategoryConfig {
-  title: string;
-  description: string;
-  heroImage: string;
-  breadcrumbs: Array<{ label: string; path?: string }>;
-}
-
-const categoryConfigs: Record<string, CategoryConfig> = {
-  shopping: {
-    title: "Торговые центры на Пхукете",
-    heroImage: "https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?w=1600&h=400&fit=crop",
-    description: "🛍️ **Торговые центры Пхукета** — это уникальное сочетание традиционного тайского колорита и современных мировых брендов. Здесь можно найти всё: от модных бутиков и экзотических сувениров до ресторанов с разнообразной кухней и развлекательных зон для всей семьи.\n\n**🔥 ТОП торговых центров:**\n• **Central Phuket** — самый большой ТЦ с люксовыми бутиками\n• **Jungceylon** — в сердце Патонга, рядом с пляжем\n• **Premium Outlet** — скидки до 70% на бренды\n• **Big C & Tesco Lotus** — супермаркеты для повседневных покупок\n\n**💡 Советы:**\n• Лучшее время для шоппинга — день (кондиционеры)\n• В аутлетах скидки круглый год\n• В супермаркетах можно купить тайские продукты\n• В торговых центрах есть фуд-корты и развлечения",
-    breadcrumbs: [
-      { label: "Главная", path: "/" },
-      { label: "Что посетить?", path: "/categories" },
-      { label: "Полезное", path: "/categories" },
-      { label: "Сувениры и шопинг", path: "/categories" },
-      { label: "Торговые центры на Пхукете" }
-    ]
-  },
-  viewpoints: {
-    title: "Смотровые площадки на Пхукете",
-    heroImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&h=400&fit=crop",
-    description: "🌅 **Смотровые площадки Пхукета** — места, где открываются невероятные виды на остров с протяженными песчаными пляжами и зелеными джунглями. На высоких точках встречают самые эффектные закаты и рассветы. На некоторых смотровых можно даже встретить диких животных.\n\n**🔥 ТОП смотровых площадок:**\n• **Мыс Промтеп** — легендарные закаты над Андаманским морем\n• **Карон Вьюпоинт** — три пляжа одновременно в одном кадре\n• **Самет Нангше** — виды как в фильме \"Аватар\"\n• **Као Ранг** — панорама всего Пхукет Тауна\n\n**💡 Советы:**\n• Приезжайте за 30 минут до заката на западные смотровые\n• На рассвет едьте на восточные площадки (Ао Пор, Самет Нангше)\n• Берите воду и закуски — на высоте может не быть магазинов\n• Большинство смотровых бесплатные!\n• Будьте аккуратны на крутых дорогах",
-    breadcrumbs: [
-      { label: "Главная", path: "/" },
-      { label: "Что посетить?", path: "/categories" },
-      { label: "Достопримечательности", path: "/categories" },
-      { label: "Смотровые площадки на Пхукете" }
-    ]
-  },
-  aquaparks: {
-    title: "Аквапарки на Пхукете",
-    heroImage: "https://images.unsplash.com/photo-1561459152-301c6c7e1ef8?w=1600&h=400&fit=crop",
-    description: "Аквапарки Пхукета — атмосфера праздника и веселья для всей семьи! От спокойных бассейнов и зон релакса до экстремальных горок. Современные аквапарки с волновыми бассейнами, ленивой рекой, кафе и безопасными аттракционами для детей. Многие отели предлагают daypass для посещения их аквапарков.",
-    breadcrumbs: [
-      { label: "Главная", path: "/" },
-      { label: "Что посетить?", path: "/categories" },
-      { label: "Отдых и развлечения", path: "/categories" },
-      { label: "Аквапарки на Пхукете" }
-    ]
-  }
-};
 
 const CategoryPageDynamic = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
-  const navigate = useNavigate();
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState<"all" | "open">("all");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedDistrict, setSelectedDistrict] = useState<string>("all");
-  const [showMap, setShowMap] = useState(false);
   
-  const config = categoryId ? categoryConfigs[categoryId] : null;
+  // Получить конфиг категории (централизованный!)
+  const config = categoryId && categoryExists(categoryId) 
+    ? getCategoryConfig(categoryId) 
+    : null;
+
+  // Получить все сервисы (централизованный!)
+  const services = getAllServices();
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -85,65 +60,67 @@ const CategoryPageDynamic = () => {
     loadProducts();
   }, [categoryId]);
 
-  // Функция для подсчета продуктов по категориям
-  const getCategoryCount = (category: string) => {
-    return products.filter(product => {
-      const productTags = product.node.tags || [];
-      return productTags.some(tag => 
-        tag === category || 
-        tag === `category:${category}` ||
-        (category === "mall" && (tag === "mall" || tag === "shopping")) ||
-        (category === "supermarket" && tag === "supermarket") ||
-        (category === "outlet" && tag === "outlet") ||
-        (category === "luxury" && tag === "luxury") ||
-        (category === "market" && tag === "market")
-      );
-    }).length;
+  // ДИНАМИЧЕСКИ извлекаем районы из продуктов (НЕ хардкод!)
+  const availableDistricts = useMemo(() => {
+    const districts = new Set<string>();
+    products.forEach(product => {
+      const tags = product.node.tags || [];
+      tags.forEach(tag => {
+        if (tag.startsWith('district:')) {
+          districts.add(tag.replace('district:', ''));
+        }
+      });
+    });
+    return Array.from(districts).sort();
+  }, [products]);
+
+  // Маппинг district ID → Русское название
+  const districtNames: Record<string, string> = {
+    Patong: 'Патонг',
+    Karon: 'Карон',
+    Kata: 'Ката',
+    Chalong: 'Чалонг',
+    Rawai: 'Раваи',
+    Kamala: 'Камала',
+    Kathu: 'Катху',
+    Thalang: 'Тхаланг',
+    PhuketTown: 'Пхукет Таун',
+    Cherngtalay: 'Чернгталай',
   };
 
-  // Функция для подсчета продуктов по районам
-  const getDistrictCount = (district: string) => {
+  // Фильтрация продуктов
+  const filteredProducts = useMemo(() => {
     return products.filter(product => {
       const productTags = product.node.tags || [];
-      return productTags.some(tag => 
-        tag === `district:${district}` || tag === district
-      );
-    }).length;
-  };
+      
+      // Фильтр по району
+      if (selectedDistrict !== "all") {
+        const hasDistrict = productTags.some(tag => 
+          tag === `district:${selectedDistrict}` || tag === selectedDistrict
+        );
+        if (!hasDistrict) return false;
+      }
+      
+      return true;
+    });
+  }, [products, selectedDistrict]);
 
-  // Фильтрация продуктов по выбранным фильтрам
-  const filteredProducts = products.filter(product => {
-    const productTags = product.node.tags || [];
-    
-    // Фильтр по категории
-    if (selectedCategory !== "all") {
-      const hasCategory = productTags.some(tag => 
-        tag === selectedCategory || 
-        tag === `category:${selectedCategory}` ||
-        (selectedCategory === "mall" && (tag === "mall" || tag === "shopping")) ||
-        (selectedCategory === "supermarket" && tag === "supermarket") ||
-        (selectedCategory === "outlet" && tag === "outlet") ||
-        (selectedCategory === "luxury" && tag === "luxury") ||
-        (selectedCategory === "market" && tag === "market")
-      );
-      if (!hasCategory) return false;
-    }
-    
-    // Фильтр по району
-    if (selectedDistrict !== "all") {
-      const hasDistrict = productTags.some(tag => 
-        tag === `district:${selectedDistrict}` || tag === selectedDistrict
-      );
-      if (!hasDistrict) return false;
-    }
-    
-    return true;
-  });
+  // Средний рейтинг (если будем добавлять metafields)
+  const averageRating = "4.2 - 4.7"; // TODO: вычислять из metafields когда добавим
 
   if (!config) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl">Категория не найдена</p>
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Категория не найдена</h1>
+          <p className="text-gray-600 mb-6">Возможно, вы перешли по неправильной ссылке</p>
+          <Link 
+            to="/categories" 
+            className={getButtonClass('primary')}
+          >
+            Вернуться к категориям
+          </Link>
+        </div>
       </div>
     );
   }
@@ -151,7 +128,7 @@ const CategoryPageDynamic = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#007AFF]" />
       </div>
     );
   }
@@ -175,13 +152,20 @@ const CategoryPageDynamic = () => {
               </Link>
             </div>
             
-            {/* Breadcrumbs - Компактные как в PlaceDetail */}
+            {/* Breadcrumbs - Динамические из конфига */}
             <nav className="flex items-center gap-1.5 text-xs text-gray-500 mt-2">
-              <Link to="/" className="hover:text-[#007AFF] transition-colors">Главная</Link>
-              <span>•</span>
-              <Link to="/categories" className="hover:text-[#007AFF] transition-colors">Категории</Link>
-              <span>•</span>
-              <span className="text-gray-900 font-medium">{categoryId === 'shopping' ? 'Торговые центры' : config.title}</span>
+              {config.breadcrumbs.map((crumb, index) => (
+                <div key={index} className="flex items-center gap-1.5">
+                  {index > 0 && <span>•</span>}
+                  {crumb.path ? (
+                    <Link to={crumb.path} className="hover:text-[#007AFF] transition-colors">
+                      {crumb.label}
+                    </Link>
+                  ) : (
+                    <span className="text-gray-900 font-medium">{crumb.label}</span>
+                  )}
+                </div>
+              ))}
             </nav>
           </div>
         </div>
@@ -202,91 +186,55 @@ const CategoryPageDynamic = () => {
               </span>
               <span className="flex items-center gap-1.5">
                 <Star className="w-4 h-4 fill-white/90" />
-                <span className="font-medium">от 4.2 до 4.7</span>
+                <span className="font-medium">{averageRating}</span>
               </span>
             </div>
           </div>
         </div>
 
         <div className="container mx-auto px-4 py-6">
-          {/* Description - Компактная карточка */}
-          <div className="mb-6 bg-white/70 backdrop-blur-md rounded-2xl p-5 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+          {/* Description - Компактная карточка через Design System */}
+          <div className={cn(getCardClass('glass'), "mb-6")}>
             <p className="text-sm text-gray-700 leading-relaxed">
-              {categoryId === 'shopping' 
-                ? 'Торговые центры Пхукета — современные ТРЦ с мировыми брендами, ресторанами и развлечениями. Идеально для шопинга в комфортных условиях с кондиционерами.'
-                : config.description.split('\n')[0].replace(/[🛍️🌅📍⭐💡🔥]/g, '').trim()
-              }
+              {config.description}
             </p>
           </div>
 
-          {/* Filters - Telegram Style Chips */}
-          <div className="mb-6">
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {/* Район фильтры как chips */}
-              <button
-                onClick={() => setSelectedDistrict("all")}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedDistrict === "all"
-                    ? "bg-[#007AFF] text-white shadow-md"
-                    : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
-                }`}
-              >
-                Все районы
-              </button>
-              <button
-                onClick={() => setSelectedDistrict("Patong")}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedDistrict === "Patong"
-                    ? "bg-[#007AFF] text-white shadow-md"
-                    : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
-                }`}
-              >
-                Патонг
-              </button>
-              <button
-                onClick={() => setSelectedDistrict("Karon")}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedDistrict === "Karon"
-                    ? "bg-[#007AFF] text-white shadow-md"
-                    : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
-                }`}
-              >
-                Карон
-              </button>
-              <button
-                onClick={() => setSelectedDistrict("Chalong")}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedDistrict === "Chalong"
-                    ? "bg-[#007AFF] text-white shadow-md"
-                    : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
-                }`}
-              >
-                Чалонг
-              </button>
-              <button
-                onClick={() => setSelectedDistrict("Thalang")}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedDistrict === "Thalang"
-                    ? "bg-[#007AFF] text-white shadow-md"
-                    : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
-                }`}
-              >
-                Тхаланг
-              </button>
-              <button
-                onClick={() => setSelectedDistrict("PhuketTown")}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedDistrict === "PhuketTown"
-                    ? "bg-[#007AFF] text-white shadow-md"
-                    : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
-                }`}
-              >
-                Пхукет Таун
-              </button>
-            </div>
-          </div>
+          {/* Filters - Динамические районы через Design System */}
+          {config.filters.showDistricts && availableDistricts.length > 0 && (
+            <div className="mb-6">
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                {/* Все районы */}
+                <button
+                  onClick={() => setSelectedDistrict("all")}
+                  className={cn(
+                    "flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+                    selectedDistrict === "all"
+                      ? "bg-[#007AFF] text-white shadow-md"
+                      : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
+                  )}
+                >
+                  Все районы
+                </button>
 
-          {/* Убрал карту - бесполезная без точек */}
+                {/* Динамические районы из продуктов */}
+                {availableDistricts.map(district => (
+                  <button
+                    key={district}
+                    onClick={() => setSelectedDistrict(district)}
+                    className={cn(
+                      "flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+                      selectedDistrict === district
+                        ? "bg-[#007AFF] text-white shadow-md"
+                        : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
+                    )}
+                  >
+                    {districtNames[district] || district}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Products Grid - Компактная сетка */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-8">
@@ -295,134 +243,71 @@ const CategoryPageDynamic = () => {
             ))}
           </div>
 
-          {/* НАШИ СЕРВИСЫ - Telegram Wallet Style */}
+          {/* НАШИ СЕРВИСЫ - Динамически из config/services.ts */}
           {filteredProducts.length > 0 && (
             <div className="mb-12">
-              <h3 className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">Наши сервисы</h3>
+              <h3 className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">
+                Наши сервисы
+              </h3>
               
-              <div className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-gray-100">
-                {/* Туры - профессиональная иконка */}
-                <Link
-                  to="/phuket"
-                  className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors border-b border-gray-100"
-                >
-                  <div className="flex items-center gap-3 flex-1">
-                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                      <Ship className="w-5 h-5 text-[#007AFF]" />
+              <div className={cn(getCardClass('default'), "p-0")}>
+                {services.map((service, index) => (
+                  <Link
+                    key={service.id}
+                    to={service.path}
+                    className={cn(
+                      "flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors",
+                      index < services.length - 1 && "border-b border-gray-100"
+                    )}
+                  >
+                    <div className="flex items-center gap-3 flex-1">
+                      <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", service.bgColor)}>
+                        <service.icon className={cn("w-5 h-5", service.iconColor)} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-900 text-sm">{service.title}</div>
+                        <div className="text-xs text-gray-500">{service.subtitle}</div>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900 text-sm">Туры на Пхукете</div>
-                      <div className="text-xs text-gray-500">Экскурсии с гидом</div>
-                    </div>
-                  </div>
-                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-
-                {/* Аренда авто - профессиональная иконка */}
-                <Link
-                  to="/services/car-rental"
-                  className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors border-b border-gray-100"
-                >
-                  <div className="flex items-center gap-3 flex-1">
-                    <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
-                      <Car className="w-5 h-5 text-green-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900 text-sm">Аренда авто</div>
-                      <div className="text-xs text-gray-500">Надёжные автомобили</div>
-                    </div>
-                  </div>
-                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-
-                {/* Обмен валюты - профессиональная иконка */}
-                <a
-                  href="https://t.me/bereza_manager"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors border-b border-gray-100"
-                >
-                  <div className="flex items-center gap-3 flex-1">
-                    <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
-                      <DollarSign className="w-5 h-5 text-purple-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900 text-sm">Обмен валюты</div>
-                      <div className="text-xs text-gray-500">Выгодный курс</div>
-                    </div>
-                  </div>
-                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
-
-                {/* Недвижимость - профессиональная иконка */}
-                <Link
-                  to="/services/real-estate"
-                  className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors"
-                >
-                  <div className="flex items-center gap-3 flex-1">
-                    <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
-                      <Home className="w-5 h-5 text-orange-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900 text-sm">Недвижимость</div>
-                      <div className="text-xs text-gray-500">Покупка и аренда</div>
-                    </div>
-                  </div>
-                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
+                    <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                ))}
               </div>
             </div>
           )}
 
-          {/* Empty State */}
+          {/* Empty State - через Design System */}
           {filteredProducts.length === 0 && (
             <div className="text-center py-16">
-              <div className="w-24 h-24 mx-auto mb-6 bg-muted/20 rounded-full flex items-center justify-center">
-                <span className="text-4xl">{categoryId === 'viewpoints' ? '🌅' : '🛍️'}</span>
+              <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                <config.icon className={cn("w-12 h-12", config.iconColor)} />
               </div>
               <h3 className="text-xl font-bold mb-2">
-                {selectedCategory !== "all" || selectedDistrict !== "all" 
+                {selectedDistrict !== "all" 
                   ? "Ничего не найдено" 
                   : "Места скоро появятся"
                 }
               </h3>
-              <p className="text-muted-foreground mb-6">
-                {selectedCategory !== "all" || selectedDistrict !== "all"
+              <p className="text-gray-600 mb-6">
+                {selectedDistrict !== "all"
                   ? "Попробуйте изменить фильтры или сбросить их"
-                  : "Мы работаем над добавлением новых торговых центров"
+                  : `Мы работаем над добавлением новых мест в категорию "${config.title}"`
                 }
               </p>
-              {(selectedCategory !== "all" || selectedDistrict !== "all") && (
+              {selectedDistrict !== "all" && (
                 <button
-                  onClick={() => {
-                    setSelectedCategory("all");
-                    setSelectedDistrict("all");
-                  }}
-                  className="px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+                  onClick={() => setSelectedDistrict("all")}
+                  className={getButtonClass('primary')}
                 >
-                  🔄 Сбросить фильтры
+                  Сбросить фильтры
                 </button>
               )}
             </div>
           )}
         </div>
       </div>
-
-      {/* Shopping Map Modal */}
-      {showMap && (
-        <ShoppingMap 
-          products={filteredProducts} 
-          onClose={() => setShowMap(false)} 
-        />
-      )}
     </>
   );
 }

@@ -394,9 +394,9 @@ const PlaceDetail = () => {
               </div>
             </div>
             
-            {/* Content with iOS 26 Typography */}
+            {/* Telegram WebApp Style Content */}
             <div 
-              className="prose prose-base max-w-none prose-headings:font-semibold prose-headings:text-gray-900 prose-h1:text-xl prose-h2:text-lg prose-h3:text-base prose-p:text-gray-600 prose-p:leading-relaxed prose-p:mb-4 prose-strong:text-gray-900 prose-a:text-blue-500 prose-a:no-underline hover:prose-a:underline prose-ul:text-gray-600 prose-li:text-gray-600 prose-li:mb-1 prose-blockquote:border-l-blue-400 prose-blockquote:bg-blue-50/30 prose-blockquote:rounded-r-md prose-blockquote:p-3 prose-blockquote:my-4"
+              className="space-y-6"
               dangerouslySetInnerHTML={{ __html: place.descriptionHtml || place.description || '' }}
             />
           </div>
@@ -462,65 +462,39 @@ const PlaceDetail = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Telegram WebApp Style Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Link
                 to="/phuket"
-                className="group p-4 rounded-xl bg-gray-50/50 hover:bg-gray-100/70 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-4 text-center hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-600/10 flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <ShoppingBag className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Туры на Пхукете</h3>
-                    <p className="text-gray-500 text-sm">Экскурсии на острова, храмы, водопады</p>
-                  </div>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <span className="text-xl">🏝️</span>
+                  <span className="font-semibold">Туры</span>
                 </div>
+                <p className="text-blue-100 text-sm">С гидом</p>
               </Link>
-
+              
               <Link
                 to="/services/car-rental"
-                className="group p-4 rounded-xl bg-gray-50/50 hover:bg-gray-100/70 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                className="group bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl p-4 text-center hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-600/10 flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <Car className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Аренда авто</h3>
-                    <p className="text-gray-500 text-sm">Удобные машины для поездок</p>
-                  </div>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <span className="text-xl">🚗</span>
+                  <span className="font-semibold">Аренда авто</span>
                 </div>
+                <p className="text-green-100 text-sm">Самостоятельно</p>
               </Link>
-
+              
               <Link
                 to="/services/currency-exchange"
-                className="group p-4 rounded-xl bg-gray-50/50 hover:bg-gray-100/70 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+                className="group bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl p-4 text-center hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-600/10 flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <RefreshCw className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Обмен валюты</h3>
-                    <p className="text-gray-500 text-sm">Выгодный курс без комиссии</p>
-                  </div>
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <span className="text-xl">💱</span>
+                  <span className="font-semibold">Обмен валюты</span>
                 </div>
-              </Link>
-
-              <Link
-                to="/services/real-estate"
-                className="group p-4 rounded-xl bg-gray-50/50 hover:bg-gray-100/70 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/10 to-blue-600/10 flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <Home className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Недвижимость</h3>
-                    <p className="text-gray-500 text-sm">Аренда и продажа вилл</p>
-                  </div>
-                </div>
+                <p className="text-purple-100 text-sm">Выгодный курс</p>
               </Link>
             </div>
           </div>

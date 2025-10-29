@@ -445,35 +445,9 @@ function generateTelegramStyleHTML(center) {
   </div>
 
   <!-- Action Buttons - Telegram WebApp Style -->
-  <div class="space-y-4">
-    <h3 class="text-lg font-bold text-gray-900">Планируете поездку?</h3>
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-      <a href="/phuket" class="group bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-4 text-center hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
-        <div class="flex items-center justify-center gap-2 mb-2">
-          <span class="text-xl">🏝️</span>
-          <span class="font-semibold">Туры</span>
-        </div>
-        <p class="text-blue-100 text-sm">С гидом</p>
-      </a>
-      
-      <a href="/services/car-rental" class="group bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl p-4 text-center hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
-        <div class="flex items-center justify-center gap-2 mb-2">
-          <span class="text-xl">🚗</span>
-          <span class="font-semibold">Аренда авто</span>
-        </div>
-        <p class="text-green-100 text-sm">Самостоятельно</p>
-      </a>
-      
-      <a href="/services/currency-exchange" class="group bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl p-4 text-center hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105">
-        <div class="flex items-center justify-center gap-2 mb-2">
-          <span class="text-xl">💱</span>
-          <span class="font-semibold">Обмен валюты</span>
-        </div>
-        <p class="text-purple-100 text-sm">Выгодный курс</p>
-      </a>
-    </div>
-  </div>
+  <!-- ❌ CTA Block УДАЛЁН - теперь используется отдельный React компонент
+       ✅ PlaceDetail.tsx рендерит блок "Наши сервисы" с премиум Lucide React иконками
+       ✅ Никаких дешёвых эмодзи в HTML! -->
 
   <!-- Final CTA -->
   <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 text-center">

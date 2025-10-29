@@ -41,6 +41,17 @@ const categoryConfigs: Record<string, CategoryConfig> = {
       { label: "Достопримечательности", path: "/categories" },
       { label: "Смотровые площадки на Пхукете" }
     ]
+  },
+  aquaparks: {
+    title: "Аквапарки на Пхукете",
+    heroImage: "https://images.unsplash.com/photo-1561459152-301c6c7e1ef8?w=1600&h=400&fit=crop",
+    description: "Аквапарки Пхукета — развлечения для всей семьи! От спокойных бассейнов до экстремальных горок. Современные аквапарки с зонами отдыха, кафе и безопасными аттракционами для детей.",
+    breadcrumbs: [
+      { label: "Главная", path: "/" },
+      { label: "Что посетить?", path: "/categories" },
+      { label: "Отдых и развлечения", path: "/categories" },
+      { label: "Аквапарки на Пхукете" }
+    ]
   }
 };
 

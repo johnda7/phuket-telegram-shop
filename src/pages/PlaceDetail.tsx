@@ -61,6 +61,7 @@ const getCategoryNameInRussian = (category: string): string => {
     'beaches': 'Пляжи',
     'temples': 'Храмы',
     'viewpoints': 'Смотровые площадки',
+    'aquaparks': 'Аквапарки',
     'restaurants': 'Рестораны',
     'nightlife': 'Ночная жизнь',
     'markets': 'Рынки',

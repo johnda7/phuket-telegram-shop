@@ -3,9 +3,9 @@
 // Любые баги, белый экран, ошибки — агент обязан сам локализовать и исправить, не перекладывая ответственность на пользователя.
 // Вся разработка — исключительно через vibe/live coding, без ручных инструкций от пользователя.
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
 import { fetchProductsByCategory, type ShopifyProduct } from "@/lib/shopify";
 import DaBot from "@/components/DaBot";
 import { PlaceCard } from "@/components/PlaceCard";
@@ -46,6 +46,7 @@ const categoryConfigs: Record<string, CategoryConfig> = {
 
 const CategoryPageDynamic = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
+  const navigate = useNavigate();
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<"all" | "open">("all");
@@ -94,11 +95,7 @@ const CategoryPageDynamic = () => {
     return products.filter(product => {
       const productTags = product.node.tags || [];
       return productTags.some(tag => 
-        tag === `district:${district}` ||
-        tag === district ||
-        (district === "phuket-town" && tag === "district:PhuketTown") ||
-        (district === "bang-tao" && tag === "district:BangTao") ||
-        (district === "thalang" && tag === "district:Thalang")
+        tag === `district:${district}` || tag === district
       );
     }).length;
   };
@@ -124,11 +121,7 @@ const CategoryPageDynamic = () => {
     // Фильтр по району
     if (selectedDistrict !== "all") {
       const hasDistrict = productTags.some(tag => 
-        tag === `district:${selectedDistrict}` ||
-        tag === selectedDistrict ||
-        (selectedDistrict === "phuket-town" && tag === "district:PhuketTown") ||
-        (selectedDistrict === "bang-tao" && tag === "district:BangTao") ||
-        (selectedDistrict === "thalang" && tag === "district:Thalang")
+        tag === `district:${selectedDistrict}` || tag === selectedDistrict
       );
       if (!hasDistrict) return false;
     }
@@ -158,37 +151,48 @@ const CategoryPageDynamic = () => {
         {/* ДА БОТ - AI консьерж доступен везде! */}
         <DaBot />
         
-        {/* Hero - Telegram WebApp Style с Glassmorphism */}
-        <div className="relative overflow-hidden">
-          {/* Background gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500" />
-          
-          {/* Glassmorphism overlay */}
-          <div className="relative backdrop-blur-md bg-white/10 border-b border-white/20">
-            <div className="container mx-auto px-4 py-8">
-              {/* Breadcrumbs - Компактные */}
-              <nav className="flex items-center gap-1.5 text-xs mb-4 text-white/80">
-                <Link to="/" className="hover:text-white transition-colors">Главная</Link>
-                <span>•</span>
-                <span className="text-white font-medium">{categoryId === 'shopping' ? 'Торговые центры' : config.title}</span>
-              </nav>
-              
-              {/* Title - Компактный */}
-              <h1 className="text-2xl md:text-3xl font-bold text-white mb-3 flex items-center gap-2">
-                {categoryId === 'shopping' ? '🛍️' : '🌅'} {config.title}
-              </h1>
-              
-              {/* Stats - Telegram Style */}
-              <div className="flex items-center gap-4 text-white/90 text-sm">
-                <span className="flex items-center gap-1">
-                  <span className="text-yellow-300">📍</span>
-                  <span className="font-medium">{products.length} мест</span>
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="text-green-300">⭐</span>
-                  <span className="font-medium">от 4.2 до 4.7</span>
-                </span>
-              </div>
+        {/* Sticky Navigation Header - iOS 26 Style */}
+        <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex items-center gap-3">
+              <Link
+                to="/categories"
+                className="flex items-center gap-2 text-[#007AFF] hover:text-[#0051D5] transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                <span className="font-medium">Назад</span>
+              </Link>
+            </div>
+            
+            {/* Breadcrumbs - Компактные как в PlaceDetail */}
+            <nav className="flex items-center gap-1.5 text-xs text-gray-500 mt-2">
+              <Link to="/" className="hover:text-[#007AFF] transition-colors">Главная</Link>
+              <span>•</span>
+              <Link to="/categories" className="hover:text-[#007AFF] transition-colors">Категории</Link>
+              <span>•</span>
+              <span className="text-gray-900 font-medium">{categoryId === 'shopping' ? 'Торговые центры' : config.title}</span>
+            </nav>
+          </div>
+        </div>
+        
+        {/* Hero - iOS 26 Style - только #007AFF */}
+        <div className="relative overflow-hidden py-12 bg-[#007AFF]">
+          <div className="container mx-auto px-4 text-center">
+            {/* Title */}
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
+              {categoryId === 'shopping' ? '🛍️' : '🌅'} {config.title}
+            </h1>
+            
+            {/* Stats - Telegram Style */}
+            <div className="flex items-center justify-center gap-4 text-white/90 text-sm">
+              <span className="flex items-center gap-1">
+                <span className="text-yellow-300">📍</span>
+                <span className="font-medium">{filteredProducts.length} {filteredProducts.length === 1 ? 'место' : 'мест'}</span>
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="text-green-300">⭐</span>
+                <span className="font-medium">от 4.2 до 4.7</span>
+              </span>
             </div>
           </div>
         </div>
@@ -219,9 +223,9 @@ const CategoryPageDynamic = () => {
                 Все районы
               </button>
               <button
-                onClick={() => setSelectedDistrict("patong")}
+                onClick={() => setSelectedDistrict("Patong")}
                 className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedDistrict === "patong"
+                  selectedDistrict === "Patong"
                     ? "bg-[#007AFF] text-white shadow-md"
                     : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
                 }`}
@@ -229,9 +233,9 @@ const CategoryPageDynamic = () => {
                 📍 Патонг
               </button>
               <button
-                onClick={() => setSelectedDistrict("karon")}
+                onClick={() => setSelectedDistrict("Karon")}
                 className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedDistrict === "karon"
+                  selectedDistrict === "Karon"
                     ? "bg-[#007AFF] text-white shadow-md"
                     : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
                 }`}
@@ -239,9 +243,9 @@ const CategoryPageDynamic = () => {
                 📍 Карон
               </button>
               <button
-                onClick={() => setSelectedDistrict("chalong")}
+                onClick={() => setSelectedDistrict("Chalong")}
                 className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedDistrict === "chalong"
+                  selectedDistrict === "Chalong"
                     ? "bg-[#007AFF] text-white shadow-md"
                     : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
                 }`}
@@ -249,49 +253,105 @@ const CategoryPageDynamic = () => {
                 📍 Чалонг
               </button>
               <button
-                onClick={() => setSelectedDistrict("thalang")}
+                onClick={() => setSelectedDistrict("Thalang")}
                 className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  selectedDistrict === "thalang"
+                  selectedDistrict === "Thalang"
                     ? "bg-[#007AFF] text-white shadow-md"
                     : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
                 }`}
               >
                 📍 Тхаланг
               </button>
+              <button
+                onClick={() => setSelectedDistrict("PhuketTown")}
+                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  selectedDistrict === "PhuketTown"
+                    ? "bg-[#007AFF] text-white shadow-md"
+                    : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
+                }`}
+              >
+                📍 Пхукет Таун
+              </button>
             </div>
           </div>
 
-          {/* Map Card - Компактная */}
-          <div 
-            onClick={() => setShowMap(true)}
-            className="mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-4 cursor-pointer hover:shadow-xl transition-all duration-300 group"
-          >
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-2xl">
-                  🗺️
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold text-base mb-0.5">
-                    Карта мест
-                  </h3>
-                  <p className="text-white/80 text-xs">
-                    {filteredProducts.length} {filteredProducts.length === 1 ? 'место' : 'мест'}
-                  </p>
-                </div>
-              </div>
-              <div className="text-white text-xl group-hover:scale-110 transition-transform">
-                →
-              </div>
-            </div>
-          </div>
+          {/* Убрал карту - бесполезная без точек */}
 
           {/* Products Grid - Компактная сетка */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-8">
             {filteredProducts.map((product) => (
               <PlaceCard key={product.node.id} product={product.node} />
             ))}
           </div>
+
+          {/* НАШИ СЕРВИСЫ - Telegram Wallet Style */}
+          {filteredProducts.length > 0 && (
+            <div className="mb-12">
+              <h3 className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">Наши сервисы</h3>
+              
+              <div className="bg-white rounded-2xl overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-gray-100">
+                {/* Туры */}
+                <Link
+                  to="/phuket"
+                  className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors border-b border-gray-100"
+                >
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-xl">
+                      🏝️
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900 text-sm">Туры на Пхукете</div>
+                      <div className="text-xs text-gray-500">Экскурсии с гидом</div>
+                    </div>
+                  </div>
+                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+
+                {/* Аренда авто */}
+                <Link
+                  to="/services/car-rental"
+                  className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors border-b border-gray-100"
+                >
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-xl">
+                      🚗
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900 text-sm">Аренда авто</div>
+                      <div className="text-xs text-gray-500">Надёжные автомобили</div>
+                    </div>
+                  </div>
+                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Link>
+
+                {/* Обмен валюты */}
+                <a
+                  href="https://t.me/bereza_manager"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-4 hover:bg-gray-50 active:bg-gray-100 transition-colors"
+                >
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-xl">
+                      💱
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-semibold text-gray-900 text-sm">Обмен валюты</div>
+                      <div className="text-xs text-gray-500">Выгодный курс</div>
+                    </div>
+                  </div>
+                  <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          )}
+
           {/* Empty State */}
           {filteredProducts.length === 0 && (
             <div className="text-center py-16">

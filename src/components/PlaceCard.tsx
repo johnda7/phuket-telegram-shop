@@ -56,22 +56,70 @@ export const PlaceCard = ({ product }: PlaceCardProps) => {
     return '🏢';
   };
   
-  // Extract district from tags (district:phuket-town -> Phuket Town)
+  // Словарь переводов районов на русский
+  const districtTranslations: Record<string, string> = {
+    'PhuketTown': 'Пхукет Таун',
+    'Patong': 'Патонг',
+    'Karon': 'Карон',
+    'Kata': 'Ката',
+    'Chalong': 'Чалонг',
+    'Rawai': 'Равай',
+    'Kamala': 'Камала',
+    'Thalang': 'Тхаланг',
+    'Cherngtalay': 'Чернгталай',
+    'BangTao': 'Банг Тао'
+  };
+  
+  // Extract district from tags (district:PhuketTown -> Пхукет Таун)
   const districtTag = tags.find(tag => tag.startsWith('district:'));
   const district = districtTag 
-    ? districtTag.replace('district:', '').split('-').map(w => 
-        w.charAt(0).toUpperCase() + w.slice(1)
-      ).join(' ')
+    ? (districtTranslations[districtTag.replace('district:', '')] || districtTag.replace('district:', ''))
     : null;
 
-  // Get category tags (exclude district, place, category:*)
-  const categoryTags = tags.filter(tag => 
-    !tag.startsWith('district:') && 
-    !tag.startsWith('category:') && 
-    tag !== 'place' &&
-    tag !== 'info' &&
-    tag !== 'insider'
-  ).slice(0, 3);
+  // Словарь переводов тегов на русский
+  const tagTranslations: Record<string, string> = {
+    // Основные
+    'aircon': 'кондиционер',
+    'cinema': 'кинотеатр',
+    'food-court': 'фуд-корт',
+    'parking': 'парковка',
+    'wifi': 'Wi-Fi',
+    
+    // Типы
+    'mall': 'торговый центр',
+    'outlet': 'аутлет',
+    'luxury': 'люкс',
+    'supermarket': 'супермаркет',
+    'market': 'рынок',
+    
+    // Особенности
+    'bowling': 'боулинг',
+    'beach-nearby': 'у пляжа',
+    'brands': 'бренды',
+    'discounts': 'скидки',
+    'thai-products': 'тайские продукты',
+    'imports': 'импорт',
+    'quality': 'качество',
+    'modern': 'современный',
+    'tourist': 'туристический',
+    'popular': 'популярное',
+    'instagram': 'фото-спот',
+    'expat-friendly': 'для экспатов',
+    'airport-nearby': 'у аэропорта'
+  };
+  
+  // Get category tags (exclude district, place, category:*) и переводим
+  const categoryTags = tags
+    .filter(tag => 
+      !tag.startsWith('district:') && 
+      !tag.startsWith('category:') && 
+      tag !== 'place' &&
+      tag !== 'info' &&
+      tag !== 'insider' &&
+      tag !== 'shopping'
+    )
+    .map(tag => tagTranslations[tag] || tag)
+    .slice(0, 3);
 
   // Временная база данных рейтингов и цен (пока metafields не доступны в Storefront API)
   const placeData: Record<string, { rating: number; priceLevel: number; hours: string }> = {
@@ -107,7 +155,7 @@ export const PlaceCard = ({ product }: PlaceCardProps) => {
       to={`/place/${product.handle}`}
       className="group block h-full perspective-1000"
     >
-      <div className="overflow-hidden transition-all duration-500 hover:scale-[1.05] hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] border-2 border-gray-200/80 hover:border-primary/60 rounded-[28px] h-full flex flex-col bg-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-3 hover:rotate-1">
+      <div className="overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_20px_60px_-15px_rgba(0,122,255,0.3)] border border-gray-200 hover:border-[#007AFF] rounded-2xl h-full flex flex-col bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:-translate-y-1">
         {/* Image Area - ОСТАВЛЯЕМ МЕСТО ДЛЯ ФОТО! 16:9 aspect ratio */}
         <div className={`aspect-[16/9] bg-gradient-to-br ${getGradientColors()} overflow-hidden relative`}>
           {displayImage ? (
@@ -121,25 +169,7 @@ export const PlaceCard = ({ product }: PlaceCardProps) => {
               {/* Gradient overlay for better readability */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
               
-              {/* Top badges row - ПРЕМИУМ ДИЗАЙН */}
-              <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3">
-                {/* Rating badge - ЗОЛОТОЙ ГРАДИЕНТ */}
-                {rating && (
-                  <div className="bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 backdrop-blur-xl rounded-[18px] px-5 py-3 flex items-center gap-2.5 shadow-[0_10px_30px_rgba(245,158,11,0.5)] border-2 border-white/95 hover:scale-110 hover:shadow-[0_14px_40px_rgba(245,158,11,0.7)] transition-all duration-300">
-                    <Star className="w-5 h-5 fill-white text-white drop-shadow-lg" />
-                    <span className="text-lg font-black text-white drop-shadow-md tracking-tight">{rating.toFixed(1)}</span>
-                  </div>
-                )}
-                
-                {/* Price level - ЗЕЛЁНЫЙ ГРАДИЕНТ */}
-                {priceLevel && (
-                  <div className="bg-gradient-to-r from-emerald-400 via-green-500 to-teal-500 backdrop-blur-xl rounded-[18px] px-5 py-3 shadow-[0_10px_30px_rgba(16,185,129,0.5)] border-2 border-white/95 hover:scale-110 hover:shadow-[0_14px_40px_rgba(16,185,129,0.7)] transition-all duration-300">
-                    <span className="text-lg font-black text-white drop-shadow-md tracking-tight">
-                      {'$'.repeat(priceLevel)}
-                    </span>
-                  </div>
-                )}
-              </div>
+              {/* Убрал бейджи - не нужны в превью, только занимают место */}
             </>
           ) : (
             <>
@@ -198,48 +228,34 @@ export const PlaceCard = ({ product }: PlaceCardProps) => {
           )}
         </div>
 
-        {/* Content - ПРЕМИУМ ДИЗАЙН */}
-        <div className="p-6 flex-1 flex flex-col gap-4">
-          {/* Title - КРУПНЕЕ И ЧИТАБЕЛЬНЕЕ */}
-          <h3 className="text-2xl font-black mb-0 line-clamp-2 group-hover:text-primary transition-colors leading-tight tracking-tight text-gray-900">
+        {/* Content - Telegram Style компактный */}
+        <div className="p-4 flex-1 flex flex-col gap-2">
+          {/* Title - компактный */}
+          <h3 className="text-lg font-bold mb-0 line-clamp-2 group-hover:text-[#007AFF] transition-colors leading-snug text-gray-900">
             {product.title}
           </h3>
           
-          {/* Meta info row - ПРЕМИУМ БЕЙДЖИ */}
-          <div className="flex items-center gap-3 text-sm flex-wrap">
+          {/* Meta info - только важное */}
+          <div className="flex items-center gap-2 text-xs text-gray-500">
             {district && (
-              <div className="flex items-center gap-2 font-bold text-gray-700 bg-gray-100 px-4 py-2 rounded-xl border border-gray-200">
-                <MapPin className="w-4.5 h-4.5 text-primary shrink-0" />
-                <span className="text-sm">{district}</span>
+              <div className="flex items-center gap-1">
+                <MapPin className="w-3.5 h-3.5 text-[#007AFF]" />
+                <span>{district}</span>
               </div>
             )}
-
+            {district && workingHours && <span>•</span>}
             {workingHours && (
-              <div className="flex items-center gap-2 font-bold text-emerald-700 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-200">
-                <Clock className="w-4.5 h-4.5 text-emerald-600 shrink-0" />
-                <span className="text-sm">{workingHours.split(' ')[0]}</span>
+              <div className="flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-green-600" />
+                <span>{workingHours}</span>
               </div>
             )}
           </div>
           
-          {/* Description - НОРМАЛЬНОЕ ОПИСАНИЕ */}
-          <p className="text-sm text-gray-600 line-clamp-3 flex-1 leading-relaxed">
+          {/* Description - короткое */}
+          <p className="text-sm text-gray-600 line-clamp-2 flex-1 leading-relaxed">
             {placeDescriptions[product.handle] || product.description?.split('\n')[0] || "Популярное место на Пхукете"}
           </p>
-
-          {/* Footer - Category tags - улучшенный стиль */}
-          {categoryTags.length > 0 && (
-            <div className="flex items-center gap-2 flex-wrap pt-3 border-t border-gray-200">
-              {categoryTags.map((tag) => (
-                <div
-                  key={tag}
-                  className="text-xs px-3 py-1.5 font-bold rounded-full bg-gray-100 text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors"
-                >
-                  #{tag}
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </Link>

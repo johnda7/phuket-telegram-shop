@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Home, RefreshCw, Car, MapPin, Info, MessageCircle, Loader2 } from "lucide-react";
+import { Map, Users, Compass, Flame, Backpack, Landmark, Leaf, Loader2, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,41 +7,11 @@ import heroImage from "@/assets/phi-phi-hero.jpg";
 import { useEffect, useState } from "react";
 import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
 import { ProductCard } from "@/components/ProductCard";
+import { getAllServices } from "@/config/services";
+import { getButtonClass, cn } from "@/styles/design-system";
 
-const services = [
-  {
-    id: 'real-estate',
-    icon: Home,
-    title: 'Недвижимость',
-    description: 'Аренда и продажа',
-    link: 'https://t.me/PhuketDAexpert',
-    external: true
-  },
-  {
-    id: 'currency',
-    icon: RefreshCw,
-    title: 'Обмен валюты',
-    description: 'Березa - выгодный курс',
-    link: 'https://t.me/bereza_manager',
-    external: true
-  },
-  {
-    id: 'car-rental',
-    icon: Car,
-    title: 'Аренда авто',
-    description: '100+ автомобилей',
-    link: 'https://t.me/RentaCarPhu',
-    external: true
-  },
-  {
-    id: 'tours',
-    icon: MapPin,
-    title: 'Экскурсии',
-    description: 'Пхукет Go',
-    link: 'https://t.me/PhuketGa',
-    external: true
-  },
-];
+// ✅ Сервисы из централизованного конфига (НЕ хардкод!)
+const services = getAllServices();
 
 const Index = () => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
@@ -49,15 +19,15 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTag, setSelectedTag] = useState<string>('all');
   
-  // Категории тегов с цветами
+  // Категории тегов с Lucide React иконками (НЕТ эмодзи!)
   const tagCategories = [
-    { id: 'all', label: 'Все туры', emoji: '🗺️', color: 'from-blue-500 to-cyan-500' },
-    { id: 'islands', label: 'Острова', emoji: '🏝️', color: 'from-emerald-500 to-teal-500' },
-    { id: '2-days', label: '2 дня', emoji: '⏰', color: 'from-orange-500 to-amber-500' },
-    { id: 'popular', label: 'Популярные', emoji: '🔥', color: 'from-red-500 to-pink-500' },
-    { id: 'adventure', label: 'Приключения', emoji: '🎒', color: 'from-purple-500 to-indigo-500' },
-    { id: 'cultural', label: 'Культура', emoji: '🏛️', color: 'from-violet-500 to-purple-500' },
-    { id: 'nature', label: 'Природа', emoji: '🌿', color: 'from-green-500 to-emerald-500' },
+    { id: 'all', label: 'Все туры', icon: Map, color: 'from-blue-500 to-cyan-500' },
+    { id: 'islands', label: 'Острова', icon: Compass, color: 'from-emerald-500 to-teal-500' },
+    { id: '2-days', label: '2 дня', icon: Users, color: 'from-orange-500 to-amber-500' },
+    { id: 'popular', label: 'Популярные', icon: Flame, color: 'from-red-500 to-pink-500' },
+    { id: 'adventure', label: 'Приключения', icon: Backpack, color: 'from-purple-500 to-indigo-500' },
+    { id: 'cultural', label: 'Культура', icon: Landmark, color: 'from-violet-500 to-purple-500' },
+    { id: 'nature', label: 'Природа', icon: Leaf, color: 'from-green-500 to-emerald-500' },
   ];
 
   useEffect(() => {
@@ -124,34 +94,30 @@ const Index = () => {
         {/* Main Services Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {services.map((service) => {
-            const IconComponent = service.icon;
             const cardContent = (
               <Card className="hover:shadow-lg transition-all text-center h-full">
                 <CardContent className="pt-6 pb-4 px-3">
-                  <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center mx-auto mb-3">
-                    <IconComponent className="w-7 h-7 text-primary-foreground" />
+                  <div className="w-14 h-14 rounded-full bg-[#007AFF] flex items-center justify-center mx-auto mb-3">
+                    <service.icon className="w-7 h-7 text-white" />
                   </div>
                   <h3 className="font-semibold text-sm mb-1">{service.title}</h3>
                   <p className="text-xs text-muted-foreground leading-tight">
-                    {service.description}
+                    {service.subtitle}
                   </p>
                 </CardContent>
               </Card>
             );
             
-            return service.external ? (
+            // ✅ Используем service.telegram из конфига
+            return (
               <a 
                 key={service.id}
-                href={service.link}
+                href={service.telegram}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 {cardContent}
               </a>
-            ) : (
-              <Link key={service.id} to={service.link}>
-                {cardContent}
-              </Link>
             );
           })}
         </div>
@@ -242,7 +208,7 @@ const Index = () => {
                                                   '16 185 129'})`,
                     } as React.CSSProperties : undefined}
                   >
-                    <span className="mr-1.5">{tag.emoji}</span>
+                    <tag.icon className="w-4 h-4 mr-1.5" />
                     {tag.label}
                     {isSelected && (
                       <div className="absolute inset-0 rounded-full bg-white/20 animate-pulse" />

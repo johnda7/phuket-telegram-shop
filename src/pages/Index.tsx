@@ -60,7 +60,7 @@ const Index = () => {
         >
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-background" />
         </div>
-        <div className="relative z-10 text-center px-4">
+        <div className="relative z-10 text-center px-4 w-full max-w-7xl mx-auto">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-14 h-14 rounded-2xl bg-[#007AFF] flex items-center justify-center shadow-lg">
               <span className="text-xl font-bold text-white">DA</span>
@@ -69,7 +69,7 @@ const Index = () => {
           <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-3 leading-tight">
             Консьерж‑сервис на Пхукете
           </h1>
-          <p className="text-sm md:text-base text-white/90 max-w-xl mx-auto mb-5">
+          <p className="text-sm md:text-base text-white/90 max-w-xs md:max-w-xl mx-auto mb-5 px-2">
             Бронируйте туры, аренду авто и решайте любые вопросы через Telegram. Быстро, удобно, как в приложении.
           </p>
           <div className="flex items-center justify-center gap-3">
@@ -159,6 +159,29 @@ const Index = () => {
                 <span className="font-medium text-sm">Полезная информация</span>
               </div>
               <span className="text-gray-400">→</span>
+            </div>
+          </Link>
+          
+          <Link to="/partners">
+            <div className={cn(getCardClass('hover'), "p-4 flex items-center justify-between")}>
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-[#007AFF]" />
+                <span className="font-medium text-sm">Партнеры</span>
+              </div>
+              <span className="text-gray-400">→</span>
+            </div>
+          </Link>
+          
+          <Link to="/map">
+            <div className={cn(getCardClass('hover'), "p-4 flex items-center justify-between bg-gradient-to-r from-blue-50 to-purple-50 border-[#007AFF]/20")}>
+              <div className="flex items-center gap-3">
+                <Map className="w-5 h-5 text-[#007AFF]" />
+                <div>
+                  <span className="font-medium text-sm block">🗺️ Карта путешественника</span>
+                  <span className="text-xs text-gray-500">Бесплатно</span>
+                </div>
+              </div>
+              <span className="text-[#007AFF] font-bold">→</span>
             </div>
           </Link>
         </div>

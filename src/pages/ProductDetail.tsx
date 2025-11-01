@@ -574,7 +574,7 @@ const ProductDetail = () => {
                         <p className="text-[11px] text-gray-500">{routeSubtitle}</p>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2">
                       {tourSchedule.map((daySchedule, dayIndex) => {
                         const isDay2 = daySchedule.day === 2;
@@ -586,9 +586,9 @@ const ProductDetail = () => {
                             <div className="flex items-center gap-2 mb-1.5">
                               <div className={`w-6 h-6 ${isDay2 ? 'bg-green-500' : 'bg-blue-500'} text-white rounded-full flex items-center justify-center font-bold text-xs`}>
                                 {daySchedule.day}
-                              </div>
+                        </div>
                               <h4 className="text-xs font-semibold text-gray-900">{daySchedule.title}</h4>
-                            </div>
+                      </div>
                             <div className="space-y-1 ml-8">
                               {daySchedule.items.map((item, itemIndex) => {
                                 // Определяем иконку: время = Clock, место = MapPin
@@ -607,11 +607,11 @@ const ProductDetail = () => {
                                     <span className="text-xs text-gray-700 leading-tight">
                                       {item.time} - {item.title}
                                     </span>
-                                  </div>
+                        </div>
                                 );
                               })}
-                            </div>
-                          </div>
+                        </div>
+                      </div>
                         );
                       })}
                     </div>

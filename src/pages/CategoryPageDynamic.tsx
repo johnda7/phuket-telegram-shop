@@ -19,20 +19,40 @@
  */
 
 import { useEffect, useState, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Loader2, ArrowLeft, MapPin, Star } from "lucide-react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { Loader2, ArrowLeft, MapPin, Star, Map as MapIcon } from "lucide-react";
 import { fetchProductsByCategory, type ShopifyProduct } from "@/lib/shopify";
 import { getCategoryConfig, categoryExists } from "@/config/categories";
 import { getAllServices } from "@/config/services";
 import { getButtonClass, getCardClass, cn } from "@/styles/design-system";
+import { getPlaceMetafields } from "@/data/placeMetafields";
+import { getAllPartners } from "@/config/partners";
 import DaBot from "@/components/DaBot";
 import { PlaceCard } from "@/components/PlaceCard";
+import LeafletMap from "@/components/LeafletMap";
+
+// Интерфейс для маркеров карты (совместим с LeafletMap)
+interface PlaceMarker {
+  handle: string;
+  title: string;
+  lat: number;
+  lng: number;
+  category: string;
+  rating?: string;
+  district?: string;
+  isPartner: boolean;
+  emoji: string;
+  tags: string[];
+}
 
 const CategoryPageDynamic = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
+  const navigate = useNavigate();
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [places, setPlaces] = useState<PlaceMarker[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDistrict, setSelectedDistrict] = useState<string>("all");
+  const [selectedPlaceHandle, setSelectedPlaceHandle] = useState<string | null>(null); // Выбранное место (для пляжей - название пляжа)
   
   // Получить конфиг категории (централизованный!)
   const config = categoryId && categoryExists(categoryId) 
@@ -42,6 +62,12 @@ const CategoryPageDynamic = () => {
   // Получить все сервисы (централизованный!)
   const services = getAllServices();
 
+  // Получить партнеров для выделения на карте (useMemo чтобы избежать бесконечного цикла!)
+  const partnerHandles = useMemo(() => {
+    const partners = getAllPartners();
+    return new Set(partners.map(p => p.id));
+  }, []);
+
   useEffect(() => {
     const loadProducts = async () => {
       if (!categoryId) return;
@@ -50,15 +76,105 @@ const CategoryPageDynamic = () => {
         setLoading(true);
         const data = await fetchProductsByCategory(categoryId);
         setProducts(data);
+        
+        // Извлекаем места с координатами для карты (как в Map.tsx)
+        // ВАЖНО: Для категории "districts" показываем ВСЕ районы, даже без координат!
+        const placesWithCoordinates: PlaceMarker[] = data
+          .filter(p => {
+            const tags = p.node.tags || [];
+            return tags.includes('info') || tags.includes('insider');
+          })
+          .map(p => {
+            // Ищем координаты в metafields
+            let coordinatesField = p.node.metafields?.find(m => 
+              m && m.key === 'coordinates' && 
+              (m.namespace === 'place_info' || m.namespace === 'custom' || m.namespace === undefined)
+            );
+            
+            let ratingField = p.node.metafields?.find(m => 
+              m && m.key === 'rating' && 
+              (m.namespace === 'place_info' || m.namespace === 'custom' || m.namespace === undefined)
+            );
+            
+            let districtField = p.node.metafields?.find(m => 
+              m && m.key === 'district' && 
+              (m.namespace === 'place_info' || m.namespace === 'custom' || m.namespace === undefined)
+            );
+            
+            // Если нет координат из Shopify - используем fallback
+            if (!coordinatesField?.value) {
+              const fallbackData = getPlaceMetafields(p.node.handle);
+              if (fallbackData?.coordinates) {
+                // coordinates всегда строка "lat,lng" в fallback данных
+                coordinatesField = { value: fallbackData.coordinates } as any;
+                if (!ratingField?.value && fallbackData.rating) {
+                  ratingField = { value: String(fallbackData.rating) } as any;
+                }
+                if (!districtField?.value && fallbackData.district) {
+                  districtField = { value: fallbackData.district } as any;
+                }
+              }
+            }
+            
+            // Для категории districts - используем дефолтные координаты если нет
+            if (!coordinatesField?.value && categoryId === 'districts') {
+              // Центр Пхукета как дефолт для районов
+              coordinatesField = { value: '7.8804,98.3923' } as any;
+            }
+            
+            if (!coordinatesField?.value) return null;
+            
+            const [lat, lng] = coordinatesField.value.split(',').map(Number);
+            if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) return null;
+            
+            // Определяем категорию и эмодзи
+            const tags = p.node.tags || [];
+            const categoryTag = tags.find(t => t.startsWith('category:'));
+            const category = categoryTag ? categoryTag.replace('category:', '') : categoryId || 'uncategorized';
+            
+            // Эмодзи из конфига категории (централизованный маппинг как в Map.tsx)
+            const categoryEmojiMap: Record<string, string> = {
+              beaches: '🏖️', temples: '🛕', viewpoints: '⛰️',
+              restaurants: '🍽️', nightlife: '🌙', spa: '💆', elephants: '🐘',
+              shopping: '🛍️', aquaparks: '💦', museums: '🏛️', nightmarkets: '🌃',
+              waterfalls: '💧', districts: '📍', excursions: '🚤', attractions: '🎯',
+              amusement: '🎪', diving: '🤿', fishing: '🎣', yachts: '⛵',
+              zoos: '🦁', clubs: '🎉', bars: '🍻', events: '📅',
+              massage: '💆‍♀️', sauna: '🧖', coffee: '☕'
+            };
+            const emoji = categoryEmojiMap[category] || '📍';
+            
+            // Проверяем партнера
+            const isPartner = partnerHandles.has(p.node.handle);
+            
+            return {
+              handle: p.node.handle,
+              title: p.node.title,
+              lat,
+              lng,
+              category,
+              rating: ratingField?.value,
+              district: districtField?.value,
+              isPartner,
+              emoji,
+              tags
+            };
+          })
+          .filter(Boolean) as PlaceMarker[];
+        
+        setPlaces(placesWithCoordinates);
       } catch (err) {
         console.error('Failed to load products:', err);
+        // Показываем ошибку пользователю
+        setProducts([]);
+        setPlaces([]);
       } finally {
         setLoading(false);
       }
     };
 
     loadProducts();
-  }, [categoryId]);
+  }, [categoryId, partnerHandles]);
 
   // ДИНАМИЧЕСКИ извлекаем районы из продуктов (НЕ хардкод!)
   const availableDistricts = useMemo(() => {
@@ -88,22 +204,41 @@ const CategoryPageDynamic = () => {
     Cherngtalay: 'Чернгталай',
   };
 
+  // Для категории пляжей - список всех пляжей (названия для меню, динамически из Shopify!)
+  const placesForMenu = useMemo(() => {
+    if (categoryId !== 'beaches') return [];
+    return products.filter(p => {
+      const tags = p.node.tags || [];
+      return tags.includes('info') || tags.includes('insider');
+    }).map(p => ({
+      handle: p.node.handle,
+      title: p.node.title
+    }));
+  }, [products, categoryId]);
+
   // Фильтрация продуктов
   const filteredProducts = useMemo(() => {
-    return products.filter(product => {
-      const productTags = product.node.tags || [];
-      
-      // Фильтр по району
-      if (selectedDistrict !== "all") {
+    let filtered = products;
+
+    // Фильтр по выбранному месту (для пляжей - название пляжа)
+    if (selectedPlaceHandle && categoryId === 'beaches') {
+      filtered = filtered.filter(p => p.node.handle === selectedPlaceHandle);
+      return filtered;
+    }
+
+    // Фильтр по району
+    if (selectedDistrict !== "all") {
+      filtered = filtered.filter(product => {
+        const productTags = product.node.tags || [];
         const hasDistrict = productTags.some(tag => 
           tag === `district:${selectedDistrict}` || tag === selectedDistrict
         );
-        if (!hasDistrict) return false;
-      }
-      
-      return true;
-    });
-  }, [products, selectedDistrict]);
+        return hasDistrict;
+      });
+    }
+    
+    return filtered;
+  }, [products, selectedDistrict, selectedPlaceHandle, categoryId]);
 
   // Средний рейтинг (если будем добавлять metafields)
   const averageRating = "4.2 - 4.7"; // TODO: вычислять из metafields когда добавим
@@ -179,7 +314,7 @@ const CategoryPageDynamic = () => {
             </h1>
             
             {/* Stats - Telegram Style с иконками Lucide */}
-            <div className="flex items-center justify-center gap-4 text-white/90 text-sm">
+            <div className="flex items-center justify-center gap-4 text-white/90 text-sm flex-wrap">
               <span className="flex items-center gap-1.5">
                 <MapPin className="w-4 h-4" />
                 <span className="font-medium">{filteredProducts.length} {filteredProducts.length === 1 ? 'место' : 'мест'}</span>
@@ -188,6 +323,13 @@ const CategoryPageDynamic = () => {
                 <Star className="w-4 h-4 fill-white/90" />
                 <span className="font-medium">{averageRating}</span>
               </span>
+              <Link
+                to={`/map?category=${categoryId}`}
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 hover:bg-white/30 transition-all"
+              >
+                <MapIcon className="w-4 h-4" />
+                <span className="font-medium">Карта</span>
+              </Link>
             </div>
           </div>
         </div>
@@ -200,21 +342,72 @@ const CategoryPageDynamic = () => {
             </p>
           </div>
 
-          {/* Filters - Динамические районы через Design System */}
+          {/* МЕНЮ КАТЕГОРИИ: Для пляжей - названия пляжей (динамически из Shopify!) */}
+          {categoryId === 'beaches' && placesForMenu.length > 0 && (
+            <div className="mb-6">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+                <button
+                  onClick={() => {
+                    setSelectedPlaceHandle(null);
+                    setSelectedDistrict('all');
+                  }}
+                  className={cn(
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all min-h-[36px] flex-shrink-0",
+                    selectedPlaceHandle === null
+                      ? "bg-[#007AFF] text-white shadow-md shadow-[#007AFF]/20"
+                      : "bg-white/90 text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/60"
+                  )}
+                  style={{
+                    backdropFilter: selectedPlaceHandle === null ? 'none' : 'blur(20px)',
+                    WebkitBackdropFilter: selectedPlaceHandle === null ? 'none' : 'blur(20px)',
+                  }}
+                >
+                  <span className="text-sm leading-tight">Все</span>
+                </button>
+                {placesForMenu.map(place => (
+                  <button
+                    key={place.handle}
+                    onClick={() => {
+                      setSelectedPlaceHandle(place.handle);
+                      setSelectedDistrict('all');
+                    }}
+                    className={cn(
+                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all min-h-[36px] flex-shrink-0",
+                      selectedPlaceHandle === place.handle
+                        ? "bg-[#007AFF] text-white shadow-md shadow-[#007AFF]/20"
+                        : "bg-white/90 text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/60"
+                    )}
+                    style={{
+                      backdropFilter: selectedPlaceHandle === place.handle ? 'none' : 'blur(20px)',
+                      WebkitBackdropFilter: selectedPlaceHandle === place.handle ? 'none' : 'blur(20px)',
+                    }}
+                  >
+                    <span className="text-sm leading-tight">{place.title}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Filters - Унифицированное меню фильтров (единый дизайн с картой) */}
           {config.filters.showDistricts && availableDistricts.length > 0 && (
             <div className="mb-6">
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 {/* Все районы */}
                 <button
                   onClick={() => setSelectedDistrict("all")}
                   className={cn(
-                    "flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+                    "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all min-h-[36px] flex-shrink-0",
                     selectedDistrict === "all"
-                      ? "bg-[#007AFF] text-white shadow-md"
-                      : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
+                      ? "bg-[#007AFF] text-white shadow-md shadow-[#007AFF]/20"
+                      : "bg-white/90 text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/60"
                   )}
+                  style={{
+                    backdropFilter: selectedDistrict === "all" ? 'none' : 'blur(20px)',
+                    WebkitBackdropFilter: selectedDistrict === "all" ? 'none' : 'blur(20px)',
+                  }}
                 >
-                  Все районы
+                  <span className="text-sm leading-tight">Все районы</span>
                 </button>
 
                 {/* Динамические районы из продуктов */}
@@ -223,13 +416,17 @@ const CategoryPageDynamic = () => {
                     key={district}
                     onClick={() => setSelectedDistrict(district)}
                     className={cn(
-                      "flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all min-h-[36px] flex-shrink-0",
                       selectedDistrict === district
-                        ? "bg-[#007AFF] text-white shadow-md"
-                        : "bg-white/70 backdrop-blur-md text-gray-700 border border-gray-200 hover:border-[#007AFF]/50"
+                        ? "bg-[#007AFF] text-white shadow-md shadow-[#007AFF]/20"
+                        : "bg-white/90 text-gray-700 hover:bg-gray-50 active:bg-gray-100 border border-gray-200/60"
                     )}
+                    style={{
+                      backdropFilter: selectedDistrict === district ? 'none' : 'blur(20px)',
+                      WebkitBackdropFilter: selectedDistrict === district ? 'none' : 'blur(20px)',
+                    }}
                   >
-                    {districtNames[district] || district}
+                    <span className="text-sm leading-tight">{districtNames[district] || district}</span>
                   </button>
                 ))}
               </div>
@@ -242,6 +439,72 @@ const CategoryPageDynamic = () => {
               <PlaceCard key={product.node.id} product={product.node} />
             ))}
           </div>
+
+          {/* ВСТРОЕННАЯ КАРТА - как у phuket-insider.com (лучше чем просто ссылка!) */}
+          {places.length > 0 && (
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <MapIcon className="w-5 h-5 text-[#007AFF]" />
+                  Карта мест на категории
+                </h3>
+                <Link
+                  to={`/map?category=${categoryId}`}
+                  className="text-sm text-[#007AFF] hover:text-[#0051D5] font-medium flex items-center gap-1"
+                >
+                  Открыть в полном режиме →
+                </Link>
+              </div>
+              
+              {/* Мини-карта - компактная встроенная версия */}
+              <div className={cn(getCardClass('glass'), "p-0 overflow-hidden")}>
+                <LeafletMap 
+                  places={places.filter(p => {
+                    // Фильтруем по району если выбран
+                    if (selectedDistrict !== "all") {
+                      const placeDistrict = p.tags.find(t => t.startsWith('district:'))?.replace('district:', '') || p.district;
+                      return placeDistrict === selectedDistrict;
+                    }
+                    return true;
+                  })}
+                  height="400px"
+                  onPlaceClick={(place) => navigate(`/place/${place.handle}`)}
+                />
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 border-t border-gray-100">
+                  <p className="text-xs text-gray-600 text-center">
+                    🗺️ <strong>{places.length}</strong> {places.length === 1 ? 'место' : 'мест'} на карте • 
+                    <Link to={`/map?category=${categoryId}`} className="text-[#007AFF] hover:underline ml-1">
+                      Открыть полную карту
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* КНОПКА КАРТЫ (резервная) - показываем если есть места но нет координат */}
+          {filteredProducts.length > 0 && places.length === 0 && (
+            <div className="mb-6">
+              <Link
+                to={`/map?category=${categoryId}`}
+                className={cn(
+                  getCardClass('interactive'),
+                  "p-4 flex items-center justify-between bg-gradient-to-r from-blue-50 to-purple-50 border-[#007AFF]/20"
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-[#007AFF] flex items-center justify-center">
+                    <MapPin className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 text-sm">🗺️ Карта путешественника</div>
+                    <div className="text-xs text-gray-500">Все места на одной карте • Бесплатно</div>
+                  </div>
+                </div>
+                <span className="text-[#007AFF] font-bold">→</span>
+              </Link>
+            </div>
+          )}
 
           {/* НАШИ СЕРВИСЫ - Динамически из config/services.ts */}
           {filteredProducts.length > 0 && (

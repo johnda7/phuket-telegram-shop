@@ -28,7 +28,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col pb-16">
+    <div className="min-h-screen flex flex-col pb-24">
       {/* Top bar - iOS 26 style with Global Search (Phukeo.com inspiration) */}
       <header 
         className="fixed top-0 left-0 right-0 z-40 safe-area-inset-top"
@@ -107,8 +107,8 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         </div>
       </header>
 
-      {/* Main content with padding for fixed header */}
-      <main className="flex-1 pt-14">
+      {/* Main content with padding for fixed header and bottom nav */}
+      <main className="flex-1 pt-14 pb-20">
         {children}
       </main>
 

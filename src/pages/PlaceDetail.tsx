@@ -98,7 +98,15 @@ const PlaceDetail = () => {
         const fallbackData = getPlaceMetafields(handle);
         const rating = fallbackData.rating;
         const coordinates = fallbackData.coordinates;
-        const district = fallbackData.district;
+        
+        // District: сначала из тегов, потом из fallback
+        let district = fallbackData.district;
+        const districtTag = product.tags.find(t => t.startsWith('district:'));
+        if (districtTag) {
+          // Приводим к Capital Case для перевода (например, "patong" -> "Patong")
+          const districtValue = districtTag.replace('district:', '');
+          district = districtValue.charAt(0).toUpperCase() + districtValue.slice(1);
+        }
         
         console.log('🔍 Debug metafields (fallback):');
         console.log('  Handle:', handle);
@@ -118,6 +126,22 @@ const PlaceDetail = () => {
           url: e.node.url,
           alt: e.node.altText || product.title
         })) || [];
+        
+        // Debug images
+        console.log('📸 Debug images:');
+        console.log('  Product images edges:', product.images?.edges?.length || 0);
+        console.log('  Final images array:', images.length);
+        images.forEach((img, i) => {
+          console.log(`  [${i+1}] ${img.alt}: ${img.url.substring(0, 60)}...`);
+        });
+
+        // Amenities - только для конкретных мест (ТЦ, рестораны), НЕ для районов!
+        // Для районов (category === 'districts') amenities не показываем
+        let amenities: string[] | undefined = undefined;
+        if (category !== 'districts') {
+          // Можно получить из metafields или оставить undefined (не показывать)
+          // Пока убираем хардкод, который был от шаблона ТЦ
+        }
 
         setPlace({
           id: product.id,
@@ -133,7 +157,7 @@ const PlaceDetail = () => {
           priceLevel,
           workingHours,
           coordinates,
-          amenities: ['Wi-Fi', 'Парковка', 'Фуд-корт', 'Банкомат', 'Кино', 'Аквариум']
+          amenities
         });
         
         setLoading(false);
@@ -172,6 +196,11 @@ const PlaceDetail = () => {
   // ✅ WORKING BUTTON: Open Telegram Bot
   const handleOpenBot = () => {
     window.open('https://t.me/PHUKETDABOT', '_blank');
+  };
+
+  // ✅ NEW: Open Traveler Map with this place highlighted
+  const handleShowOnTravelerMap = () => {
+    navigate(`/map?place=${place?.handle}`);
   };
 
   // ✅ NEW: Show Examples
@@ -319,13 +348,15 @@ const PlaceDetail = () => {
         {/* Content Overlay */}
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-6">
           <div className="max-w-4xl mx-auto">
-            {/* Category Badge - Premium Style */}
-            <div className="mb-4">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-white/50 text-gray-800 text-sm font-semibold shadow-lg">
-                <ShoppingBag className="w-4 h-4 text-[#007AFF]" />
-                Торговые центры
-              </span>
-            </div>
+            {/* Category Badge - Premium Style (динамическая категория) */}
+            {place.category && place.category !== 'districts' && (
+              <div className="mb-4">
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-white/50 text-gray-800 text-sm font-semibold shadow-lg">
+                  <ShoppingBag className="w-4 h-4 text-[#007AFF]" />
+                  {getCategoryNameInRussian(place.category)}
+                </span>
+              </div>
+            )}
 
             {/* Title - Telegram Mobile Optimized */}
             <h1 className="text-lg md:text-xl font-bold text-white mb-3 drop-shadow-2xl leading-tight px-2">
@@ -340,8 +371,8 @@ const PlaceDetail = () => {
                 <span className="text-gray-800 font-bold">{place.rating.toFixed(1)}</span>
               </div>
               
-              {/* District */}
-              {place.district && (
+              {/* District - показываем только если это не сам район (не districts категория) */}
+              {place.district && place.category !== 'districts' && (
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-md border border-white/50 shadow-lg">
                   <MapPin className="w-4 h-4 text-[#007AFF]" />
                   <span className="text-gray-800 font-semibold">{getDistrictInRussian(place.district)}</span>
@@ -358,28 +389,44 @@ const PlaceDetail = () => {
             </div>
 
             {/* Quick Actions - ALL WORKING! */}
+            {/* Для районов показываем только "Карту путешественника", для других мест - все кнопки */}
             <div className="flex flex-wrap gap-2 justify-center">
+              {/* "Написать в бот" - только для НЕ районов */}
+              {place.category !== 'districts' && (
+                <button
+                  onClick={handleOpenBot}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold text-sm hover:bg-white/20 transition-all shadow-lg active:scale-95"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  Написать в бот
+                </button>
+              )}
+              {/* "Google Maps" - только для НЕ районов (у районов есть своя карта путешественника) */}
+              {place.category !== 'districts' && (
+                <button
+                  onClick={handleShowOnMap}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold text-sm hover:bg-white/20 transition-all shadow-lg active:scale-95"
+                >
+                  <MapPin className="w-4 h-4" />
+                  Google Maps
+                </button>
+              )}
+              {/* "Карта путешественника" - ВСЕГДА показываем */}
               <button
-                onClick={handleOpenBot}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold text-sm hover:bg-white/20 transition-all shadow-lg active:scale-95"
-              >
-                <MessageCircle className="w-4 h-4" />
-                Написать в бот
-              </button>
-              <button
-                onClick={handleShowOnMap}
+                onClick={handleShowOnTravelerMap}
                 className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold text-sm hover:bg-white/20 transition-all shadow-lg active:scale-95"
               >
                 <MapPin className="w-4 h-4" />
-                На карте
-                      </button>
-                      <button
+                Карта путешественника
+              </button>
+              {/* "Поделиться" - ВСЕГДА показываем */}
+              <button
                 onClick={handleShare}
                 className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold text-sm hover:bg-white/20 transition-all shadow-lg active:scale-95"
-                      >
+              >
                 <Share2 className="w-4 h-4" />
                 Поделиться
-                      </button>
+              </button>
             </div>
                   </div>
                 </div>
@@ -425,7 +472,8 @@ const PlaceDetail = () => {
         </div>
 
         {/* Amenities - iOS 26 ELEGANT DESIGN */}
-        {place.amenities && place.amenities.length > 0 && (
+        {/* НЕ показываем amenities для районов (districts) - это только для конкретных мест! */}
+        {place.category !== 'districts' && place.amenities && place.amenities.length > 0 && (
           <div className="relative mb-12 overflow-hidden rounded-2xl bg-white/80 backdrop-blur-xl border border-gray-200/50 shadow-lg">
             {/* Subtle iOS 26 Background */}
             <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 via-white/30 to-gray-100/40"></div>

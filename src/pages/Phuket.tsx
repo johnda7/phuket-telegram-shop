@@ -278,22 +278,22 @@ const Phuket = () => {
             <div className="px-3 py-2 border-b border-border/30">
               <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
                 {categories.filter(c => c.id !== 'all').map((category) => {
-                  const isActive = activeCategory === category.id;
-                  return (
-                    <button
-                      key={category.id}
+              const isActive = activeCategory === category.id;
+              return (
+                <button
+                  key={category.id}
                       onClick={() => handleCategoryChange(category.id)}
-                      className={`
+                  className={`
                         flex-shrink-0 px-3 py-2 rounded-full font-semibold text-xs min-h-[44px]
                         transition-all duration-200 ease-out
-                        ${isActive 
+                    ${isActive 
                           ? 'text-white shadow-md' 
                           : 'text-gray-700 bg-gray-100/80 hover:bg-gray-200/80 active:scale-95'
-                        }
-                      `}
-                      style={isActive ? {
-                        background: `linear-gradient(135deg, var(--tw-gradient-stops))`,
-                        '--tw-gradient-from': `rgb(${category.color === 'from-blue-500 to-cyan-500' ? '59 130 246' : 
+                    }
+                  `}
+                  style={isActive ? {
+                    background: `linear-gradient(135deg, var(--tw-gradient-stops))`,
+                    '--tw-gradient-from': `rgb(${category.color === 'from-blue-500 to-cyan-500' ? '59 130 246' : 
                                                   category.color === 'from-emerald-500 to-teal-500' ? '16 185 129' :
                                                   category.color === 'from-orange-500 to-amber-500' ? '249 115 22' :
                                                   category.color === 'from-violet-500 to-purple-500' ? '139 92 246' :
@@ -301,64 +301,64 @@ const Phuket = () => {
                                                   category.color === 'from-amber-500 to-orange-500' ? '245 158 11' :
                                                   category.color === 'from-pink-500 to-rose-500' ? '236 72 153' :
                                                   '168 85 247'})`,
-                        '--tw-gradient-to': `rgb(${category.color === 'from-blue-500 to-cyan-500' ? '6 182 212' : 
-                                                    category.color === 'from-emerald-500 to-teal-500' ? '20 184 166' :
-                                                    category.color === 'from-orange-500 to-amber-500' ? '245 158 11' :
-                                                    category.color === 'from-violet-500 to-purple-500' ? '168 85 247' :
-                                                    category.color === 'from-red-500 to-pink-500' ? '236 72 153' :
+                    '--tw-gradient-to': `rgb(${category.color === 'from-blue-500 to-cyan-500' ? '6 182 212' : 
+                                                category.color === 'from-emerald-500 to-teal-500' ? '20 184 166' :
+                                                category.color === 'from-orange-500 to-amber-500' ? '245 158 11' :
+                                                category.color === 'from-violet-500 to-purple-500' ? '168 85 247' :
+                                                category.color === 'from-red-500 to-pink-500' ? '236 72 153' :
                                                     category.color === 'from-amber-500 to-orange-500' ? '249 115 22' :
                                                     category.color === 'from-pink-500 to-rose-500' ? '244 63 94' :
-                                                    '99 102 241'})`,
-                      } as React.CSSProperties : undefined}
-                    >
+                                                '99 102 241'})`,
+                  } as React.CSSProperties : undefined}
+                >
                       <category.Icon className="mr-1 w-3 h-3 inline" />
                       <span>{category.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
             {/* Поиск + Цена - Компактно в одной строке */}
             <div className="px-3 py-2.5 flex gap-2">
-              {/* Поиск */}
+          {/* Поиск */}
               <div className="relative flex-1">
                 <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 z-10" />
-                <input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
                   placeholder="Поиск..."
                   className="w-full pl-8 pr-2.5 py-2.5 rounded-lg border border-gray-200 bg-white/90 text-sm min-h-[44px] focus:outline-none focus:ring-1 focus:ring-[#007AFF] focus:border-[#007AFF]"
                   style={{
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                   }}
-                />
-              </div>
+            />
+          </div>
               {/* Цена - Компактно */}
               <div className="flex items-center gap-1.5">
-                <input
-                  type="number"
-                  min={0}
-                  value={priceRange.min}
-                  onChange={(e) => setPriceRange(r => ({ ...r, min: Number(e.target.value) }))}
+            <input
+              type="number"
+              min={0}
+              value={priceRange.min}
+              onChange={(e) => setPriceRange(r => ({ ...r, min: Number(e.target.value) }))}
                   className="w-20 px-2 py-2.5 rounded-lg border border-gray-200 bg-white/90 text-sm min-h-[44px] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
                   placeholder="от"
                   style={{
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                   }}
-                />
+            />
                 <span className="text-gray-400 text-xs">—</span>
-                <input
-                  type="number"
-                  min={0}
-                  value={priceRange.max}
-                  onChange={(e) => setPriceRange(r => ({ ...r, max: Number(e.target.value) }))}
+            <input
+              type="number"
+              min={0}
+              value={priceRange.max}
+              onChange={(e) => setPriceRange(r => ({ ...r, max: Number(e.target.value) }))}
                   className="w-20 px-2 py-2.5 rounded-lg border border-gray-200 bg-white/90 text-sm min-h-[44px] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
                   placeholder="до"
                   style={{
                     fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
                   }}
-                />
+            />
               </div>
             </div>
           </div>

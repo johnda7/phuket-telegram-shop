@@ -37,6 +37,7 @@ import {
   Calendar,
   Coffee,
   Home,
+  Flame,
   LucideIcon
 } from 'lucide-react';
 
@@ -67,7 +68,7 @@ export interface CategoryConfig {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// ВСЕ 13 КАТЕГОРИЙ
+// ВСЕ 25 КАТЕГОРИЙ (обновлено 2025-11-01: добавлены massage, sauna, coffee)
 // ═══════════════════════════════════════════════════════════════
 
 export const CATEGORIES: Record<string, CategoryConfig> = {
@@ -683,6 +684,88 @@ export const CATEGORIES: Record<string, CategoryConfig> = {
     },
     priority: 'low',
     estimatedPlaces: 20
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // ДОПОЛНИТЕЛЬНЫЕ КАТЕГОРИИ ИЗ PHUKET-INSIDER (добавлено 2025-11-01)
+  // ═══════════════════════════════════════════════════════════════
+
+  massage: {
+    id: 'massage',
+    title: 'Массажные салоны Пхукета',
+    titleEn: 'Massage Salons',
+    description: 'Массажные салоны Пхукета по районам — тайский массаж, масляный массаж, рефлексотерапия. От уличных салонов до премиум-центров.',
+    heroImage: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=1600&h=400&fit=crop',
+    icon: Heart,
+    iconColor: '#FF2D55',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Массажи и СПА', path: '/categories' },
+      { label: 'Массажные салоны' }
+    ],
+    seoTitle: 'Массажные салоны Пхукета - Тайский массаж по районам | PhuketDa',
+    seoDescription: 'Лучшие массажные салоны Пхукета: Патонг, Карон, Ката. Тайский массаж, масляный, рефлексотерапия. Цены, отзывы, бронирование.',
+    seoKeywords: ['массажные салоны пхукет', 'тайский массаж', 'массаж по районам', 'релаксация', 'wellness'],
+    filters: {
+      showDistricts: true,
+      showRating: true,
+      showPriceLevel: true,
+      showOpenNow: true
+    },
+    priority: 'medium',
+    estimatedPlaces: 25
+  },
+
+  sauna: {
+    id: 'sauna',
+    title: 'Бани и сауны Пхукета',
+    titleEn: 'Saunas',
+    description: 'Бани и сауны на Пхукете — традиционные тайские бани, финские сауны, турецкие бани. Релаксация и оздоровление.',
+    heroImage: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1600&h=400&fit=crop',
+    icon: Flame,
+    iconColor: '#FF9500',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Массажи и СПА', path: '/categories' },
+      { label: 'Бани и сауны' }
+    ],
+    seoTitle: 'Бани и сауны Пхукета - Релаксация и оздоровление | PhuketDa',
+    seoDescription: 'Бани и сауны Пхукета: финские сауны, турецкие бани, традиционные бани. Цены, программы, время работы.',
+    seoKeywords: ['бани пхукет', 'сауны пхукет', 'финская сауна', 'турецкая баня', 'релаксация'],
+    filters: {
+      showDistricts: true,
+      showRating: true,
+      showPriceLevel: true,
+      showOpenNow: true
+    },
+    priority: 'low',
+    estimatedPlaces: 8
+  },
+
+  coffee: {
+    id: 'coffee',
+    title: 'Кофейни Пхукета',
+    titleEn: 'Coffee Shops',
+    description: 'Лучшие кофейни Пхукета — от уютных местных кафе до сетевых кофеен. Качественный кофе, атмосфера, Wi-Fi, работа удаленно.',
+    heroImage: 'https://images.unsplash.com/photo-1501339847302-ac426a4c7c98?w=1600&h=400&fit=crop',
+    icon: Coffee,
+    iconColor: '#8E8E93',
+    breadcrumbs: [
+      { label: 'Главная', path: '/' },
+      { label: 'Кафе и рестораны', path: '/categories' },
+      { label: 'Кофейни' }
+    ],
+    seoTitle: 'Кофейни Пхукета - Лучший кофе на острове | PhuketDa',
+    seoDescription: 'Лучшие кофейни Пхукета: местные кафе, сетевые кофейни. Качественный кофе, Wi-Fi, работа удаленно, цены.',
+    seoKeywords: ['кофейни пхукет', 'кафе пхукет', 'кофе пхукет', 'работа удаленно', 'wifi кафе'],
+    filters: {
+      showDistricts: true,
+      showRating: true,
+      showPriceLevel: true,
+      showOpenNow: true
+    },
+    priority: 'medium',
+    estimatedPlaces: 18
   }
 };
 

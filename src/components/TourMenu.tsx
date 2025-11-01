@@ -1,6 +1,19 @@
+/**
+ * 🗂️ ГЛАВНОЕ МЕНЮ PhuketDa
+ * 
+ * Структура:
+ * - 4 ОСНОВНЫХ СЕРВИСА (продажи): Туры, Аренда авто, Недвижимость, Обмен валюты
+ * - Полезная информация (вспомогательное): Все категории для туристов
+ * 
+ * Философия:
+ * - Категории = вспомогательный инструмент для туристов (информационный)
+ * - В каждой категории мы продаем (ссылки на сервисы внизу)
+ * - Акцент на 4 основных сервисах (это наше основное направление)
+ */
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, ChevronRight, Ship, Compass, Target, MapPin, Waves, Info, Star, Zap, Mountain, Landmark, Eye, Camera, Clock } from "lucide-react";
+import { ChevronDown, ChevronRight, Ship, Car, Home, DollarSign, Info, Grid3x3 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -10,153 +23,124 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getAllServices } from "@/config/services";
 
 interface MenuItem {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
-  href?: string;
-  submenu?: {
-    icon: React.ComponentType<{ className?: string }>;
-    label: string;
-    href: string;
-    tag: string;
-  }[];
+  href: string;
+  description?: string;
+  highlight?: boolean; // Для основных сервисов
 }
 
-const menuStructure: MenuItem[] = [
-  {
-    icon: Ship,
-    label: "Туры",
-    submenu: [
-      { icon: Star, label: "Все туры", href: "/phuket", tag: "all" },
-      { icon: Ship, label: "Островные туры", href: "/phuket?category=islands", tag: "islands" },
-      { icon: Compass, label: "Пхи-Пхи 2 дня", href: "/product/phi-phi-2-days-1-night", tag: "phi-phi" },
-      { icon: Camera, label: "Джеймс Бонд", href: "/product/james-bond-island-tour", tag: "james-bond" },
-      { icon: Waves, label: "Рача и Корал", href: "/product/racha-coral-islands", tag: "racha" },
-      { icon: Star, label: "4 Pearls", href: "/product/four-pearls-andaman-sea", tag: "pearls" },
-      { icon: Compass, label: "Симиланские", href: "/phuket?category=islands", tag: "similan" },
-      { icon: Star, label: "Популярные", href: "/phuket?category=popular", tag: "popular" },
-      { icon: Star, label: "Премиум", href: "/phuket?category=premium", tag: "premium" },
-      { icon: Clock, label: "Однодневные", href: "/phuket?category=oneday", tag: "1-day" },
-      { icon: Clock, label: "Многодневные", href: "/phuket?category=multiday", tag: "2-days" },
-    ]
-  },
-  {
-    icon: Target,
-    label: "Приключения",
-    submenu: [
-      { icon: Zap, label: "Все активные туры", href: "/phuket?category=tour", tag: "adventure" },
-      { icon: Mountain, label: "Зиплайн и ATV", href: "/product/rafting-spa-atv", tag: "zipline" },
-      { icon: Landmark, label: "Слоны и джунгли", href: "/phuket?category=temple", tag: "elephants" },
-      { icon: Mountain, label: "Водопады и природа", href: "/product/khao-lak-safari", tag: "nature" },
-    ]
-  },
-  {
-    icon: MapPin,
-    label: "Достопримечательности",
-    submenu: [
-      { icon: Landmark, label: "Все места", href: "/phuket?category=temple", tag: "place" },
-      { icon: Landmark, label: "Храмы", href: "/phuket?category=temple", tag: "temples" },
-      { icon: Eye, label: "Смотровые площадки", href: "/categories/viewpoints", tag: "viewpoints" },
-      { icon: Landmark, label: "Культурные места", href: "/phuket?category=culture", tag: "culture" },
-    ]
-  },
-  {
-    icon: Waves,
-    label: "Пляжи",
-    href: "/beaches",
-  },
-  {
-    icon: Info,
-    label: "Полезная информация",
-    href: "/phuket",
-  }
-];
-
-interface TourMenuProps {
+interface MainMenuProps {
   trigger?: React.ReactNode;
 }
 
-export const TourMenu = ({ trigger }: TourMenuProps) => {
+export const TourMenu = ({ trigger }: MainMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [expandedSection, setExpandedSection] = useState<string | null>(null);
-
-  const toggleSection = (label: string) => {
-    setExpandedSection(expandedSection === label ? null : label);
-  };
+  
+  // 4 ОСНОВНЫХ СЕРВИСА (продажи) - из централизованного конфига
+  const services = getAllServices();
+  
+  // Главное меню: 4 сервиса + Полезная информация
+  const mainMenuItems: MenuItem[] = [
+    // ОСНОВНЫЕ СЕРВИСЫ (продажи) - приоритет!
+    ...services.map(service => ({
+      icon: service.icon,
+      label: service.title,
+      href: service.path,
+      description: service.subtitle,
+      highlight: true, // Выделяем основные сервисы
+    })),
+    // Полезная информация (вспомогательное)
+    {
+      icon: Info,
+      label: "Полезная информация",
+      href: "/categories",
+      description: "Все категории для туристов",
+      highlight: false,
+    }
+  ];
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         {trigger || (
-          <Button variant="ghost" size="sm" className="gap-2">
+          <Button variant="ghost" size="sm" className="gap-2 min-h-[44px]">
             <span className="text-lg">☰</span>
             <span className="hidden sm:inline">Меню</span>
           </Button>
         )}
       </SheetTrigger>
-      <SheetContent side="left" className="w-[300px] sm:w-[350px] overflow-y-auto">
-        <SheetHeader className="mb-6">
-          <SheetTitle className="text-2xl">
+      <SheetContent side="left" className="w-[320px] sm:w-[380px] overflow-y-auto">
+        <SheetHeader className="mb-6 pb-4 border-b border-gray-200">
+          <SheetTitle className="text-2xl font-bold text-gray-900">
             PhuketDa
           </SheetTitle>
+          <p className="text-xs text-gray-500 mt-1">Консьерж-сервис на Пхукете</p>
         </SheetHeader>
         
-        <nav className="space-y-2">
-          {menuStructure.map((section) => (
-            <div key={section.label} className="space-y-1">
-              {section.href ? (
-                <Link
-                  to={section.href}
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary/80 transition-all group"
-                >
-                  <section.icon className="w-5 h-5 text-[#007AFF]" />
-                  <span className="font-medium">{section.label}</span>
-                  <ChevronRight className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-                </Link>
-              ) : (
-                <>
-                  <button
-                    onClick={() => toggleSection(section.label)}
-                    className={cn(
-                      "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all",
-                      expandedSection === section.label 
-                        ? "bg-primary/10 text-primary font-semibold" 
-                        : "hover:bg-secondary/80"
-                    )}
-                  >
-                    <section.icon className="w-5 h-5 text-[#007AFF]" />
-                    <span className="font-medium">{section.label}</span>
-                    <ChevronDown 
-                      className={cn(
-                        "w-4 h-4 ml-auto transition-transform",
-                        expandedSection === section.label && "rotate-180"
-                      )} 
-                    />
-                  </button>
-                  
-                  {expandedSection === section.label && section.submenu && (
-                    <div className="ml-8 space-y-1 mt-1 animate-in fade-in slide-in-from-top-2">
-                      {section.submenu.map((item) => (
-                        <Link
-                          key={item.href}
-                          to={item.href}
-                          onClick={() => setIsOpen(false)}
-                          className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-secondary/60 transition-all text-sm group"
-                        >
-                          <item.icon className="w-4 h-4 text-gray-600" />
-                          <span>{item.label}</span>
-                          <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </Link>
-                      ))}
+        <nav className="space-y-1">
+          {mainMenuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                to={item.href}
+                onClick={() => setIsOpen(false)}
+                className={cn(
+                  "flex items-start gap-3 px-4 py-3 rounded-xl transition-all group",
+                  item.highlight
+                    ? "bg-gradient-to-r from-blue-50 to-blue-50/50 hover:from-blue-100 hover:to-blue-100/50 border border-blue-100/50"
+                    : "hover:bg-gray-50 border border-transparent"
+                )}
+              >
+                <div className={cn(
+                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all",
+                  item.highlight
+                    ? "bg-[#007AFF] text-white"
+                    : "bg-gray-100 text-gray-600 group-hover:bg-gray-200"
+                )}>
+                  <Icon className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className={cn(
+                    "font-semibold text-sm leading-tight mb-0.5",
+                    item.highlight ? "text-gray-900" : "text-gray-700"
+                  )}>
+                    {item.label}
+                  </div>
+                  {item.description && (
+                    <div className="text-xs text-gray-500 line-clamp-1">
+                      {item.description}
                     </div>
                   )}
-                </>
-              )}
-            </div>
-          ))}
+                </div>
+                <ChevronRight className={cn(
+                  "w-4 h-4 flex-shrink-0 transition-opacity",
+                  item.highlight ? "text-[#007AFF] opacity-60" : "text-gray-400 opacity-0 group-hover:opacity-100"
+                )} />
+              </Link>
+            );
+          })}
         </nav>
+
+        {/* Разделитель */}
+        <div className="my-6 h-px bg-gray-200" />
+
+        {/* Дополнительные ссылки */}
+        <div className="space-y-1">
+          <Link
+            to="/map"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-gray-50 transition-all text-sm text-gray-700"
+          >
+            <Grid3x3 className="w-4 h-4 text-gray-500" />
+            <span>Карта путешественника</span>
+            <ChevronRight className="w-3 h-3 ml-auto text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </Link>
+        </div>
       </SheetContent>
     </Sheet>
   );

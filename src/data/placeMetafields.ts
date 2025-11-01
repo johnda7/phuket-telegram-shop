@@ -99,7 +99,15 @@ export const placeMetafieldsData: Record<string, PlaceMetafields> = {
   'monkey-hill': { rating: 4.3, district: 'PhuketTown', coordinates: '7.8923,98.3756', workingHours: '24/7', priceLevel: 0 },
   'samet-nangshe-viewpoint': { rating: 4.9, district: 'Phangnga', coordinates: '8.2712,98.4389', workingHours: '24/7', priceLevel: 1 },
   'ao-por-viewpoint': { rating: 4.6, district: 'Thalang', coordinates: '8.0145,98.4234', workingHours: '24/7', priceLevel: 0 },
-  'big-buddha-secret-viewpoint': { rating: 4.7, district: 'Chalong', coordinates: '7.8412,98.3089', workingHours: '08:00-18:00', priceLevel: 0 }
+  'big-buddha-secret-viewpoint': { rating: 4.7, district: 'Chalong', coordinates: '7.8412,98.3089', workingHours: '08:00-18:00', priceLevel: 0 },
+  
+  // Районы Пхукета
+  'patong-district': { rating: 4.5, district: 'Patong', coordinates: '7.8804,98.2923', workingHours: '24/7', priceLevel: 0 },
+  'karon-district': { rating: 4.6, district: 'Karon', coordinates: '7.8400,98.2966', workingHours: '24/7', priceLevel: 0 },
+  'kata-district': { rating: 4.6, district: 'Kata', coordinates: '7.8180,98.2988', workingHours: '24/7', priceLevel: 0 },
+  'bangtao-district': { rating: 4.7, district: 'Cherngtalay', coordinates: '7.9833,98.2778', workingHours: '24/7', priceLevel: 0 },
+  'rawai-district': { rating: 4.5, district: 'Rawai', coordinates: '7.7800,98.3167', workingHours: '24/7', priceLevel: 0 },
+  'phuket-town-district': { rating: 4.6, district: 'PhuketTown', coordinates: '7.8808,98.3923', workingHours: '24/7', priceLevel: 0 }
 };
 
 // Функция для получения metafields по handle

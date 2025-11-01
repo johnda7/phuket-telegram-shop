@@ -167,10 +167,10 @@ export const ProductCard = ({
           {/* Tour Info - Динамические данные из тегов */}
           <div className="flex items-center gap-3 mb-4 text-xs text-muted-foreground bg-muted/20 rounded-lg p-2.5">
             {tags.some(t => ['2-days', 'многодневные', 'multi-day'].includes(t)) && (
-              <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-primary" />
-                <span className="font-medium">2 дня</span>
-              </div>
+              <span className="font-medium">2 дня</span>
+            </div>
             )}
             {tags.some(t => ['1-day', 'однодневные', 'half-day'].includes(t)) && (
               <div className="flex items-center gap-1.5">
@@ -201,7 +201,7 @@ export const ProductCard = ({
                       <div className="flex items-baseline gap-1.5">
                         <span className="text-xl md:text-2xl font-bold text-gray-900">
                           от {adultPrice.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} ฿
-                        </span>
+                      </span>
                         <span className="text-xs text-muted-foreground">/ чел</span>
                       </div>
                       {childPrice && childPrice !== adultPrice && (
@@ -229,7 +229,7 @@ export const ProductCard = ({
                   >
                     📖 Подробнее
                   </Button>
-                  <Button
+                <Button
                     size="sm"
                     onClick={(e) => {
                       e.preventDefault();
@@ -237,9 +237,9 @@ export const ProductCard = ({
                       window.open('https://t.me/PHUKETDABOT', '_blank');
                     }}
                     className="flex-1 bg-[#007AFF] hover:bg-[#0051D5] text-white text-xs min-h-[44px] font-semibold"
-                  >
+                >
                     🏝️ Забронировать
-                  </Button>
+                </Button>
                 </div>
               </>
             ) : (

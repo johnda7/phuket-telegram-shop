@@ -1,12 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Briefcase, Info, ShoppingCart, User, Grid3x3 } from "lucide-react";
+import { Home, Briefcase, Map, ShoppingCart, User, Grid3x3, Handshake } from "lucide-react";
 import { useCartStore } from "@/stores/cartStore";
 
 const navItems = [
   { icon: Home, label: "Главная", path: "/" },
   { icon: Grid3x3, label: "Категории", path: "/categories" },
-  { icon: Briefcase, label: "Туры", path: "/tours" },
-  { icon: ShoppingCart, label: "Корзина", path: "/cart" },
+  { icon: Map, label: "Карта", path: "/map" },
+  { icon: Handshake, label: "Партнеры", path: "/partners" },
   { icon: User, label: "Профиль", path: "/profile" },
 ];
 

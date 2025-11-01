@@ -1,138 +1,62 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { ChevronRight, MapPin, Star, Waves, Users, Clock, Sun, Umbrella, PartyPopper, Baby } from "lucide-react";
+import { ChevronRight, MapPin, Search, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "@/lib/shopify";
+import { getAllDistricts, getDistrictNameRu } from "@/config/districts";
 import heroImage from "@/assets/beaches-hero.jpg";
 
-// Beach Card Component
+// Beach Card Component - УПРОЩЕННАЯ ВЕРСИЯ (только название и район!)
 const BeachCard = ({ beach }: { beach: any }) => {
   const image = beach.node.images.edges[0]?.node;
   const tags = beach.node.tags || [];
-  const isPopular = tags.includes('popular') || tags.includes('популярное');
-  const isQuiet = tags.includes('quiet') || tags.includes('спокойный');
-  const hasWatersports = tags.includes('watersports') || tags.includes('водные-виды-спорта');
-  const isFamily = tags.includes('family') || tags.includes('семейный');
-  const isParty = tags.includes('party') || tags.includes('тусовка');
   
-  // Extract district from tags
+  // Extract district from tags - самое важное!
   const districtTag = tags.find((tag: string) => tag.startsWith('district:'));
-  const district = districtTag ? districtTag.replace('district:', '') : '';
+  const districtId = districtTag ? districtTag.replace('district:', '') : '';
+  const districtName = districtId ? getDistrictNameRu(districtId) : '';
 
   return (
     <Link
       to={`/place/${beach.node.handle}`}
-      className="group block animate-fade-in"
+      className="group block"
     >
-      <div className="glass-card overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl border border-border/50 hover:border-primary/50 rounded-3xl bg-gradient-to-b from-background to-background/95">
+      <div className="rounded-2xl overflow-hidden border border-gray-200/60 bg-white/90 backdrop-blur-xl transition-all hover:shadow-lg hover:scale-[1.02]">
         {/* Image */}
-        <div className="aspect-[4/3] bg-secondary/20 overflow-hidden relative">
+        <div className="aspect-[16/9] bg-gradient-to-br from-blue-100 to-cyan-100 overflow-hidden relative">
           {image ? (
             <>
               <img
                 src={image.url}
                 alt={beach.node.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
-              
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              
-              {/* Badges */}
-              <div className="absolute top-4 left-4 flex gap-2 z-10 flex-wrap">
-                {isPopular && (
-                  <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold px-3 py-1.5 text-xs shadow-lg">
-                    🔥 ТОП
-                  </Badge>
-                )}
-                {district && (
-                  <Badge className="bg-background/90 backdrop-blur-sm text-foreground font-semibold px-3 py-1.5 text-xs shadow-lg border border-border/50">
-                    📍 {district}
-                  </Badge>
-                )}
-              </div>
-              
-              {/* Bottom Icons */}
-              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between z-10">
-                <div className="flex gap-2">
-                  {hasWatersports && (
-                    <div className="bg-blue-500/90 backdrop-blur-sm rounded-full p-2 shadow-lg">
-                      <Waves className="w-4 h-4 text-white" />
-                    </div>
-                  )}
-                  {isFamily && (
-                    <div className="bg-green-500/90 backdrop-blur-sm rounded-full p-2 shadow-lg">
-                      <Baby className="w-4 h-4 text-white" />
-                    </div>
-                  )}
-                  {isParty && (
-                    <div className="bg-purple-500/90 backdrop-blur-sm rounded-full p-2 shadow-lg">
-                      <PartyPopper className="w-4 h-4 text-white" />
-                    </div>
-                  )}
-                  {isQuiet && (
-                    <div className="bg-teal-500/90 backdrop-blur-sm rounded-full p-2 shadow-lg">
-                      <Umbrella className="w-4 h-4 text-white" />
-                    </div>
-                  )}
-                </div>
-                
-                {/* Rating */}
-                <div className="bg-background/95 backdrop-blur-md rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-lg">
-                  <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
-                  <span className="text-sm font-bold">4.{Math.floor(Math.random() * 3 + 5)}</span>
-                </div>
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
             </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-blue-500/10 to-cyan-500/5">
+            <div className="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-blue-100 to-cyan-100">
               🏖️
+            </div>
+          )}
+          
+          {/* Район - самое важное! */}
+          {districtName && (
+            <div className="absolute bottom-3 left-3 right-3">
+              <Badge className="bg-white/95 backdrop-blur-sm text-gray-900 font-semibold px-2.5 py-1 text-xs shadow-md border border-gray-200/50">
+                <MapPin className="w-3 h-3 mr-1" />
+                {districtName}
+              </Badge>
             </div>
           )}
         </div>
 
-        {/* Content */}
-        <div className="p-6">
-          <h3 className="text-2xl font-bold mb-3 line-clamp-2 group-hover:text-primary transition-colors leading-tight">
+        {/* Content - только название! */}
+        <div className="p-4">
+          <h3 className="text-base font-bold text-gray-900 line-clamp-2 group-hover:text-[#007AFF] transition-colors leading-tight">
             {beach.node.title}
           </h3>
-          
-          <p className="text-sm text-muted-foreground line-clamp-3 mb-5 leading-relaxed">
-            {beach.node.description?.split('\n\n')[0] || "Один из лучших пляжей Пхукета"}
-          </p>
-
-          {/* Quick Info */}
-          <div className="flex flex-wrap gap-2 mb-5">
-            {hasWatersports && (
-              <Badge variant="secondary" className="text-xs font-medium gap-1">
-                <Waves className="w-3 h-3" />
-                Водные виды спорта
-              </Badge>
-            )}
-            {isFamily && (
-              <Badge variant="secondary" className="text-xs font-medium gap-1">
-                <Users className="w-3 h-3" />
-                Для семьи
-              </Badge>
-            )}
-            {isQuiet && (
-              <Badge variant="secondary" className="text-xs font-medium gap-1">
-                <Sun className="w-3 h-3" />
-                Спокойный
-              </Badge>
-            )}
-          </div>
-
-          {/* Action Button */}
-          <Button 
-            className="w-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white font-semibold shadow-lg group-hover:shadow-xl transition-all"
-          >
-            Подробнее
-            <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-          </Button>
         </div>
       </div>
     </Link>
@@ -140,49 +64,61 @@ const BeachCard = ({ beach }: { beach: any }) => {
 };
 
 const Beaches = () => {
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [district, setDistrict] = useState("all");
-  const [sortBy, setSortBy] = useState("popular");
+  const [districtFilter, setDistrictFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBeachHandle, setSelectedBeachHandle] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const { data: products, isLoading } = useQuery({
     queryKey: ["beaches"],
-    queryFn: () => fetchProducts(50),
+    queryFn: () => fetchProducts(250), // Максимум для загрузки всех пляжей
   });
 
+  // Все районы из конфига
+  const allDistricts = getAllDistricts();
+
   // Filter products for beaches only
-  let beaches = products?.filter(
-    (product) => 
-      product.node.tags?.some(tag => 
-        tag.toLowerCase().includes('category:beaches') ||
-        tag.toLowerCase() === 'beach'
-      )
-  ) || [];
-
-  // Apply filters
-  if (typeFilter !== "all") {
-    beaches = beaches.filter(beach => 
-      beach.node.tags?.includes(typeFilter)
+  const allBeaches = useMemo(() => {
+    return (products || []).filter(
+      (product) => 
+        product.node.tags?.some(tag => 
+          tag.toLowerCase().includes('category:beaches') ||
+          tag.toLowerCase() === 'beach' ||
+          (tag.includes('info') && tag.includes('beach'))
+        )
     );
-  }
+  }, [products]);
 
-  if (district !== "all") {
-    beaches = beaches.filter(beach => 
-      beach.node.tags?.some(tag => tag.toLowerCase().includes(`district:${district.toLowerCase()}`))
-    );
-  }
+  // Фильтры: район, поиск по названию, выбранный пляж
+  const filteredBeaches = useMemo(() => {
+    let filtered = allBeaches;
 
-  // Apply sorting
-  if (sortBy === "popular") {
-    beaches = [...beaches].sort((a, b) => {
-      const aPopular = a.node.tags?.includes('popular') ? 1 : 0;
-      const bPopular = b.node.tags?.includes('popular') ? 1 : 0;
-      return bPopular - aPopular;
-    });
-  } else if (sortBy === "name") {
-    beaches = [...beaches].sort((a, b) => 
-      a.node.title.localeCompare(b.node.title)
-    );
-  }
+    // Фильтр по выбранному пляжу
+    if (selectedBeachHandle) {
+      filtered = filtered.filter(beach => beach.node.handle === selectedBeachHandle);
+      return filtered;
+    }
+
+    // Фильтр по району
+    if (districtFilter !== "all") {
+      filtered = filtered.filter(beach => 
+        beach.node.tags?.some(tag => 
+          tag.toLowerCase() === `district:${districtFilter.toLowerCase()}` ||
+          tag.toLowerCase().includes(`district:${districtFilter.toLowerCase()}`)
+        )
+      );
+    }
+
+    // Поиск по названию
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(beach => 
+        beach.node.title.toLowerCase().includes(query)
+      );
+    }
+
+    return filtered;
+  }, [allBeaches, districtFilter, searchQuery, selectedBeachHandle]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -238,157 +174,157 @@ const Beaches = () => {
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="glass-card p-6 mb-12 animate-fade-in border border-border/50 shadow-lg">
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Type filters */}
-            <div className="flex gap-2 flex-wrap">
-              <Button
-                variant={typeFilter === "all" ? "default" : "outline"}
-                onClick={() => setTypeFilter("all")}
-                className="rounded-full hover-scale transition-all"
-              >
-                Все
-              </Button>
-              <Button
-                variant={typeFilter === "quiet" ? "default" : "outline"}
-                onClick={() => setTypeFilter("quiet")}
-                className="rounded-full hover-scale transition-all gap-2"
-              >
-                <Umbrella className="w-4 h-4" />
-                Спокойные
-              </Button>
-              <Button
-                variant={typeFilter === "party" ? "default" : "outline"}
-                onClick={() => setTypeFilter("party")}
-                className="rounded-full hover-scale transition-all gap-2"
-              >
-                <PartyPopper className="w-4 h-4" />
-                Тусовочные
-              </Button>
-              <Button
-                variant={typeFilter === "family" ? "default" : "outline"}
-                onClick={() => setTypeFilter("family")}
-                className="rounded-full hover-scale transition-all gap-2"
-              >
-                <Baby className="w-4 h-4" />
-                Семейные
-              </Button>
-              <Button
-                variant={typeFilter === "watersports" ? "default" : "outline"}
-                onClick={() => setTypeFilter("watersports")}
-                className="rounded-full hover-scale transition-all gap-2"
-              >
-                <Waves className="w-4 h-4" />
-                С развлечениями
-              </Button>
-            </div>
-
-            {/* District select */}
-            <Select value={district} onValueChange={setDistrict}>
-              <SelectTrigger className="w-[180px] rounded-full border-border/50 hover:border-primary transition-colors">
-                <SelectValue placeholder="Район" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">🌏 Все районы</SelectItem>
-                <SelectItem value="Patong">📍 Патонг</SelectItem>
-                <SelectItem value="Kata">📍 Ката</SelectItem>
-                <SelectItem value="Karon">📍 Карон</SelectItem>
-                <SelectItem value="Rawai">📍 Равай</SelectItem>
-                <SelectItem value="Kamala">📍 Камала</SelectItem>
-                <SelectItem value="Bangtao">📍 Бангтао</SelectItem>
-                <SelectItem value="Naiyang">📍 Найянг</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* Sort select */}
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-[180px] rounded-full border-border/50 hover:border-primary transition-colors">
-                <SelectValue placeholder="Сортировка" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="popular">🔥 Популярные</SelectItem>
-                <SelectItem value="name">🔤 По названию</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* Map button */}
-            <Button
-              variant="outline"
-              className="ml-auto gap-2 bg-gradient-to-r from-[#4CAF50] to-[#45a049] hover:from-[#45a049] hover:to-[#4CAF50] text-white border-0 rounded-full shadow-lg hover-scale transition-all"
+        {/* Фильтры: Названия пляжей + Район + Поиск */}
+        <div className="mb-8 space-y-4">
+          {/* Горизонтальный скролл с названиями пляжей - ВМЕСТО фильтров категории! */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+            <button
+              onClick={() => {
+                setSelectedBeachHandle(null);
+                setSearchQuery('');
+              }}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all min-h-[32px] flex-shrink-0 ${
+                selectedBeachHandle === null && !searchQuery.trim()
+                  ? 'bg-[#007AFF] text-white shadow-md'
+                  : 'bg-white/90 text-gray-700 hover:bg-gray-50 border border-gray-200/60'
+              }`}
             >
-              <MapPin className="w-4 h-4" />
-              КАРТА
-            </Button>
-          </div>
-          
-          {/* Active filters count */}
-          {(typeFilter !== "all" || district !== "all") && (
-            <div className="mt-4 pt-4 border-t border-border/50">
-              <div className="flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground">Найдено:</span>
-                <Badge variant="secondary" className="font-bold">
-                  {beaches.length} {beaches.length === 1 ? 'пляж' : beaches.length < 5 ? 'пляжа' : 'пляжей'}
-                </Badge>
-                <Button
-                  variant="ghost"
-                  size="sm"
+              Все
+            </button>
+            {allBeaches.map(beach => {
+              const beachDistrictTag = beach.node.tags?.find((tag: string) => tag.startsWith('district:'));
+              const beachDistrictId = beachDistrictTag ? beachDistrictTag.replace('district:', '') : '';
+              const beachDistrictName = beachDistrictId ? getDistrictNameRu(beachDistrictId) : '';
+              
+              return (
+                <button
+                  key={beach.node.handle}
                   onClick={() => {
-                    setTypeFilter("all");
-                    setDistrict("all");
+                    setSelectedBeachHandle(beach.node.handle);
+                    setSearchQuery('');
                   }}
-                  className="ml-auto text-xs hover:text-primary"
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all min-h-[32px] flex-shrink-0 ${
+                    selectedBeachHandle === beach.node.handle
+                      ? 'bg-[#007AFF] text-white shadow-md'
+                      : 'bg-white/90 text-gray-700 hover:bg-gray-50 border border-gray-200/60'
+                  }`}
+                  title={beachDistrictName ? `${beach.node.title} (${beachDistrictName})` : beach.node.title}
                 >
-                  Сбросить фильтры
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
+                  {beach.node.title}
+                </button>
+              );
+            })}
+          </div>
 
-        {/* Beach Cards Grid */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="glass-card h-[520px] animate-pulse rounded-3xl bg-muted/20" />
+          {/* Поиск по названию (дополнительно) */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setSelectedBeachHandle(null); // Сбрасываем выбор при поиске
+              }}
+              placeholder="Поиск пляжа по названию..."
+              className="w-full pl-10 pr-10 py-3 rounded-xl border border-gray-200/60 bg-white/90 backdrop-blur-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF] focus:border-[#007AFF]"
+            />
+            {searchQuery.trim() && (
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedBeachHandle(null);
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-gray-100 transition-colors"
+              >
+                <X className="w-4 h-4 text-gray-400" />
+              </button>
+            )}
+          </div>
+
+          {/* Фильтр по районам - горизонтальный скролл */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}>
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <MapPin className="w-4 h-4 text-gray-400" />
+              <span className="text-xs text-gray-500 font-medium">Район:</span>
+            </div>
+            <button
+              onClick={() => {
+                setDistrictFilter('all');
+                setSelectedBeachHandle(null);
+              }}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all min-h-[32px] flex-shrink-0 ${
+                districtFilter === 'all'
+                  ? 'bg-[#007AFF] text-white shadow-md'
+                  : 'bg-white/90 text-gray-700 hover:bg-gray-50 border border-gray-200/60'
+              }`}
+            >
+              Все
+            </button>
+            {allDistricts.map(dist => (
+              <button
+                key={dist.id}
+                onClick={() => {
+                  setDistrictFilter(dist.id);
+                  setSelectedBeachHandle(null);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all min-h-[32px] flex-shrink-0 ${
+                  districtFilter === dist.id
+                    ? 'bg-[#007AFF] text-white shadow-md'
+                    : 'bg-white/90 text-gray-700 hover:bg-gray-50 border border-gray-200/60'
+                }`}
+              >
+                {dist.nameRu}
+              </button>
             ))}
           </div>
-        ) : beaches.length > 0 ? (
-          <>
-            <div className="mb-6 text-sm text-muted-foreground">
-              Показано <span className="font-bold text-foreground">{beaches.length}</span> {beaches.length === 1 ? 'пляж' : beaches.length < 5 ? 'пляжа' : 'пляжей'}
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {beaches.map((product, index) => (
-                <div 
-                  key={product.node.id}
-                  style={{ 
-                    animation: 'fade-in 0.5s ease-out forwards',
-                    animationDelay: `${index * 0.05}s`,
-                    opacity: 0
-                  }}
-                >
-                  <BeachCard beach={product} />
-                </div>
-              ))}
-            </div>
-          </>
+
+          {/* Кнопка карты */}
+          <div className="flex justify-end">
+            <Button
+              onClick={() => navigate('/map?category=beaches')}
+              className="gap-2 bg-gradient-to-r from-[#4CAF50] to-[#45a049] hover:from-[#45a049] hover:to-[#4CAF50] text-white border-0 rounded-full shadow-lg transition-all"
+            >
+              <MapPin className="w-4 h-4" />
+              Показать на карте
+            </Button>
+          </div>
+        </div>
+
+        {/* Результаты */}
+        <div className="mb-4 text-sm text-gray-600">
+          Найдено: <span className="font-bold text-gray-900">{filteredBeaches.length}</span> {filteredBeaches.length === 1 ? 'пляж' : filteredBeaches.length < 5 ? 'пляжа' : 'пляжей'}
+        </div>
+
+        {/* Beach Cards Grid - простые карточки с названием и районом */}
+        {isLoading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="h-[200px] animate-pulse rounded-2xl bg-gray-100" />
+            ))}
+          </div>
+        ) : filteredBeaches.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filteredBeaches.map((beach) => (
+              <BeachCard key={beach.node.id} beach={beach} />
+            ))}
+          </div>
         ) : (
-          <div className="text-center py-20 animate-fade-in">
-            <div className="glass-card p-12 max-w-2xl mx-auto rounded-3xl">
+          <div className="text-center py-20">
+            <div className="p-12 max-w-2xl mx-auto rounded-2xl bg-white/90 backdrop-blur-xl border border-gray-200">
               <div className="text-6xl mb-6">🏝️</div>
-              <p className="text-2xl font-bold mb-4">
+              <p className="text-xl font-bold mb-4 text-gray-900">
                 Пляжи не найдены
               </p>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-gray-600 mb-6">
                 Попробуйте изменить фильтры или выбрать другой район
               </p>
               <Button
                 onClick={() => {
-                  setTypeFilter("all");
-                  setDistrict("all");
+                  setDistrictFilter("all");
+                  setSearchQuery("");
                 }}
-                className="rounded-full"
+                className="rounded-full bg-[#007AFF] hover:bg-[#0056CC] text-white"
               >
                 Сбросить фильтры
               </Button>

@@ -36,24 +36,28 @@ const Phuket = () => {
   
   // Синхронизация с URL
   const urlCategory = searchParams.get('category') as Category | null;
+  const urlSearch = searchParams.get('search') || '';
   const [activeCategory, setActiveCategory] = useState<Category>(urlCategory || 'all');
   
-  const [search, setSearch] = useState<string>('');
+  const [search, setSearch] = useState<string>(urlSearch);
   const [onlyOneDay, setOnlyOneDay] = useState<boolean>(false);
   const [onlyMultiDay, setOnlyMultiDay] = useState<boolean>(false);
   const [onlyPopular, setOnlyPopular] = useState<boolean>(false);
   const [onlyAdventures, setOnlyAdventures] = useState<boolean>(false);
-  const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 999999 });
-  const [priceDomain, setPriceDomain] = useState<{ min: number; max: number }>({ min: 0, max: 999999 });
+  const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 20000 });
+  const [priceDomain, setPriceDomain] = useState<{ min: number; max: number }>({ min: 0, max: 20000 });
   const [sortBy, setSortBy] = useState<'popular' | 'priceAsc' | 'priceDesc' | 'alpha'>('popular');
   const [visibleCount, setVisibleCount] = useState<number>(9);
 
-  // Обновляем категорию при изменении URL
+  // Обновляем категорию и поиск при изменении URL
   useEffect(() => {
     if (urlCategory && categories.find(c => c.id === urlCategory)) {
       setActiveCategory(urlCategory);
     }
-  }, [urlCategory]);
+    if (urlSearch) {
+      setSearch(urlSearch);
+    }
+  }, [urlCategory, urlSearch]);
 
   // Обновляем URL при изменении категории
   const handleCategoryChange = (category: Category) => {
@@ -96,15 +100,16 @@ const Phuket = () => {
         console.log('🎟️ Туры (отсортированы):', sortedTours.map(p => ({ title: p.node.title, type: p.node.productType, tags: p.node.tags, isTemplate: p.node.tags.includes('template') })));
         setProducts(sortedTours);
 
-        // Диапазон цен по фактическим данным
+        // Диапазон цен по фактическим данным (с запасом для дорогих туров)
         const prices = sortedTours
           .map(p => parseFloat(p.node.priceRange?.minVariantPrice?.amount || '0'))
           .filter(n => !Number.isNaN(n) && n > 0);
         if (prices.length) {
           const min = Math.min(...prices);
           const max = Math.max(...prices);
-          setPriceDomain({ min, max });
-          setPriceRange({ min, max });
+          // Добавляем запас 30% для дорогих туров
+          setPriceDomain({ min, max: Math.ceil(max * 1.3) });
+          setPriceRange({ min, max: Math.ceil(max * 1.3) });
         }
         
         // Инициализация категории из URL уже выполнена выше
@@ -224,72 +229,71 @@ const Phuket = () => {
           </div>
         </div>
 
-        {/* Featured Banner - iOS 26 Style Hero */}
-        <div className="mb-4 md:mb-6">
-          <div className="glass-card overflow-hidden border-0 shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
-            <div className="relative h-36 md:h-44 bg-gradient-to-br from-blue-500/20 via-purple-500/15 to-pink-500/10 flex items-center justify-center overflow-hidden">
-              {/* Background Image with Overlay */}
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200')] bg-cover bg-center" />
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/40 via-purple-600/30 to-transparent" />
-              
-              {/* Content */}
-              <div className="relative z-10 text-center px-4">
-                <h2 className="text-lg md:text-2xl font-bold mb-1.5 text-white drop-shadow-lg">Популярные туры</h2>
-                <p className="text-xs md:text-sm text-white/90 mb-3 md:mb-4 drop-shadow-md">
-                  Пхи-Пхи, Джеймс Бонд, Симиланские острова
-                </p>
-                <button 
-                  onClick={() => window.scrollTo({ top: 350, behavior: 'smooth' })}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#007AFF] text-white rounded-full text-sm font-semibold min-h-[44px] shadow-lg shadow-blue-500/30 hover:bg-[#0051D5] active:scale-95 transition-all duration-200"
-                >
-                  <MapPin className="w-4 h-4" />
-                  <span>Выберите тур</span>
-                </button>
-              </div>
+        {/* Why Us - Компактная горизонтальная строка (Perplexity: минимум, но эффективно) */}
+        <div className="mb-3 hidden md:flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+          {[
+            { title: 'Русскоязычные гиды', gradient: 'from-blue-600 to-cyan-500' },
+            { title: 'Без скрытых платежей', gradient: 'from-emerald-600 to-teal-500' },
+            { title: 'Быстрое бронирование', gradient: 'from-purple-600 to-pink-500' },
+            { title: 'Поддержка 24/7', gradient: 'from-orange-600 to-red-500' },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold"
+              style={{
+                background: 'rgba(255, 255, 255, 0.85)',
+                backdropFilter: 'blur(20px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                border: '1px solid rgba(255, 255, 255, 0.5)',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)'
+              }}
+            >
+              <span 
+                className={`bg-gradient-to-r ${item.gradient} bg-clip-text text-transparent`}
+                style={{
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}
+              >
+                {item.title}
+              </span>
             </div>
-          </div>
+          ))}
         </div>
 
-        {/* Why Us / Trust strip - iOS 26 Style Glass Cards */}
-        <div className="mb-4 md:mb-6 grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
-          <div className="glass-card p-3 md:p-4 text-center transition-all duration-200 hover:scale-[1.02] hover:shadow-lg">
-            <div className="text-sm md:text-base font-semibold mb-1">Русскоязычные гиды</div>
-            <div className="text-[10px] md:text-xs text-muted-foreground leading-relaxed">Опытные и лицензированные</div>
-          </div>
-          <div className="glass-card p-3 md:p-4 text-center transition-all duration-200 hover:scale-[1.02] hover:shadow-lg">
-            <div className="text-sm md:text-base font-semibold mb-1">Без скрытых платежей</div>
-            <div className="text-[10px] md:text-xs text-muted-foreground leading-relaxed">Цена = на месте</div>
-          </div>
-          <div className="glass-card p-3 md:p-4 text-center transition-all duration-200 hover:scale-[1.02] hover:shadow-lg">
-            <div className="text-sm md:text-base font-semibold mb-1">Быстрое бронирование</div>
-            <div className="text-[10px] md:text-xs text-muted-foreground leading-relaxed">Через Telegram за 2 минуты</div>
-          </div>
-          <div className="glass-card p-3 md:p-4 text-center transition-all duration-200 hover:scale-[1.02] hover:shadow-lg">
-            <div className="text-sm md:text-base font-semibold mb-1">Поддержка 24/7</div>
-            <div className="text-[10px] md:text-xs text-muted-foreground leading-relaxed">Поможем в любой ситуации</div>
-          </div>
-        </div>
-
-        {/* iOS 26 Style Category Filter - Premium Glass Design */}
-        <div className="mb-6 -mx-4 px-4 overflow-x-auto">
-          <div className="flex gap-2 pb-2 scroll-smooth">
-            {categories.map((category) => {
-              const isActive = activeCategory === category.id;
-              return (
-                <button
-                  key={category.id}
-                  onClick={() => handleCategoryChange(category.id)}
-                  className={`
-                    relative flex-shrink-0 px-4 py-2.5 rounded-full font-semibold text-sm min-h-[44px]
-                    transition-all duration-200 ease-out
-                    ${isActive 
-                      ? 'text-white shadow-lg shadow-primary/20 scale-[1.02]' 
-                      : 'text-foreground bg-secondary/50 hover:bg-secondary/70 active:scale-95 border border-transparent'
-                    }
-                  `}
-                  style={isActive ? {
-                    background: `linear-gradient(135deg, var(--tw-gradient-stops))`,
-                    '--tw-gradient-from': `rgb(${category.color === 'from-blue-500 to-cyan-500' ? '59 130 246' : 
+        {/* ЕДИНЫЙ БЛОК: Категории + Поиск + Цена (ОПТИМИЗИРОВАНО - БЕЗ ДУБЛИРОВАНИЯ) */}
+        <div className="mb-4">
+          <div 
+            className="overflow-hidden rounded-2xl"
+            style={{
+              background: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(40px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+              border: '1px solid rgba(0, 0, 0, 0.08)',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
+            }}
+          >
+            {/* Категории - Компактные */}
+            <div className="px-3 py-2 border-b border-border/30">
+              <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+                {categories.filter(c => c.id !== 'all').map((category) => {
+                  const isActive = activeCategory === category.id;
+                  return (
+                    <button
+                      key={category.id}
+                      onClick={() => handleCategoryChange(category.id)}
+                      className={`
+                        flex-shrink-0 px-3 py-2 rounded-full font-semibold text-xs min-h-[44px]
+                        transition-all duration-200 ease-out
+                        ${isActive 
+                          ? 'text-white shadow-md' 
+                          : 'text-gray-700 bg-gray-100/80 hover:bg-gray-200/80 active:scale-95'
+                        }
+                      `}
+                      style={isActive ? {
+                        background: `linear-gradient(135deg, var(--tw-gradient-stops))`,
+                        '--tw-gradient-from': `rgb(${category.color === 'from-blue-500 to-cyan-500' ? '59 130 246' : 
                                                   category.color === 'from-emerald-500 to-teal-500' ? '16 185 129' :
                                                   category.color === 'from-orange-500 to-amber-500' ? '249 115 22' :
                                                   category.color === 'from-violet-500 to-purple-500' ? '139 92 246' :
@@ -297,85 +301,66 @@ const Phuket = () => {
                                                   category.color === 'from-amber-500 to-orange-500' ? '245 158 11' :
                                                   category.color === 'from-pink-500 to-rose-500' ? '236 72 153' :
                                                   '168 85 247'})`,
-                    '--tw-gradient-to': `rgb(${category.color === 'from-blue-500 to-cyan-500' ? '6 182 212' : 
-                                                category.color === 'from-emerald-500 to-teal-500' ? '20 184 166' :
-                                                category.color === 'from-orange-500 to-amber-500' ? '245 158 11' :
-                                                category.color === 'from-violet-500 to-purple-500' ? '168 85 247' :
-                                                category.color === 'from-red-500 to-pink-500' ? '236 72 153' :
-                                                category.color === 'from-amber-500 to-orange-500' ? '249 115 22' :
-                                                category.color === 'from-pink-500 to-rose-500' ? '244 63 94' :
-                                                '99 102 241'})`,
-                  } as React.CSSProperties : undefined}
-                >
-                  <category.Icon className="mr-1.5 w-3.5 h-3.5" />
-                  {category.label}
-                  {isActive && (
-                    <div className="absolute inset-0 rounded-full bg-white/20 animate-pulse" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+                        '--tw-gradient-to': `rgb(${category.color === 'from-blue-500 to-cyan-500' ? '6 182 212' : 
+                                                    category.color === 'from-emerald-500 to-teal-500' ? '20 184 166' :
+                                                    category.color === 'from-orange-500 to-amber-500' ? '245 158 11' :
+                                                    category.color === 'from-violet-500 to-purple-500' ? '168 85 247' :
+                                                    category.color === 'from-red-500 to-pink-500' ? '236 72 153' :
+                                                    category.color === 'from-amber-500 to-orange-500' ? '249 115 22' :
+                                                    category.color === 'from-pink-500 to-rose-500' ? '244 63 94' :
+                                                    '99 102 241'})`,
+                      } as React.CSSProperties : undefined}
+                    >
+                      <category.Icon className="mr-1 w-3 h-3 inline" />
+                      <span>{category.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-        {/* Поиск + быстрые фильтры + диапазон цен + сортировка */}
-        <div className="mb-6 grid gap-3 md:grid-cols-3">
-          {/* Поиск - iOS 26 Style */}
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground z-10" />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Поиск тура..."
-              className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-border/60 bg-white/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] transition-all duration-200 text-sm min-h-[44px]"
-            />
-          </div>
-          {/* Быстрые фильтры - Компактные чипы */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <button 
-              onClick={() => setOnlyOneDay(v => !v)} 
-              className={`px-2.5 py-1.5 rounded-full text-xs font-medium border transition-all ${onlyOneDay ? 'bg-primary text-white border-primary shadow-sm' : 'bg-background border-border hover:bg-secondary/50'}`}
-            >
-              1 день
-            </button>
-            <button 
-              onClick={() => setOnlyMultiDay(v => !v)} 
-              className={`px-2.5 py-1.5 rounded-full text-xs font-medium border transition-all ${onlyMultiDay ? 'bg-primary text-white border-primary shadow-sm' : 'bg-background border-border hover:bg-secondary/50'}`}
-            >
-              2+ дня
-            </button>
-            <button 
-              onClick={() => setOnlyPopular(v => !v)} 
-              className={`px-2.5 py-1.5 rounded-full text-xs font-medium border transition-all ${onlyPopular ? 'bg-primary text-white border-primary shadow-sm' : 'bg-background border-border hover:bg-secondary/50'}`}
-            >
-              ⭐ Популярные
-            </button>
-            <button 
-              onClick={() => setOnlyAdventures(v => !v)} 
-              className={`px-2.5 py-1.5 rounded-full text-xs font-medium border transition-all ${onlyAdventures ? 'bg-primary text-white border-primary shadow-sm' : 'bg-background border-border hover:bg-secondary/50'}`}
-            >
-              🎢 Приключения
-            </button>
-          </div>
-          {/* Цена */}
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              min={0}
-              value={priceRange.min}
-              onChange={(e) => setPriceRange(r => ({ ...r, min: Number(e.target.value) }))}
-              className="w-full px-3 py-3 rounded-xl border border-border/60 bg-background/80 focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder={`от ${Math.floor(priceDomain.min)}`}
-            />
-            <span className="text-muted-foreground">—</span>
-            <input
-              type="number"
-              min={0}
-              value={priceRange.max}
-              onChange={(e) => setPriceRange(r => ({ ...r, max: Number(e.target.value) }))}
-              className="w-full px-3 py-3 rounded-xl border border-border/60 bg-background/80 focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder={`до ${Math.ceil(priceDomain.max)}`}
-            />
+            {/* Поиск + Цена - Компактно в одной строке */}
+            <div className="px-3 py-2.5 flex gap-2">
+              {/* Поиск */}
+              <div className="relative flex-1">
+                <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 z-10" />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Поиск..."
+                  className="w-full pl-8 pr-2.5 py-2.5 rounded-lg border border-gray-200 bg-white/90 text-sm min-h-[44px] focus:outline-none focus:ring-1 focus:ring-[#007AFF] focus:border-[#007AFF]"
+                  style={{
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                  }}
+                />
+              </div>
+              {/* Цена - Компактно */}
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="number"
+                  min={0}
+                  value={priceRange.min}
+                  onChange={(e) => setPriceRange(r => ({ ...r, min: Number(e.target.value) }))}
+                  className="w-20 px-2 py-2.5 rounded-lg border border-gray-200 bg-white/90 text-sm min-h-[44px] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
+                  placeholder="от"
+                  style={{
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                  }}
+                />
+                <span className="text-gray-400 text-xs">—</span>
+                <input
+                  type="number"
+                  min={0}
+                  value={priceRange.max}
+                  onChange={(e) => setPriceRange(r => ({ ...r, max: Number(e.target.value) }))}
+                  className="w-20 px-2 py-2.5 rounded-lg border border-gray-200 bg-white/90 text-sm min-h-[44px] focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
+                  placeholder="до"
+                  style={{
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif'
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -447,10 +432,6 @@ const Phuket = () => {
           Экскурсии по Пхукету: острова Пхи‑Пхи, Джеймс Бонд, Симиланские острова, рафтинг и приключения. 
           Бронируйте напрямую в Telegram — без скрытых платежей, с русскоязычными гидами и поддержкой 24/7.
         </div>
-      </div>
-      {/* Sticky CTA (Telegram) */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
-        <a href="https://t.me/PHUKETDABOT" target="_blank" rel="noreferrer" className="px-5 py-3 rounded-full bg-[#007AFF] text-white shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:brightness-110 transition">Забронировать в Telegram</a>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import heroImage from "@/assets/phi-phi-hero.jpg";
 import { useEffect, useState } from "react";
 import { fetchProducts, type ShopifyProduct } from "@/lib/shopify";
 import { ProductCard } from "@/components/ProductCard";
+import { FeaturedToursSection } from "@/components/FeaturedToursSection";
 import { getAllServices } from "@/config/services";
 import { getButtonClass, getCardClass, cn } from "@/styles/design-system";
 
@@ -83,6 +84,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* ХИТ ПРОДАЖ - горизонтальный скролл популярных туров */}
+      <FeaturedToursSection />
 
         <div className="container mx-auto px-4 py-8">
         {/* Main Services Grid - Premium Telegram Wallet Style */}

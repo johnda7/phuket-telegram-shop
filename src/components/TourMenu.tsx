@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, ChevronRight, Ship, Compass, Target, MapPin, Waves, Info, Star, Zap, Mountain, Landmark, Eye, Camera } from "lucide-react";
+import { ChevronDown, ChevronRight, Ship, Compass, Target, MapPin, Waves, Info, Star, Zap, Mountain, Landmark, Eye, Camera, Clock } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -28,13 +28,17 @@ const menuStructure: MenuItem[] = [
     icon: Ship,
     label: "Туры",
     submenu: [
-      { icon: Star, label: "Пхукет да", href: "/phuket", tag: "phuket-da" },
-      { icon: Ship, label: "Все морские туры", href: "/phuket?category=tour", tag: "islands" },
-      { icon: Compass, label: "Пхи-Пхи острова", href: "/product/phi-phi-2-days-1-night", tag: "phi-phi" },
+      { icon: Star, label: "Все туры", href: "/phuket", tag: "all" },
+      { icon: Ship, label: "Островные туры", href: "/phuket?category=islands", tag: "islands" },
+      { icon: Compass, label: "Пхи-Пхи 2 дня", href: "/product/phi-phi-2-days-1-night", tag: "phi-phi" },
       { icon: Camera, label: "Джеймс Бонд", href: "/product/james-bond-island-tour", tag: "james-bond" },
       { icon: Waves, label: "Рача и Корал", href: "/product/racha-coral-islands", tag: "racha" },
-      { icon: Star, label: "Премиум туры", href: "/phuket?category=tour", tag: "premium" },
-      { icon: Compass, label: "Многодневные", href: "/phuket?category=tour", tag: "2-days" },
+      { icon: Star, label: "4 Pearls", href: "/product/four-pearls-andaman-sea", tag: "pearls" },
+      { icon: Compass, label: "Симиланские", href: "/phuket?category=islands", tag: "similan" },
+      { icon: Star, label: "Популярные", href: "/phuket?category=popular", tag: "popular" },
+      { icon: Star, label: "Премиум", href: "/phuket?category=premium", tag: "premium" },
+      { icon: Clock, label: "Однодневные", href: "/phuket?category=oneday", tag: "1-day" },
+      { icon: Clock, label: "Многодневные", href: "/phuket?category=multiday", tag: "2-days" },
     ]
   },
   {
@@ -54,7 +58,7 @@ const menuStructure: MenuItem[] = [
       { icon: Landmark, label: "Все места", href: "/phuket?category=temple", tag: "place" },
       { icon: Landmark, label: "Храмы", href: "/phuket?category=temple", tag: "temples" },
       { icon: Eye, label: "Смотровые площадки", href: "/categories/viewpoints", tag: "viewpoints" },
-      { icon: Landmark, label: "Культурные места", href: "/phuket?category=temple", tag: "culture" },
+      { icon: Landmark, label: "Культурные места", href: "/phuket?category=culture", tag: "culture" },
     ]
   },
   {

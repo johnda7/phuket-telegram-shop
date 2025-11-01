@@ -1,0 +1,139 @@
+/* ============================================================================
+   GLOBAL COMPACT STYLES - Telegram Mini Apps Style
+   Компактно, но соответствует стандартам читаемости (iOS/Android)
+   ============================================================================ */
+
+/* Базовые размеры текста - стандарты iOS/Android/Telegram:
+   - iOS минимальный body: 17px
+   - Android минимальный body: 16px
+   - Telegram Mini Apps: следуют iOS стандартам
+   - Компромисс для компактности: 15-16px для body
+*/
+html {
+  font-size: 16px; /* Базовый размер (1rem = 16px) - стандарт iOS/Android */
+}
+
+body {
+  font-size: 14px; /* text-sm (14px) - компромисс: компактно как Exchange24, но читаемо */
+  line-height: 1.4; /* Компактный line-height для плотности */
+}
+
+/* Заголовки - компактные, но читаемые */
+h1 {
+  @apply text-lg font-semibold mb-2; /* 18px - заголовки страниц */
+}
+
+h2 {
+  @apply text-base font-semibold mb-1.5; /* 16px - секции */
+}
+
+h3 {
+  @apply text-sm font-semibold mb-1; /* 15px - подсекции */
+}
+
+/* Параграфы - основной текст (компактно как Exchange24) */
+p {
+  @apply text-sm leading-snug mb-1.5; /* 14px с компактным line-height */
+}
+
+/* Кнопки - компактные, но touch-friendly (стандарт 44px для touch targets) */
+button, .btn {
+  @apply min-h-[44px] text-sm px-3 py-2; /* 14px текст, компактный padding как Exchange24 */
+}
+
+/* Карточки - компактные как Exchange24 */
+.card, [class*="rounded-xl"], [class*="rounded-2xl"] {
+  @apply p-2.5 mb-2; /* p-2.5 (10px) - компактно но не тесно */
+}
+
+/* Отступы между секциями - комфортные */
+section, [class*="space-y"] {
+  @apply space-y-2; /* 8px вместо 6px */
+}
+
+/* Иконки - стандартный размер для Telegram (16px) */
+svg, [class*="icon"] {
+  @apply w-4 h-4; /* 16px - стандарт для иконок в Telegram */
+}
+
+/* Ссылки - читаемый размер */
+a {
+  @apply text-sm; /* 15px вместо 12px */
+}
+
+/* Списки - компактные */
+ul, ol {
+  @apply space-y-0.5 text-sm; /* 14px текст, минимальные отступы */
+}
+
+li {
+  @apply text-sm leading-snug; /* 14px с компактным line-height */
+}
+
+/* Input поля - компактные */
+input, textarea, select {
+  @apply text-sm px-3 py-2 min-h-[44px]; /* 14px текст, компактный padding */
+}
+
+/* Badges и чипы - читаемые */
+[class*="badge"], [class*="chip"] {
+  @apply text-xs px-2.5 py-1; /* 12px для второстепенного текста */
+}
+
+/* Accordion - компактный */
+[data-accordion-section] {
+  @apply mb-2;
+}
+
+.accordion-trigger {
+  @apply text-sm font-semibold mb-1.5; /* 15px вместо 12px */
+}
+
+.accordion-content {
+  @apply text-sm; /* 15px вместо 12px */
+}
+
+/* Override для больших элементов только где нужно */
+.prose h1 {
+  @apply text-lg; /* 18px */
+}
+
+.prose h2 {
+  @apply text-base; /* 16px */
+}
+
+.prose h3 {
+  @apply text-sm; /* 15px */
+}
+
+.prose p {
+  @apply text-sm leading-relaxed; /* 15px с хорошим line-height */
+}
+
+.prose ul, .prose ol {
+  @apply text-sm space-y-1; /* 15px текст, больше отступы */
+}
+
+/* Mobile-first: адаптация для маленьких экранов (НО сохраняем читаемость!) */
+@media (max-width: 640px) {
+  html {
+    font-size: 16px; /* НЕ уменьшаем! Стандарт iOS/Android */
+  }
+  
+  body {
+    font-size: 14px; /* Компактно как Exchange24, но читаемо */
+  }
+  
+  h1 {
+    @apply text-base; /* 16px на мобильных (не меньше!) */
+  }
+  
+  h2, h3 {
+    @apply text-sm; /* 14px на мобильных - компактно */
+  }
+  
+  p, span, div {
+    @apply text-sm; /* 14px - компактно как Exchange24 */
+  }
+}
+

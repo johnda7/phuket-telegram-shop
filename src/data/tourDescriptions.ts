@@ -252,8 +252,9 @@ export const tourDescriptions: Record<string, string> = {
 <h2>🎯 Планируете поездку на Пхи-Пхи?</h2>
 <div class="flex flex-wrap gap-4 mb-4">
   <a href="/phuket" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">🏝️ Забронировать тур с гидом</a>
-  <a href="/services/car-rental" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600">🚗 Арендовать авто</a>
-  <a href="/services/currency-exchange" class="bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600">💱 Обменять валюту</a>
+  <a href="/services/car-rental" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600">🚙 Арендовать авто</a>
+  <a href="/services/real-estate" class="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600">🏠 Недвижимость</a>
+  <a href="/services/currency-exchange" class="bg-purple-500 text-white px-6 py-3 rounded-lg hover:bg-purple-600">💵 Обменять валюту</a>
 </div>
 
 <p><em>Пхи-Пхи 2 дня/1 ночь — это не просто тур, это незабываемое путешествие в райский уголок Андаманского моря. Идеальное сочетание приключений, отдыха и ночной жизни для создания воспоминаний на всю жизнь.</em></p>

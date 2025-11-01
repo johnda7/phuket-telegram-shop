@@ -308,17 +308,17 @@ const PlaceDetailPremium = () => {
                 gradient: 'from-green-500 to-teal-600'
               },
               {
-                icon: RefreshCw,
-                title: 'Обмен валюты',
-                description: 'Выгодный курс без комиссии',
-                link: '/services/currency-exchange',
-                gradient: 'from-orange-500 to-red-600'
-              },
-              {
                 icon: Home,
                 title: 'Недвижимость',
                 description: 'Аренда и продажа вилл',
                 link: '/services/real-estate',
+                gradient: 'from-orange-500 to-amber-600'
+              },
+              {
+                icon: RefreshCw,
+                title: 'Обмен валюты',
+                description: 'Выгодный курс без комиссии',
+                link: '/services/currency-exchange',
                 gradient: 'from-purple-500 to-pink-600'
               }
             ].map((service, i) => (

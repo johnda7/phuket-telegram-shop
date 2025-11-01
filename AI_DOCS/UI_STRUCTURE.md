@@ -438,11 +438,11 @@ const systemPrompt = `
 --font-display: 'SF Pro Display', -apple-system, BlinkMacSystemFont;
 --font-text: 'SF Pro Text', -apple-system, BlinkMacSystemFont;
 
-/* Sizes */
---text-xs: 11px;   /* Captions */
---text-sm: 13px;   /* Secondary text */
---text-base: 15px; /* Body */
---text-lg: 17px;   /* Headlines */
+/* Sizes (Exchange24 Style - компактно но читаемо) */
+--text-xs: 12px;   /* Captions, badges */
+--text-sm: 14px;   /* Body text - компактно как Exchange24 */
+--text-base: 16px; /* Headings секций */
+--text-lg: 18px;   /* Заголовки страниц */
 --text-xl: 20px;   /* Large titles */
 --text-2xl: 28px;  /* Hero */
 --text-3xl: 34px;  /* Display */

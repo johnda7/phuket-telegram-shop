@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Clock, Users, TrendingUp } from "lucide-react";
+import { Star, Clock, Users, TrendingUp, TreePalm, Flame, Percent } from "lucide-react";
 import type { ShopifyProduct } from "@/lib/shopify";
 
 interface ProductCardProps {
@@ -17,24 +17,51 @@ export const ProductCard = ({
   showRating = false,
   linkPrefix = "/product",
 }: ProductCardProps) => {
-  const image = product.images.edges[0]?.node;
-  const price = parseFloat(product.priceRange.minVariantPrice.amount);
+  const firstImageEdge = product.images?.edges?.find(e => e?.node?.url);
+  const image = firstImageEdge?.node;
+  // Fallback: пробуем достать первое изображение из descriptionHtml, если у продукта пустая галерея
+  const descriptionHtml = (product as any).descriptionHtml as string | undefined;
+  const extractedUrl = (!image && descriptionHtml)
+    ? (descriptionHtml.match(/<img[^>]*src=["']([^"']+\.(?:webp|jpg|jpeg|png))/i)?.[1] || null)
+    : null;
+  const variantPrices = (product.variants?.edges || [])
+    .map(e => parseFloat(e?.node?.price?.amount || ''))
+    .filter(n => !Number.isNaN(n) && n > 0);
+  const minVariant = variantPrices.length ? Math.min(...variantPrices) : undefined;
+  const minPriceStr = product.priceRange?.minVariantPrice?.amount
+    || (minVariant !== undefined ? String(minVariant) : '')
+    || product.variants?.edges?.[0]?.node?.price?.amount
+    || '0';
+  const price = parseFloat(minPriceStr);
+  const hasPrice = !Number.isNaN(price) && price > 0;
   const tags = product.tags || [];
-  const isHit = tags.includes('хит') || tags.includes('ХИТ') || tags.includes('популярное');
-  const category = product.productType;
+  const isHit = tags.some(t => ['хит','ХИТ','популярное','popular'].includes(t));
+  const isSale = tags.some(t => ['sale','скидка','discount'].includes(t));
+  const features: string[] = [];
+  if (tags.some(t => ['islands','острова','phi-phi','similan','james-bond'].includes(t))) features.push('Острова');
+  if (tags.some(t => ['snorkeling','снорклинг','diving'].includes(t))) features.push('Снорклинг');
+  if (tags.some(t => ['adventures','приключения','atv','rafting'].includes(t))) features.push('Приключения');
+  if (tags.some(t => ['1-day','однодневные','half-day'].includes(t))) features.push('1 день');
+  if (tags.some(t => ['2-days','многодневные','multi-day'].includes(t))) features.push('2+ дня');
+  const rawType = (product.productType || '').toLowerCase();
+  const category = rawType === 'excursions' || rawType === 'экскурсии'
+    ? 'Экскурсии'
+    : rawType === 'information' || rawType === 'place'
+      ? 'Место'
+      : (product.productType || '');
 
   return (
     <Link
       to={`${linkPrefix}/${product.handle}`}
       className="group block"
     >
-      <div className="glass-card overflow-hidden transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl border border-border/50 hover:border-primary/50 rounded-2xl bg-gradient-to-b from-background to-background/95">
+      <div className="glass-card overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/10 border border-border/40 hover:border-[#007AFF]/30 rounded-2xl bg-white/95 backdrop-blur-sm group">
         {/* Image - 16:9 aspect ratio */}
         <div className="aspect-video bg-secondary/20 overflow-hidden relative">
-          {image ? (
+          {image || extractedUrl ? (
             <>
               <img
-                src={image.url}
+                src={image ? image.url : (extractedUrl as string)}
                 alt={product.title}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
               />
@@ -45,8 +72,13 @@ export const ProductCard = ({
               {/* Badges */}
               <div className="absolute top-4 left-4 flex gap-2 z-10">
                 {isHit && (
-                  <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold px-3 py-1 text-xs shadow-lg animate-pulse">
-                    🔥 ХИТ
+                  <Badge className="bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold px-3 py-1 text-xs shadow-lg flex items-center gap-1">
+                    <Flame className="w-3 h-3" /> Популярно
+                  </Badge>
+                )}
+                {isSale && (
+                  <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold px-3 py-1 text-xs shadow-lg flex items-center gap-1">
+                    <Percent className="w-3 h-3" /> Акция
                   </Badge>
                 )}
                 {category && (
@@ -64,8 +96,8 @@ export const ProductCard = ({
               </div>
             </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-primary/10 to-primary/5">
-              🏝️
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+              <TreePalm className="w-12 h-12 text-primary" />
             </div>
           )}
           
@@ -87,6 +119,17 @@ export const ProductCard = ({
           <p className="text-sm text-muted-foreground line-clamp-3 mb-4 min-h-[4rem] leading-relaxed">
             {product.description || "Описание скоро появится"}
           </p>
+
+          {/* Feature chips from tags */}
+          {features.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {features.slice(0,4).map((f) => (
+                <Badge key={f} variant="secondary" className="px-2 py-0.5 text-xs rounded-full">
+                  {f}
+                </Badge>
+              ))}
+            </div>
+          )}
 
           {/* Tour Info */}
           <div className="flex items-center gap-4 mb-5 text-xs text-muted-foreground bg-muted/30 rounded-lg p-3">
@@ -111,18 +154,22 @@ export const ProductCard = ({
             {showPrice ? (
               <>
                 <div>
-                  <span className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                    {price.toFixed(0)} ฿
-                  </span>
-                  <span className="text-sm text-muted-foreground ml-1">
-                    / чел
-                  </span>
+                  {hasPrice ? (
+                    <>
+                      <span className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                        {price.toFixed(0)} ฿
+                      </span>
+                      <span className="text-sm text-muted-foreground ml-1">/ чел</span>
+                    </>
+                  ) : (
+                    <span className="text-base text-muted-foreground">Цена по запросу</span>
+                  )}
                 </div>
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-primary to-primary-glow hover:from-primary-glow hover:to-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 rounded-full px-6 hover-scale"
                 >
-                  Подробнее →
+                  Забронировать
                 </Button>
               </>
             ) : (

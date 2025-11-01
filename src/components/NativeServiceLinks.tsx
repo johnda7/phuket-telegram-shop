@@ -39,11 +39,13 @@ export const NativeServiceLinks = ({ context = 'default', className = '' }: Nati
 
   const message = getContextMessage();
 
+  // ВАЖНО: Порядок сервисов ВЕЗДЕ одинаковый!
+  // 1. Туры → 2. Авто → 3. Недвижимость → 4. Валюты
   const services = [
     {
       id: 'tours',
       icon: MapPin,
-      emoji: '🎟️',
+      emoji: '🏝️',
       title: 'Экскурсии и туры',
       description: 'От островов до джунглей',
       link: '/phuket',
@@ -55,22 +57,10 @@ export const NativeServiceLinks = ({ context = 'default', className = '' }: Nati
     {
       id: 'car-rental',
       icon: Car,
-      emoji: '🚗',
+      emoji: '🚙',
       title: 'Аренда автомобилей',
       description: '100+ авто в наличии',
       link: 'https://t.me/RentaCarPhu',
-      gradient: 'from-orange-500 to-red-500',
-      iconColor: 'text-orange-600',
-      bgColor: 'bg-orange-50',
-      external: true
-    },
-    {
-      id: 'currency',
-      icon: RefreshCw,
-      emoji: '💱',
-      title: 'Обмен валюты',
-      description: 'Березa - лучший курс',
-      link: 'https://t.me/bereza_manager',
       gradient: 'from-green-500 to-emerald-500',
       iconColor: 'text-green-600',
       bgColor: 'bg-green-50',
@@ -83,6 +73,18 @@ export const NativeServiceLinks = ({ context = 'default', className = '' }: Nati
       title: 'Недвижимость',
       description: 'Аренда и продажа',
       link: 'https://t.me/PhuketDAexpert',
+      gradient: 'from-orange-500 to-amber-500',
+      iconColor: 'text-orange-600',
+      bgColor: 'bg-orange-50',
+      external: true
+    },
+    {
+      id: 'currency',
+      icon: RefreshCw,
+      emoji: '💵',
+      title: 'Обмен валюты',
+      description: 'Березa - лучший курс',
+      link: 'https://t.me/bereza_manager',
       gradient: 'from-purple-500 to-pink-500',
       iconColor: 'text-purple-600',
       bgColor: 'bg-purple-50',
